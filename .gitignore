@@ -230,3 +230,12 @@ Icon?
 # Generated tool outputs (regenerate; keep curated copies under docs/figures/)
 fig_*.png
 *_cache.npz
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+fig_*.png
+*_cache.npz
