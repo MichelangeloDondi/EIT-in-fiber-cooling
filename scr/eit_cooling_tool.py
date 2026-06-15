@@ -28,9 +28,9 @@ DESIGN
       Section 4  -- pretty-printer for the optical field table   [done]
       Section 5  -- spectrum self-tests (fast)             [done]
       Section 6  -- atomic engine (embedded validated solver) + Config adapter
-                    + physics regression gate              [done]
-      Section 7  -- single-point report (model/assumptions/non-idealities) [done]
-      Section 8  -- sweeps + plotting                      [done]
+                    + regression gate + cooling dynamics/regime   [done]
+      Section 7  -- single-point report (model/assumptions/non-idealities/regime) [done]
+      Section 8  -- sweeps + plotting + kpi_scan           [done]
 
 UNITS  (fixed convention, stated once)
     * All optical frequencies, detunings and Rabi frequencies are ANGULAR,
@@ -48,13 +48,42 @@ SIGN / KNOB CONVENTIONS
       it per configuration (Section 3). A numeric f_mod overrides, and then
       delta2 is reported back as the derived value.
 
+DETUNING REFERENCE  (subtle with the 1064 nm trap -- read before trusting a number)
+    The engine carries BARE internal energies (Breit-Rabi grounds + tensor-
+    diagonalized 5P3/2); it contains no 1064 Stark term. The 1064 shifts split
+    into: ground scalar -U0 (the trap, common to both clock grounds); a common
+    5P3/2 scalar ~+37 MHz; and an F'- and m'-dependent TENSOR part (exactly zero
+    for F'=2, nonzero for F'=0,1,3 and dependent on the lattice polarization
+    angle theta). Therefore:
+      * delta2 (two-photon): referenced to the ground hyperfine splitting. The
+        ground scalar shift is identical on |1,-1> and |2,+1> and CANCELS, so
+        delta2 is trap-independent and delta2=0 is the true dark resonance at
+        every radius. (Exact; the three "which Stark reference" options coincide.)
+      * Delta (single-photon): referenced to the ACTUAL in-trap, on-axis
+        (trap-bottom) |F'2,0> transition. The |F'2,0> scalar (+38) and ground
+        (-U0) shifts are a common ~+61 MHz offset that cancels (the engine only
+        uses Delta = laser - |F'2,0>), so the number you set IS the on-axis
+        in-trap detuning. Radial variation Delta_eff(r)=Delta+61*(1-s) is added
+        by the separate MC tool. (Exact.)
+      * Repump & contaminant detunings [v0.1.0 LIMITATION]: referenced to BARE
+        5P3/2 hyperfine spacings; the differential TENSOR Stark shift of the
+        target level vs |F'2,0> is OMITTED. ~0 for F'=2 targets (rep2 option C),
+        but up to ~12-16 MHz for F'=1 (rep1, rep2 option A, dominant F'1
+        contaminant) and theta-dependent. So Drep1=15 is 15 MHz from the BARE
+        F=1->F'1 line, which can be ~2x off the actual in-trap detuning. To be
+        fixed in v0.2.0 (add theta + per-(F',m') Stark shifts so every detuning
+        is referenced to the in-trap on-axis transition).
+
 STATUS
-    Feature-complete (Sections 1-8). The spectrum/delivery layer, the embedded
-    validated engine wired through run(Config), the self-documenting single-point
-    report, and the sweep/plot layer are all in place. `--regression` reproduces
-    the audited floors exactly (clean base 0.0014; +F'1 0.0048 / +F'3 0.0024 /
-    +F'0 0.0015; dual 0.0048; single 0.0075) at the correct servoed delta2.
-    Modes: (default) tables + fast self-tests; --report; --regression; --sweeps.
+    v0.2.0. Sections 1-8 in place: spectrum/delivery layer; embedded validated
+    engine via run(Config); self-documenting report (model/assumptions/non-
+    idealities + cooling dynamics + regime); sweeps/plots; kpi_scan; and
+    cooling_dynamics (tau=1/gap + time-to-cool from the initial T). `--regression`
+    reproduces the audited floors (clean base 0.0014; +F'1 0.0048 / +F'3 0.0024 /
+    +F'0 0.0015; dual 0.0048; single 0.0075). Modes: default; --report;
+    --regression; --sweeps; --kpi. Pending v0.3.0: Stark-aware repump/contaminant
+    detuning references (needs theta; geometry given: B=1 G vertical || fiber axis
+    -> 1064 transverse linear pol perpendicular to B, theta=90 deg).
 ================================================================================
 """
 
@@ -66,6 +95,20 @@ from scipy.optimize import brentq     # used to invert beta <-> probe/control ra
 import qutip as qt                                            # engine (Section 6)
 from sympy.physics.wigner import clebsch_gordan, wigner_6j    # CG and 6j (Section 6)
 from sympy import S
+
+__version__ = "0.2.0"
+# CHANGELOG (bump on every physics/interface change; update README + report + regression too)
+#   0.2.0  cooling dynamics & regime: initial axial/radial T knobs; cooling_dynamics()
+#          (tau=1/gap via the validated delta_tau method; time-to-<n>=0.1 and to 2x floor
+#          from T_axial_init); regime block in report() (Lamb-Dicke, EIT sideband
+#          resolution & tuning, n_init-vs-Nf, radial trapping + Delta_eff inhomogeneity);
+#          report() now uses the true P(n=0) from the Fock diagonal. Floor/regression
+#          unchanged (initial T affects only time & regime, not the steady state).
+#   0.1.0  spectrum/delivery layer; embedded validated engine + Config adapter;
+#          regression gate; self-documenting report; sweeps/plots; kpi_scan.
+#          KNOWN LIMITATION (-> v0.3.0): repump & contaminant detunings referenced to BARE
+#          5P3/2 spacings -- differential TENSOR 1064 Stark shift omitted (~0 for F'=2; up
+#          to ~12-16 MHz for F'=1, theta-dep). Delta & delta2 exact. See "DETUNING REFERENCE".
 
 
 # =============================================================================
@@ -107,6 +150,12 @@ BR = {0: {1: 1.0, 2: 0.0}, 1: {1: 5/6, 2: 1/6},
       2: {1: 1/2, 2: 1/2}, 3: {1: 0.0, 2: 1.0}}
 
 J0_FIRST_ZERO = 2.4048255577   # first zero of J_0; the carrier-suppression depth.
+
+# Temperature <-> frequency, and the 1064 nm differential-Stark coefficient used only for
+# the radial-inhomogeneity ANNOTATION (the |F'2,0> on-axis differential; NOT the per-(F',m')
+# v0.3.0 Stark fix). c_radial(U0) = (1 + |a0_5P/a0_5S|)*U0, since |F'2,0> is pure scalar.
+KB_OVER_H = 0.0208366                 # k_B/h, MHz per uK
+SCALAR_RATIO_5P_5S = 1149.0 / 687.3   # |a0(5P3/2)/a0(5S)| ~ 1.671 (Chen; Goncalves-Raithel)
 
 
 # =============================================================================
@@ -177,6 +226,11 @@ class Config:
     with_e3: bool = True         # include F'=3 contaminant (control-leg, secondary)
     servo_delta2: bool = True    # auto-servo delta2 to the dark resonance (else use delta2)
     radius_um: float = 0.0       # radial position (um); 0 = on-axis. [Turn 3+]
+
+    # ---- (i) initial conditions  (cooling-time & regime ONLY; do NOT affect the floor) ----
+    T_axial_init_uK: float = 50.0    # initial axial T: sets n_init and the time-to-cool
+    T_radial_init_uK: float = 100.0  # initial radial T: regime/inhomogeneity only (radial
+                                     #   motion is decoupled from the axial cooling rate)
 
 
 def preset(name: str) -> Config:
@@ -619,7 +673,7 @@ def decay_branch(Fp, mp, Gset):
 def solve(option='A', Dc=80.0, twofA=220.0, eta_dp=0.5, Drep1=30.0, Drep2=5.0,
           d2=0.0, B=3.2287, Nf=8, OmR=0.25, Om_r=1.5, clean_lambda=False,
           with_e3=True, with_rejected=True, want_pops=False, oscale=1.0, with_e1=False, with_e0=False,
-          nu_z=None, Otot_abs=None, eta_z=None):
+          nu_z=None, Otot_abs=None, eta_z=None, full=False):
     gE = {(F, m): Eg(F, m, B) for F in (1, 2)
           for m in (range(-1, 2) if F == 1 else range(-2, 3))}
     eE = excited_energies(B)
@@ -743,9 +797,16 @@ def solve(option='A', Dc=80.0, twofA=220.0, eta_dp=0.5, Drep1=30.0, Drep2=5.0,
         rho = qt.steadystate(L, method='svd')
     N = qt.tensor(qt.qeye(NA), aop.dag()*aop)
     nbar = float(np.real(qt.expect(N, rho)))
-    if want_pops:
+    if full or want_pops:
         pops = {g: float(np.real(qt.expect(qt.tensor(P(idx[('g', g)], idx[('g', g)]), If), rho)))
                 for g in Gs}
+    if full:
+        # true motional Fock-diagonal P(n) read off the same steady state (no model change)
+        fk = [qt.basis(Nf, k) for k in range(Nf)]
+        motion = [float(np.real(qt.expect(qt.tensor(qt.qeye(NA), fk[k]*fk[k].dag()), rho)))
+                  for k in range(Nf)]
+        return dict(nbar=nbar, conf=conf, pops=pops, motion=motion, L=L, NA=NA)
+    if want_pops:
         return nbar, conf, pops
     return nbar, conf
 
@@ -773,24 +834,28 @@ def _engine_kwargs(cfg: Config, Nf: int) -> dict:
     return kw
 
 
-def run(cfg: Config, Nf: Optional[int] = None, servo_grid=None, want_pops=False):
+def run(cfg: Config, Nf: Optional[int] = None, servo_grid=None, want_pops=False, full=False):
     """Steady-state axial <n_z> for a Config, via the validated engine.
-       Returns (nbar, delta2_used). If cfg.servo_delta2, delta2 is optimized on a grid
-       (the dark resonance shifts with detuning/power/contaminants, so this is the
-       realistic servo); otherwise cfg.delta2 is used as given."""
+       Returns (nbar, delta2_used), or (nbar, delta2, pops) if want_pops, or -- if full --
+       a dict {nbar, conf, pops, motion, delta2} with the true motional Fock distribution.
+       If cfg.servo_delta2, delta2 is optimized on a grid (the dark resonance shifts with
+       detuning/power/contaminants); otherwise cfg.delta2 is used as given."""
     Nf = Nf if Nf is not None else cfg.N_f
     kw = _engine_kwargs(cfg, Nf)
     if cfg.servo_delta2:
         grid = servo_grid if servo_grid is not None else np.round(np.arange(-0.40, 0.04, 0.03), 3)
         nbar, d2, _ = d2min(grid, **kw)
-    else:
-        d2 = cfg.delta2
-        out = solve(d2=d2, want_pops=want_pops, **kw)
-        return (out[0], d2, out[2]) if want_pops else (out[0], d2)
-    if want_pops:
-        _, _, pops = solve(d2=d2, want_pops=True, **kw)
-        return nbar, d2, pops
-    return nbar, d2
+        if full:
+            res = solve(d2=d2, full=True, **kw); res["delta2"] = d2; return res
+        if want_pops:
+            _, _, pops = solve(d2=d2, want_pops=True, **kw)
+            return nbar, d2, pops
+        return nbar, d2
+    d2 = cfg.delta2
+    if full:
+        res = solve(d2=d2, full=True, **kw); res["delta2"] = d2; return res
+    out = solve(d2=d2, want_pops=want_pops, **kw)
+    return (out[0], d2, out[2]) if want_pops else (out[0], d2)
 
 
 # =============================================================================
@@ -841,6 +906,111 @@ def _regression(Nf: int = 6):
 
 
 # =============================================================================
+# SECTION 6c -- cooling dynamics & regime  (v0.2.0)
+# -----------------------------------------------------------------------------
+# The steady-state floor AND the cooling RATE are both independent of the initial
+# temperature (properties of the Liouvillian L). The initial AXIAL T sets only the
+# time-to-cool (a logarithmic prefactor on 1/rate); with the initial RADIAL T it
+# sets the cooling REGIME -- whether the start is inside the Lamb-Dicke /
+# sideband-resolved / trapped window where this steady-state picture is valid.
+# Cooling time uses the validated tau = 1/gap method (gap = slowest motional
+# relaxation eigenvalue of L; cf. delta_tau.py). Radial motion is decoupled from
+# the axial rate (k.v_r = 0); the radial T enters only as a regime annotation and
+# feeds the separate radial Monte-Carlo for the cloud-averaged floor.
+# =============================================================================
+
+def n_thermal(T_uK, nu_MHz):
+    """Mean phonon number of a 1D mode at temperature T (uK), trap freq nu (2pi MHz)."""
+    return 1.0 / np.expm1(nu_MHz / (T_uK * KB_OVER_H))      # 1/(exp(h nu / kT) - 1)
+
+
+def _liouvillian_gap(L, NA, Nf):
+    """Asymptotic cooling rate W (2pi MHz): the SLOWEST relaxation mode of L that couples to
+       <n> (smallest |Re lambda| among modes with motional content). This governs the approach
+       to the floor. tau_1e = 1/W. (Refines delta_tau.py's max-motional-content pick, which is
+       ambiguous because <n> relaxation is spread over several eigenmodes.)"""
+    from scipy.sparse.linalg import eigs as speigs
+    A = L.data.as_scipy().tocsc(); dim = NA * Nf
+    Nm = qt.tensor(qt.qeye(NA), qt.destroy(Nf).dag() * qt.destroy(Nf)).full()
+    try:
+        vals, vecs = speigs(A, k=min(16, dim - 2), sigma=0.0, which="LM")
+    except Exception:
+        vals, vecs = np.linalg.eig(A.toarray())
+    cand = []
+    for k in range(len(vals)):
+        if abs(vals[k].real) < 1e-9:
+            continue
+        rho = vecs[:, k].reshape(dim, dim); rs = (rho + rho.conj().T) / 2
+        trn = np.sum(np.abs(np.linalg.eigvals(rs)))
+        nc = abs(np.trace(Nm @ rho)) / (trn if trn > 1e-12 else 1.0)
+        cand.append((abs(vals[k].real), nc))
+    motional = [r for (r, nc) in cand if nc > 0.05]      # modes that show up in <n>(t)
+    if motional:
+        return min(motional)                              # slowest such mode = asymptotic rate
+    return min((r for (r, _) in cand), default=None)
+
+
+def _cooling_from_res(res, cfg, Nf):
+    """Cooling-dynamics KPIs from a full run() result (so the servo is not repeated)."""
+    n_ss = res["nbar"]
+    W = _liouvillian_gap(res["L"], res["NA"], Nf)
+    n_init = n_thermal(cfg.T_axial_init_uK, cfg.nu_z)
+    tau = 1e-3 / W if (W and W > 0) else float("inf")        # ms
+
+    def t_to(target):                                        # n(t)=n_ss+(n_init-n_ss)exp(-Wt)
+        if n_init <= target:
+            return 0.0                                       # already below target
+        if target <= n_ss:
+            return float("inf")                              # below the floor: unreachable
+        return tau * np.log((n_init - n_ss) / (target - n_ss))
+
+    return dict(n_ss=n_ss, W=W, tau_1e_ms=tau, n_init=n_init,
+                t_to_0p1_ms=t_to(0.1), t_to_2fl_ms=t_to(2.0 * n_ss), delta2=res["delta2"])
+
+
+def cooling_dynamics(cfg: Config, Nf: Optional[int] = None):
+    """Return cooling-dynamics KPIs for a Config (servoed operating point):
+         n_ss, W (rate, 2pi MHz), tau_1e_ms (=1/W; init-independent),
+         n_init (from T_axial_init), t_to_0p1_ms, t_to_2fl_ms.
+       Times use the LD-exponential estimate t = ln[(n_init-n_ss)/(target-n_ss)]/W."""
+    Nf = Nf if Nf is not None else cfg.N_f
+    return _cooling_from_res(run(cfg, Nf=Nf, full=True), cfg, Nf)
+
+
+def _regime_lines(cfg: Config):
+    """Config-aware cooling-regime / validity annotations (initial-T dependent)."""
+    Oc, _ = reference_rabis(cfg)
+    Otot = cfg.Omega_tot_abs if cfg.Omega_tot_abs is not None else np.sqrt(4*cfg.Delta*cfg.nu_z)
+    n_init = n_thermal(cfg.T_axial_init_uK, cfg.nu_z)
+    ld = cfg.eta_z * np.sqrt(2 * n_init + 1)                 # LD parameter at the start
+    feat = GAMMA_D2 * cfg.nu_z / cfg.Delta                   # EIT cooling-feature width ~Gamma*nu_z/Delta
+    sb = cfg.Delta / GAMMA_D2                                # sideband resolution (EIT) = nu_z/feat
+    tuned = np.sqrt(4 * cfg.Delta * cfg.nu_z)                # bright-peak-at-sideband Rabi
+    c_rad = (1.0 + SCALAR_RATIO_5P_5S) * cfg.U0_uK * KB_OVER_H
+    dmean = c_rad * (cfg.T_radial_init_uK / cfg.U0_uK)       # mean Delta_eff shift over radial cloud
+    ax_bound = cfg.T_axial_init_uK * KB_OVER_H / (cfg.U0_uK * KB_OVER_H)   # = T_ax/U0
+    return [
+        "COOLING REGIME (initial-T dependent; validity of the steady-state LD-EIT picture)",
+        f"  axial start: T_init={cfg.T_axial_init_uK:g} uK -> n_init={n_init:.2f};  "
+        f"bound T_ax/U0={ax_bound:.3f} " + ("(trapped)" if ax_bound < 0.5 else "(near top!)"),
+        f"  Lamb-Dicke: eta*sqrt(2n_init+1)={ld:.3f} "
+        + ("(<<1, OK)" if ld < 0.3 else "(MARGINAL)" if ld < 1 else "(INVALID -- pre-cool first)"),
+        f"  sideband resolution (EIT): Delta/Gamma={sb:.2f}  (feature ~Gamma*nu_z/Delta={feat:.3f} "
+        f"MHz vs nu_z={cfg.nu_z:g}) " + ("(resolved)" if sb > 1 else "(UNRESOLVED)"),
+        f"  EIT tuning: Omega_tot={Otot:.2f} vs sqrt(4*Delta*nu_z)={tuned:.2f} "
+        + ("(on the bright-peak condition)" if abs(Otot - tuned) < 0.05 * tuned
+           else "(OFF the bright-peak tuning)"),
+        f"  n_init vs Nf={cfg.N_f}: "
+        + ("ok (thermal tail within Fock space)" if n_init < 0.4 * cfg.N_f
+           else "n_init not small vs Nf -- time-to-cool is a LOWER bound (hot dynamics slower)"),
+        f"  radial: T_rad/U0={cfg.T_radial_init_uK/cfg.U0_uK:.3f} "
+        + ("(deeply trapped)" if cfg.T_radial_init_uK/cfg.U0_uK < 0.3 else "(shallow -- loss risk)")
+        + f"; mean Delta_eff shift over the radial cloud ~{dmean:.2f} MHz "
+        "(inhomogeneity the on-axis number ignores; see the radial MC).",
+    ]
+
+
+# =============================================================================
 # SECTION 7 -- single-point operating report
 # -----------------------------------------------------------------------------
 # One readable block: knobs echoed, the explicit optical spectrum, the result
@@ -883,6 +1053,9 @@ def _assumption_lines(cfg: Config):
         "  - radial motion frozen/decoupled: k.v_r = 0 by the axial geometry and nu_r << nu_z,",
         "    so the axial mode is treated alone (radial spread handled by the separate MC tool).",
         "  - Lamb-Dicke regime (eta_z = %.3f)." % cfg.eta_z,
+        "  - detuning reference: Delta from the in-trap on-axis |F'2,0> (1064 scalar cancels),",
+        "    delta2 from the Stark-immune ground splitting; BUT repump/contaminant detunings",
+        "    use BARE 5P3/2 spacings -- see NON-IDEALITIES [v0.1.0].",
     ]
     if cfg.configuration == "dual_end":
         L.append("  - dual-end: PERFECT carrier suppression assumed (beta = 2.4048 exactly).")
@@ -923,6 +1096,11 @@ def _nonideality_lines(cfg: Config):
     L.append("  FLAGGED in the spectrum, NOT yet in <n_z>:")
     L += ["    - " + s for s in flagged]
     L += [
+        "  ENGINE APPROXIMATION (detuning reference) [v0.1.0]:",
+        "    - repump/contaminant detunings omit the differential tensor 1064 Stark shift of",
+        "      the target level vs |F'2,0> (~0 for F'=2; up to ~12-16 MHz for F'=1, theta-dep).",
+        "      So Drep1 is referenced to the BARE F=1->F'1 line, up to ~2x off the in-trap",
+        "      value. Delta and delta2 references ARE exact. To be fixed in v0.2.0.",
         "  OUT OF SCOPE of this engine (bound separately in the program's noise studies):",
         "    - magnetic-field noise and Zeeman dephasing of the dark state;",
         "    - laser phase/frequency noise (finite linewidth) and relative control-probe phase",
@@ -957,12 +1135,13 @@ def report(cfg: Config, Nf: Optional[int] = None):
     print("\nOPTICAL SPECTRUM AT THE ATOMS")
     print_spectrum_table(cfg, fields)
 
-    nbar, d2, pops = run(cfg, Nf=Nf, want_pops=True)
-    gtot = sum(pops.values()); exc = 1.0 - gtot; P0 = 1.0/(1.0 + nbar)
+    res = run(cfg, Nf=Nf, full=True)
+    nbar, d2, pops = res["nbar"], res["delta2"], res["pops"]
+    gtot = sum(pops.values()); exc = 1.0 - gtot; P0 = res["motion"][0]
     print("RESULT")
     print(f"  <n_z> = {nbar:.4f}     servoed delta2 = {d2:+.3f}" if cfg.servo_delta2
           else f"  <n_z> = {nbar:.4f}     delta2 = {d2:+.3f} (fixed)")
-    print(f"  motional ground-state fraction P(n=0) ~ {P0:.3f}  (thermal estimate 1/(1+<n>))")
+    print(f"  motional ground-state fraction P(n=0) = {P0:.4f}  (true, from the Fock diagonal)")
     print(f"  internal: ground population {gtot:.4f}, excited (scatter load) {exc:.2e}")
     top = sorted(pops.items(), key=lambda kv: -kv[1])[:6]
     print("  where the ground population sits (top 6):")
@@ -972,8 +1151,19 @@ def report(cfg: Config, Nf: Optional[int] = None):
         print("  leak states (dark to the cooler): "
               + "  ".join(f"|{F},{m:+d}>={p:.2e}" for (F, m), p in leak))
 
+    cd = _cooling_from_res(res, cfg, Nf)
+    print("\nCOOLING DYNAMICS  (floor and rate are initial-T independent)")
+    print(f"  asymptotic cooling rate W (slowest motional mode of L) = {cd['W']:.5f} (2pi MHz)")
+    print(f"     -> tau_1e = {cd['tau_1e_ms']:.3f} ms  (approach to the floor)")
+    print(f"  from T_axial_init={cfg.T_axial_init_uK:g} uK (n_init={cd['n_init']:.2f}), "
+          f"LD-exponential estimate n(t)=n_ss+(n_init-n_ss)exp(-Wt):")
+    print(f"     time to <n_z>=0.1         ~ {cd['t_to_0p1_ms']:.3f} ms  "
+          f"(upper bound; multi-exponential early cooling is faster)")
+    print(f"     time to 2x floor (={2*cd['n_ss']:.4f}) ~ {cd['t_to_2fl_ms']:.3f} ms")
+
     print()
-    for line in _model_lines(cfg) + [""] + _assumption_lines(cfg) + [""] + _nonideality_lines(cfg):
+    for line in (_regime_lines(cfg) + [""] + _model_lines(cfg) + [""]
+                 + _assumption_lines(cfg) + [""] + _nonideality_lines(cfg)):
         print(line)
     print("=" * 96)
 
@@ -1082,6 +1272,103 @@ def plot_delta2(grid, nbars, path, cfg=None):
     return path
 
 
+def _trend(y):
+    """One-word classification of a KPI sequence for the report."""
+    y = np.asarray(y, float)
+    if np.ptp(y) < 0.05 * max(abs(y).max(), 1e-12):
+        return "flat"
+    d = np.diff(y)
+    if np.all(d >= 0):
+        return "monotonic increasing"
+    if np.all(d <= 0):
+        return "monotonic decreasing"
+    i = int(np.argmin(y))
+    return "non-monotonic (best at endpoint)" if i in (0, len(y) - 1) \
+        else "non-monotonic (interior minimum)"
+
+
+def kpi_scan(cfg: Config, param: str, vmin: float, vmax: float, n: int = 9,
+             Nf: Optional[int] = None, servo_grid=None, plot_path=None):
+    """Scan one Config knob from vmin to vmax and print a short KPI report.
+
+    KPIs per point (all read off the same steady state):
+      * <n_z>            -- mean axial phonon number (the headline)
+      * P(n=0)           -- TRUE motional ground-state fraction (Fock diagonal)
+      * excited pop      -- total excited-state population ~ photon-scatter load
+      * delta2           -- the two-photon detuning used (servoed optimum, unless fixed)
+
+    Reuses run(); honours cfg.servo_delta2, EXCEPT when param=='delta2' (the servo is
+    then disabled so the scanned value is the one used -- i.e. the delta2 landscape,
+    now reported with KPIs). Integer knobs (e.g. N_f) are scanned on integers.
+    Returns a dict of arrays; writes a 3-panel figure if plot_path is given.
+    """
+    Nf = Nf if Nf is not None else cfg.N_f
+    is_int = isinstance(getattr(cfg, param), int) and not isinstance(getattr(cfg, param), bool)
+    raw = np.linspace(vmin, vmax, n)
+    values = [int(round(v)) for v in raw] if is_int else [float(v) for v in raw]
+    scan_d2 = (param == "delta2")
+
+    nbar, P0, scat, d2s = [], [], [], []
+    for v in values:
+        c = replace(cfg, **{param: v})
+        if scan_d2:
+            c = replace(c, servo_delta2=False)
+        r = run(c, Nf=Nf, servo_grid=servo_grid, full=True)
+        nbar.append(r["nbar"]); P0.append(r["motion"][0])
+        scat.append(1.0 - sum(r["pops"].values())); d2s.append(r["delta2"])
+    nbar, P0, scat, d2s = (np.asarray(a, float) for a in (nbar, P0, scat, d2s))
+
+    note = ("delta2 scanned (servo off)" if scan_d2 else
+            ("delta2 servoed per point" if cfg.servo_delta2 else "delta2 fixed"))
+    print(f"\nKPI SCAN  --  {param} : {vmin:g} -> {vmax:g}   "
+          f"({n} pts, config={cfg.configuration}, {note}, Nf={Nf})")
+    print("-" * 74)
+    print(f"  {param:>12s}      <n_z>    P(n=0)    excited    {'delta2':>8s}")
+    print("-" * 74)
+    for i, v in enumerate(values):
+        vv = f"{v:12d}" if is_int else f"{v:12.3f}"
+        print(f"  {vv}    {nbar[i]:8.4f}   {P0[i]:7.4f}   {scat[i]:.2e}   {d2s[i]:+8.3f}")
+    print("-" * 74)
+    io = int(np.argmin(nbar))
+    vopt = f"{values[io]:d}" if is_int else f"{values[io]:.3f}"
+    print(f"OPTIMUM   <n_z>={nbar[io]:.4f} at {param}={vopt}"
+          f"   (P(n=0)={P0[io]:.4f}, excited={scat[io]:.1e})")
+    print(f"TREND     <n_z>: {_trend(nbar)};  P(n=0) {P0.min():.4f}->{P0.max():.4f};  "
+          f"excited {scat.min():.1e}->{scat.max():.1e}")
+    if not scan_d2 and cfg.servo_delta2:
+        print(f"          servo delta2 drifts {d2s[0]:+.3f} -> {d2s[-1]:+.3f} across the scan")
+    print("NOTES     KPIs from the steady state; excited pop ~ scatter load. Model/assumptions"
+          " as in report().")
+    out = dict(param=param, values=values, nbar=nbar, P0=P0, excited=scat, delta2=d2s)
+    if plot_path:\
+        plot_kpi_scan(out, cfg, plot_path); print("FIGURE   ", plot_path)
+    return out
+
+
+def plot_kpi_scan(scan, cfg: Config, path):
+    """3-panel figure for a kpi_scan: <n_z> (log), P(n=0), and delta2 (or excited for delta2 scans)."""
+    plt = _mpl()
+    v = np.asarray(scan["values"], float); p = scan["param"]
+    fig, ax = plt.subplots(3, 1, figsize=(6.4, 7.4), sharex=True)
+    ax[0].plot(v, scan["nbar"], "o-", color="C0")
+    if np.all(scan["nbar"] > 0):
+        ax[0].set_yscale("log")
+    i = int(np.argmin(scan["nbar"])); ax[0].plot(v[i], scan["nbar"][i], "r*", ms=14, zorder=5)
+    ax[0].set_ylabel("<n_z>"); ax[0].grid(True, which="both", alpha=0.3)
+    ax[0].set_title(f"KPI scan vs {p}   ({cfg.configuration})\n"
+                    f"optimum <n_z>={scan['nbar'][i]:.4f} at {p}={scan['values'][i]}")
+    ax[1].plot(v, scan["P0"], "o-", color="C2"); ax[1].set_ylabel("P(n=0)")
+    ax[1].grid(True, alpha=0.3)
+    if p == "delta2":
+        ax[2].plot(v, scan["excited"], "s-", color="C3"); ax[2].set_ylabel("excited pop")
+        ax[2].set_yscale("log")
+    else:
+        ax[2].plot(v, scan["delta2"], "s-", color="C1"); ax[2].set_ylabel("servo delta2")
+    ax[2].set_xlabel(p); ax[2].grid(True, alpha=0.3)
+    fig.tight_layout(); fig.savefig(path, dpi=130); plt.close(fig)
+    return path
+
+
 def _demo_sweeps(Nf: int = 6):
     """Produce a representative figure set (saved as PNGs). ~3 min at Nf=6.
        Uses a coarse delta2 servo grid for speed; tighten it for publication numbers."""
@@ -1107,6 +1394,7 @@ def _demo_sweeps(Nf: int = 6):
 #   python eit_cooling_tool.py --report       # full operating-point reports (slow)
 #   python eit_cooling_tool.py --regression   # reproduce the audited floors (slow)
 #   python eit_cooling_tool.py --sweeps       # write example sweep figures (slow)
+#   python eit_cooling_tool.py --kpi          # example KPI-vs-parameter scans (slow)
 # =============================================================================
 if __name__ == "__main__":
     import sys
@@ -1121,6 +1409,13 @@ if __name__ == "__main__":
         _selftests()
         print("\nSWEEPS")
         _demo_sweeps(Nf=6)
+    elif "--kpi" in sys.argv:
+        _selftests()
+        base = preset("dual_end_optimal")
+        kpi_scan(base, "delta2", -0.45, 0.25, n=18, plot_path="fig_kpi_delta2.png")
+        kpi_scan(base, "Delta", 45, 80, n=6,
+                 servo_grid=np.round(np.arange(-0.34, 0.02, 0.04), 3),
+                 plot_path="fig_kpi_delta.png")
     else:
         for nm in ("dual_end_optimal", "single_end_tagged", "clean_lambda"):
             c = preset(nm)
