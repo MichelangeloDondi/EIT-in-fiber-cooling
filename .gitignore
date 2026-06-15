@@ -220,3 +220,13 @@ __marimo__/
 .DS_Store
 
 .DS_Store
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Generated tool outputs (regenerate; keep curated copies under docs/figures/)
+fig_*.png
+*_cache.npz
