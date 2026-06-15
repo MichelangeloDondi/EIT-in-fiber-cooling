@@ -23,11 +23,11 @@ pip install numpy scipy sympy qutip matplotlib
 ## Run modes
 | command | what it does | time |
 |---|---|---|
-| `python eit_cooling_tool.py` | print the spectrum table for the 3 presets + 14 fast self-tests | < 1 s |
-| `python eit_cooling_tool.py --report` | full reports (spectrum, floor, **cooling dynamics**, **regime**) — dual + single | ~45 s |
-| `python eit_cooling_tool.py --regression` | reproduce the audited floors (the validation gate) | ~2 min |
-| `python eit_cooling_tool.py --sweeps` | write example sweep figures (PNG) | ~3 min |
-| `python eit_cooling_tool.py --kpi` | example KPI-vs-parameter scans (δ₂ landscape + Δ) | ~3 min |
+| `python src/eit_cooling_tool.py` | print the spectrum table for the 3 presets + 14 fast self-tests | < 1 s |
+| `python src/eit_cooling_tool.py --report` | full reports (spectrum, floor, **cooling dynamics**, **regime**) — dual + single | ~45 s |
+| `python src/eit_cooling_tool.py --regression` | reproduce the audited floors (the validation gate) | ~2 min |
+| `python src/eit_cooling_tool.py --sweeps` | write example sweep figures (PNG) | ~3 min |
+| `python src/eit_cooling_tool.py --kpi` | example KPI-vs-parameter scans (δ₂ landscape + Δ) | ~3 min |
 
 ## Programmatic use
 ```python
