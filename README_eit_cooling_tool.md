@@ -1,10 +1,11 @@
 # EIT Cooling Tool — `eit_cooling_tool.py`
 
-A single, self-contained Python file to **audit and explore** clock-EIT ground-state
-sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
-Given a `Config` of every experimental knob, it returns the steady-state axial mean
-phonon number ⟨n_z⟩ from a multilevel QuTiP engine, and prints the explicit optical
-spectrum that arrives at the atoms.
+**Version 0.2.0.** A single, self-contained Python file to **audit and explore** clock-EIT
+ground-state sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
+Given a `Config` of every experimental knob, it returns the steady-state axial mean phonon
+number ⟨n_z⟩ from a multilevel QuTiP engine, the **cooling dynamics** (rate and time-to-cool from
+the initial temperature) and a **regime check**, and prints the explicit optical spectrum that
+arrives at the atoms.
 
 The atomic engine (Section 6 of the file) is **embedded verbatim** from the validated
 solver that reproduces every number in the cooling program; the `--regression` mode
@@ -23,30 +24,35 @@ pip install numpy scipy sympy qutip matplotlib
 | command | what it does | time |
 |---|---|---|
 | `python eit_cooling_tool.py` | print the spectrum table for the 3 presets + 14 fast self-tests | < 1 s |
-| `python eit_cooling_tool.py --report` | full operating-point reports (dual-end + single-end) | ~30 s |
+| `python eit_cooling_tool.py --report` | full reports (spectrum, floor, **cooling dynamics**, **regime**) — dual + single | ~45 s |
 | `python eit_cooling_tool.py --regression` | reproduce the audited floors (the validation gate) | ~2 min |
 | `python eit_cooling_tool.py --sweeps` | write example sweep figures (PNG) | ~3 min |
+| `python eit_cooling_tool.py --kpi` | example KPI-vs-parameter scans (δ₂ landscape + Δ) | ~3 min |
 
 ## Programmatic use
 ```python
 from eit_cooling_tool import Config, preset, run, report, build_spectrum, \
-                             print_spectrum_table, sweep1d, plot_sweep1d
+                             print_spectrum_table, sweep1d, plot_sweep1d, cooling_dynamics
 
 cfg = preset("dual_end_optimal")          # "single_end_tagged" | "clean_lambda"
 nbar, delta2 = run(cfg)                    # steady-state <n_z>, servoed delta2
-report(cfg)                                # full annotated report (model/assumptions/non-idealities)
+report(cfg)                                # full report: spectrum, floor, cooling dynamics, regime
 
-# change any knob (everything is a Config field):
-cfg = Config(configuration="dual_end", Delta=50, OmR=0.08, B_field=1.0, repump_option="A")
+# cooling dynamics (uses the initial temperatures in the Config):
+cd = cooling_dynamics(cfg)                 # dict: n_ss, W, tau_1e_ms, n_init, t_to_0p1_ms, t_to_2fl_ms
+
+# change any knob (everything is a Config field, incl. initial temperatures):
+cfg = Config(configuration="dual_end", Delta=50, OmR=0.08, B_field=1.0,
+             T_axial_init_uK=30, T_radial_init_uK=80)
 print_spectrum_table(cfg, build_spectrum(cfg))
 
 # sweep any knob, reusing the engine:
 v, nb, d2 = sweep1d(cfg, "Delta", [45, 55, 65, 80])
 plot_sweep1d(v, nb, "Delta", "delta_scan.png", d2s=d2)
 ```
-`run(cfg, want_pops=True)` also returns ground-state populations.
-`sweep1d/sweep2d` accept `servo_grid=` (coarser = faster); `delta2_landscape(cfg)` maps the
-dark-resonance cooling curve directly.
+`run(cfg, want_pops=True)` also returns ground-state populations; `run(cfg, full=True)` returns a
+dict with the Fock diagonal and the Liouvillian. `sweep1d/sweep2d` accept `servo_grid=` (coarser =
+faster); `delta2_landscape(cfg)` maps the dark-resonance cooling curve directly.
 
 ---
 
@@ -69,11 +75,30 @@ All in `2π·MHz` (trap frequencies too: `nu_z=0.430` means 2π·430 kHz). Detun
 
 **(h) engine** — `B_field` (G; cooling works at any field, 3.2287 G is clock-magic, default); `N_f` (Fock truncation, 6); `with_e0`/`with_e1`/`with_e3` (include the F′=0/1/3 contaminants, all `True`); `servo_delta2` (auto-optimize δ₂, `True`); `radius_um` (on-axis = 0).
 
+**(i) initial conditions** (cooling-time & regime **only** — they do **not** affect the floor) — `T_axial_init_uK` (initial axial T; sets `n_init` and the time-to-cool, default 50); `T_radial_init_uK` (initial radial T; regime/inhomogeneity only — radial motion is decoupled from the axial cooling rate, default 100).
+
 ### Fixed physical constants (NOT knobs)
 Atomic/EM properties, in Section 1 of the file: `A_HFS`, the 5P₃/₂ hyperfine centroids,
 `GAMMA_D2`/`GAMMA_D1`, the Landé/nuclear g-factors and μ_B/h, the dipole recoil distribution,
 the hyperfine decay branching, and the F=2→F′2 frequency reference (= 0). These cannot be
 varied because no experiment changes them.
+
+### Detuning reference — important with the 1064 nm trap
+The engine carries **bare** internal energies (no 1064 Stark term). The 1064 shifts split into a
+ground scalar −U₀ (the trap, common to both clock grounds), a common 5P₃/₂ scalar ≈ +37 MHz, and
+an F′/m′-dependent **tensor** part (zero for F′=2). Consequence — what each detuning is measured against:
+- **δ₂** (two-photon): the ground hyperfine splitting; the ground scalar shift cancels, so δ₂ is
+  trap-independent and δ₂=0 is the true dark resonance at every radius. **Exact.**
+- **Δ** (single-photon): the **actual in-trap, on-axis (trap-bottom) |F′2,0⟩** transition — the
+  |F′2,0⟩ scalar (+38) and ground (−U₀) shifts are a common ≈+61 MHz offset that cancels, so the
+  number you set is the on-axis in-trap detuning (radial: Δ_eff(r)=Δ+61·(1−s)). **Exact.**
+- **Repumper & contaminant detunings** *(still a limitation through v0.2.0)*: referenced to **bare**
+  5P₃/₂ spacings; the differential tensor 1064 Stark shift of the target level vs |F′2,0⟩ is omitted —
+  ~0 for F′=2 targets (`rep2` option C), but up to **~12–16 MHz for F′=1** (`rep1`, `rep2`-A, and
+  the dominant F′1 contaminant) and θ-dependent. So `Drep1=15` is 15 MHz from the *bare* F=1→F′1
+  line, which can be ~2× off the in-trap value. To be fixed in **v0.3.0** (adds θ + per-(F′,m′)
+  Stark shifts; geometry given: B=1 G vertical ∥ fiber axis → 1064 transverse linear pol ⟂ B,
+  **θ=90°**, where the F′=1 targets are off by ~−12 MHz).
 
 ---
 
@@ -102,6 +127,32 @@ Zeeman dephasing of the dark state; laser phase/frequency noise (finite linewidt
 control–probe phase noise; intensity noise; polarization impurity; beam pointing / non-axiality
 (~0.08 kHz/°); trap anharmonicity and higher bands; radial–axial coupling beyond the frozen
 approximation; collisions / background-gas loss.
+
+---
+
+## Cooling dynamics & regime (v0.2.0)
+The steady-state floor **and** the cooling **rate** are properties of the Liouvillian, so both are
+**independent of the initial temperature**. The initial temperature enters only two places, which
+`--report` now prints and `cooling_dynamics(cfg)` returns:
+
+- **Cooling rate / time.** `W` = the slowest motional-relaxation eigenmode of L — the asymptotic
+  rate governing the approach to the floor. (This refines `delta_tau.py`'s max-motional-content
+  pick, which is ambiguous because ⟨n⟩-relaxation is spread over several eigenmodes; the slowest
+  one with motional character is what survives at long times.) `tau_1e = 1/W`. The initial **axial**
+  T sets `n_init`, and the **time-to-⟨n_z⟩=0.1** and **time-to-2×floor** follow from the
+  Lamb-Dicke-exponential estimate `n(t)=n_ss+(n_init−n_ss)·exp(−Wt)` — time-to-0.1 is an **upper
+  bound** (real multi-exponential cooling is faster while the atom is still hot).
+- **Regime / validity.** Whether the *start* sits where this steady-state picture holds: Lamb-Dicke
+  `η·√(2n_init+1) ≪ 1`; EIT sideband resolution `Δ/Γ` (feature width `Γ·ν_z/Δ` vs ν_z); the EIT
+  bright-peak tuning `Ω_tot` vs `√(4Δν_z)`; `n_init` vs `N_f`; and, from the **radial** T, whether
+  the atom is trapped (`T_rad/U₀ ≪ 1`) and the **mean Δ_eff shift across the radial cloud**
+  (`≈ (1+1.671)·U₀·(T_rad/U₀)`) that the on-axis number ignores — the separate radial Monte-Carlo
+  handles the full cloud average.
+
+Representative (dual-end, default knobs, `T_axial_init=50 µK` → n_init≈2): `W≈0.0031` → `τ_1e≈0.33 ms`,
+time-to-⟨n_z⟩=0.1 ≈1.0 ms, time-to-2×floor ≈1.9 ms; regime all-green (LD 0.21, Δ/Γ=9, on tuning,
+radially trapped with a ~5.6 MHz cloud Δ_eff spread). Cooling slows monotonically with Δ
+(τ_1e ≈0.60 / 0.65 / 0.67 ms at Δ=45 / 60 / 80 with the legacy repump, matching `delta_tau.py`).
 
 ---
 
@@ -145,3 +196,26 @@ x, y, Z = sweep2d(base, "Delta", [45,55,65], "OmR", [0.08,0.10,0.12])
 ```
 With `servo_delta2=True` on the base config, δ₂ is re-optimized at every point (honest, since the
 dark resonance moves with the swept knob); set it `False` to hold δ₂ fixed for fast scouting.
+
+## KPI scan vs a parameter
+`kpi_scan` generalizes the δ₂ landscape: give it any knob and a `[vmin, vmax]` range and it prints
+a short report of the figures of merit per point, flags the optimum and the trend, and (optionally)
+writes a 3-panel figure.
+
+```python
+from eit_cooling_tool import preset, kpi_scan
+base = preset("dual_end_optimal")
+kpi_scan(base, "Delta", 45, 80, n=8, plot_path="kpi_delta.png")
+kpi_scan(base, "delta2", -0.45, 0.25, n=18)        # the landscape, with KPIs (servo auto-off)
+kpi_scan(base, "OmR", 0.05, 0.25, n=9)             # the weaker-probe lever
+```
+KPIs reported per point (all read off the same steady state):
+- **⟨n_z⟩** — mean axial phonon number (headline).
+- **P(n=0)** — the *true* motional ground-state fraction (Fock diagonal, not a thermal estimate).
+- **excited population** — total excited-state occupancy ≈ photon-scatter load (a heating/loss/
+  decoherence proxy that can rise even where ⟨n_z⟩ is flat — e.g. it climbs with Δ).
+- **δ₂** — the two-photon detuning used (servoed optimum per point, unless fixed or being scanned).
+
+If `param=="delta2"` the servo is disabled automatically so the scanned value is the one used.
+Integer knobs (e.g. `N_f`) are scanned on integers. Pass `servo_grid=` to trade accuracy for speed
+on servoed scans. Returns a dict of arrays (`values`, `nbar`, `P0`, `excited`, `delta2`).

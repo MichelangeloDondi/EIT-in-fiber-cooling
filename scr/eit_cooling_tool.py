@@ -1340,7 +1340,7 @@ def kpi_scan(cfg: Config, param: str, vmin: float, vmax: float, n: int = 9,
     print("NOTES     KPIs from the steady state; excited pop ~ scatter load. Model/assumptions"
           " as in report().")
     out = dict(param=param, values=values, nbar=nbar, P0=P0, excited=scat, delta2=d2s)
-    if plot_path:\
+    if plot_path:
         plot_kpi_scan(out, cfg, plot_path); print("FIGURE   ", plot_path)
     return out
 
