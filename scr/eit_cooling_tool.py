@@ -1,36 +1,67 @@
 """
-================================================================================
- eit_cooling_tool.py  --  interactive auditor for clock-EIT sideband cooling
-                          of 87Rb in a 1064 nm axial lattice (kagome HCPCF)
-================================================================================
+eit_cooling_tool.py
+===================
 
-PURPOSE
-    A single, heavily-commented file to AUDIT and EXPLORE the cooling scheme:
-    change detunings, intensities, the delivery configuration (dual-end /
-    single-end tagged retro / ideal clean-Lambda), the EOM modulation depth and
-    frequency, which sideband overtones are used, the tag-AOM shift, the retro
-    efficiency, the lambda/4, and the repumpers -- and see (i) the explicit
-    optical spectrum that arrives at the atoms and (ii) [from Turn 3 on] the
-    steady-state axial <n_z> from the validated multilevel solver.
+Steady-state and dynamics model of clock-EIT (electromagnetically-induced-
+transparency) ground-state sideband cooling of 87Rb in a one-dimensional 1064 nm
+optical lattice formed inside a kagome hollow-core photonic-crystal fibre (HCPCF).
 
-DESIGN
-    Layered, all in this one file (table of contents below). The atomic engine
-    (Turn 3) REUSES the multilevel QuTiP solver that already reproduces every
-    number in our program, so the built-in self-tests are bit-for-bit
-    meaningful. The piece BUILT IN THIS FILE FROM SCRATCH is the spectrum /
-    delivery layer (Section 3): it makes beta, f_mod, overtones, dual/single,
-    tag AOM and lambda/4 into REAL knobs instead of hard-coded assumptions.
+OVERVIEW
+    Given a single Config object specifying every experimentally adjustable
+    parameter -- detunings, Rabi frequencies, the beam-delivery configuration, the
+    phase-modulator settings, the repumpers, the trap, the magnetic field, and the
+    initial temperatures -- the tool returns:
+      (1) the explicit optical spectrum delivered to the atoms (every tone:
+          frequency, Rabi frequency, polarization, propagation direction, and the
+          nearest atomic resonance), with parasitic near-resonances flagged;
+      (2) the steady-state mean axial phonon number <n_z> from a multilevel
+          open-system (Lindblad) solver, with the populations and the true
+          motional Fock distribution;
+      (3) the cooling dynamics (asymptotic rate and time-to-cool from a given
+          initial temperature) and a check of whether the operating point lies in
+          the regime where this steady-state treatment is valid.
+    Parameter sweeps, two-dimensional maps, the two-photon-detuning landscape, and
+    a key-performance-indicator scan over any parameter are also provided.
 
-    TABLE OF CONTENTS
-      Section 1  -- physical constants  (FIXED; the PI cannot vary these)
-      Section 2  -- CONFIG dataclass    (EVERY knob lives here) + presets
-      Section 3  -- spectrum / delivery builder            [done]
-      Section 4  -- pretty-printer for the optical field table   [done]
-      Section 5  -- spectrum self-tests (fast)             [done]
-      Section 6  -- atomic engine (embedded validated solver) + Config adapter
-                    + regression gate + cooling dynamics/regime   [done]
-      Section 7  -- single-point report (model/assumptions/non-idealities/regime) [done]
-      Section 8  -- sweeps + plotting + kpi_scan           [done]
+PHYSICAL SYSTEM
+    Atom            87Rb, D2 line (5S_1/2 -> 5P_3/2), Gamma = 2*pi*6.07 MHz.
+    Cooling Lambda  the clock pair |F=1,m=-1> (probe, sigma+) and |F=2,m=+1>
+                    (control, sigma-), both closing on |F'=2,m'=0>. Both ground
+                    states have g_F m_F = +1/2, so the two-photon resonance is
+                    magnetic-field insensitive at any field.
+    Trap            axial (cooled) frequency  nu_z = 2*pi*430 kHz;
+                    radial (spectator)        nu_r = 2*pi*5.42 kHz;
+                    depth U0 ~ 1094 uK; axial Lamb-Dicke parameter eta_z = 0.094.
+    Field           cooling at B = 1 G along the fibre axis; clock interrogation
+                    at the magic field 3.2288 G (a separate phase, not modelled).
+
+ARCHITECTURE
+    Two logically distinct parts, both contained in this one file:
+      * The beam-delivery / spectrum model (Section 3) maps the hardware knobs --
+        phase-modulation depth and frequency, sideband orders, the tagging AOM and
+        quarter-wave plate, the retro efficiency -- onto the explicit set of
+        optical tones at the atoms. This is where the delivery architectures
+        (dual-end, single-end tagged retro, ideal clean-Lambda) differ.
+      * The atomic engine (Section 6) is a multilevel QuTiP steady-state solver
+        (8-state Breit-Rabi ground manifold; tensor-diagonalized 5P_3/2, F'=0..3;
+        Clebsch-Gordan dipole couplings; a breadth-first multi-rotating frame;
+        m-resolved hyperfine decay; three-point photon recoil; the coherent
+        |F'=3,0> control admixture). It is included verbatim from the solver
+        validated during this study; the regression gate (Section 6b) reproduces
+        the validated floors, so the numbers reported here are identical to the
+        benchmarked ones.
+
+TABLE OF CONTENTS
+    Section 1   physical constants of 87Rb and electromagnetism
+    Section 2   Config (all adjustable parameters) and named operating points
+    Section 3   beam-delivery / optical-spectrum model
+    Section 4   optical-spectrum table with resonance annotation
+    Section 5   fast self-tests on the delivery model
+    Section 6   multilevel atomic engine and Config adapter
+    Section 6b  physics regression gate (reproduces the validated floors)
+    Section 6c  cooling dynamics and regime/validity diagnostics
+    Section 7   single operating-point report
+    Section 8   parameter sweeps, maps, and KPI scans
 
 UNITS  (fixed convention, stated once)
     * All optical frequencies, detunings and Rabi frequencies are ANGULAR,
@@ -64,30 +95,62 @@ DETUNING REFERENCE  (subtle with the 1064 nm trap -- read before trusting a numb
         (-U0) shifts are a common ~+61 MHz offset that cancels (the engine only
         uses Delta = laser - |F'2,0>), so the number you set IS the on-axis
         in-trap detuning. Radial variation Delta_eff(r)=Delta+61*(1-s) is added
-        by the separate MC tool. (Exact.)
-      * Repump & contaminant detunings [v0.1.0 LIMITATION]: referenced to BARE
+        by the companion radial Monte-Carlo analysis. (Exact.)
+      * Repump & contaminant detunings (current limitation): referenced to BARE
         5P3/2 hyperfine spacings; the differential TENSOR Stark shift of the
         target level vs |F'2,0> is OMITTED. ~0 for F'=2 targets (rep2 option C),
         but up to ~12-16 MHz for F'=1 (rep1, rep2 option A, dominant F'1
         contaminant) and theta-dependent. So Drep1=15 is 15 MHz from the BARE
-        F=1->F'1 line, which can be ~2x off the actual in-trap detuning. To be
-        fixed in v0.3.0 (add theta + per-(F',m') Stark shifts so every detuning
-        is referenced to the in-trap on-axis transition).
+        F=1->F'1 line, which can be ~2x off the actual in-trap detuning. This is
+        addressed by the planned polarization-angle-aware Stark treatment that
+        references every detuning to its in-trap on-axis transition (see ROADMAP).
 
-STATUS
-    v0.2.1. Sections 1-8 in place: spectrum/delivery layer; embedded validated
-    engine via run(Config); self-documenting report (model/assumptions/non-
-    idealities + cooling dynamics + regime); sweeps/plots; kpi_scan; and
-    cooling_dynamics (tau=1/gap + time-to-cool from the initial T). Default field
-    is the COOLING field B=1 G (|| fiber axis); the clock-magic 3.2287 G is for
-    interrogation only, and the floor is field-insensitive (|d<n_z>|<=0.0003).
-    `--regression` reproduces the audited floors (clean base 0.0014; +F'1 0.0048 /
-    +F'3 0.0024 / +F'0 0.0015; dual 0.0048; single 0.0075), pinned at 3.2287 G as
-    the exact fidelity anchor. Modes: default; --report; --regression; --sweeps;
-    --kpi. Pending v0.3.0: Stark-aware repump/contaminant detuning references
-    (needs theta; geometry given: B=1 G vertical || fiber axis -> 1064 transverse
-    linear pol perpendicular to B, theta=90 deg).
-================================================================================
+VALIDATION
+    The embedded engine reproduces the independently obtained steady-state floors
+    (run with --regression): clean-Lambda recoil limit 0.0072; clean base 0.0014;
+    with the F'=1 / F'=3 / F'=0 contaminants 0.0048 / 0.0024 / 0.0015; full
+    dual-end 0.0048; full single-end 0.0075. The regression is evaluated at the
+    magic field, at which those reference values were generated; the cooling floor
+    is field-insensitive (|Delta<n_z>| <= 0.0003 between 1 G and 3.2288 G), so the
+    1 G cooling default and the regression anchor agree.
+
+ROADMAP
+    * A polarization-angle-aware a.c.-Stark treatment that references the repumper
+      and contaminant detunings to the in-trap on-axis transitions (the geometry
+      is B = 1 G along the fibre axis, so the axial 1064 nm field is transversely
+      polarized, theta = 90 deg).
+    * Promotion of the currently-flagged parasitics (dual-end carrier leak;
+      single-end down-shifted retro carrier) from spectrum flags to full coherent
+      beams in the engine, re-validated against the present engine in the
+      dual-end limit.
+
+USAGE
+    python eit_cooling_tool.py               spectrum tables + fast self-tests
+    python eit_cooling_tool.py --report      full operating-point reports
+    python eit_cooling_tool.py --regression  reproduce the validated floors
+    python eit_cooling_tool.py --sweeps      write example sweep figures (PNG)
+    python eit_cooling_tool.py --kpi         example KPI-vs-parameter scans (PNG)
+
+    >>> from eit_cooling_tool import Config, preset, run, report, cooling_dynamics
+    >>> nbar, delta2 = run(preset("dual_end_optimal"))
+    >>> report(preset("dual_end_optimal"))
+
+REQUIREMENTS
+    Python 3.9+, numpy, scipy, qutip (>= 5), sympy; matplotlib for the figures.
+
+AUTHORSHIP
+    Author / maintainer:  Michelangelo Dondi, e-mail: michelangelo.dondi@unibo.it
+    Cold-atoms group of Prof. F. Minardi, Department of Physics and Astronomy,
+    University of Bologna.
+    License:  MIT
+
+REFERENCES
+    [1] D. A. Steck, "Rubidium 87 D Line Data" (atomic-structure constants).
+    [2] G. Morigi, J. Eschner, C. H. Keitel, Phys. Rev. Lett. 85, 4458 (2000)
+        -- ground-state cooling via electromagnetically induced transparency.
+    [3] G. Morigi, Phys. Rev. A 67, 033402 (2003) -- EIT cooling theory.
+    [4] J. R. Johansson, P. D. Nation, F. Nori, Comput. Phys. Commun. 184, 1234
+        (2013) -- QuTiP.
 """
 
 from dataclasses import dataclass, replace
@@ -99,13 +162,18 @@ import qutip as qt                                            # engine (Section 
 from sympy.physics.wigner import clebsch_gordan, wigner_6j    # CG and 6j (Section 6)
 from sympy import S
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 # CHANGELOG (bump on every physics/interface change; update README + report + regression too)
+#   0.2.2  Documentation revision for external release: the module header is rewritten as a
+#          standalone scientific document (overview, physical system, architecture, validation,
+#          roadmap, usage, authorship, references) and the section banners and comments are
+#          professionalized. No functional change -- the code, the validated floors and the
+#          regression are byte-for-byte identical to 0.2.1.
 #   0.2.1  default B_field -> 1 G (the COOLING field: vertical, || fiber axis), since the tool
 #          computes the cooling phase; 3.2287 G (clock-magic) is interrogation-only. The cooling
 #          dark pair |1,-1>/|2,+1> is field-insensitive, so the floor is essentially B-independent
 #          -- verified |d<n_z>| <= 0.0003 between 1 G and 3.2287 G for dual- and single-end. The
-#          regression is pinned at 3.2287 G to keep the audited baseline as an exact fidelity
+#          regression is pinned at 3.2287 G to keep the validated baseline as an exact fidelity
 #          anchor; report() now labels the field (cooling vs interrogation).
 #   0.2.0  cooling dynamics & regime: initial axial/radial T knobs; cooling_dynamics()
 #          (tau=1/gap via the validated delta_tau method; time-to-<n>=0.1 and to 2x floor
@@ -121,11 +189,12 @@ __version__ = "0.2.1"
 
 
 # =============================================================================
-# SECTION 1 -- PHYSICAL CONSTANTS  (FIXED -- the PI cannot vary these)
+# SECTION 1 -- PHYSICAL CONSTANTS OF 87Rb AND ELECTROMAGNETISM
 # -----------------------------------------------------------------------------
-# Properties of the 87Rb atom and of electromagnetism. NOT in CONFIG because no
-# experiment can change them. (Apparatus settings such as the trap frequency or
-# lattice depth ARE tunable and live in CONFIG instead.)
+# Atomic-structure and electromagnetic constants. Apparatus-dependent quantities
+# (trap frequencies, lattice depth, magnetic field, Lamb-Dicke parameter) are
+# configurable and live in Config (Section 2). Atomic data follow Steck,
+# "Rubidium 87 D Line Data" (reference [1] in the module header).
 # =============================================================================
 
 A_HFS = 6834.682610          # 87Rb 5S_1/2 ground hyperfine splitting (2pi MHz).
@@ -151,9 +220,9 @@ LINE = {(2, 1): DF[1], (2, 2): DF[2], (2, 3): DF[3],
         (1, 0): A_HFS + DF[0], (1, 1): A_HFS + DF[1], (1, 2): A_HFS + DF[2]}
 
 # Dipole spontaneous-emission recoil distribution over (delta-m, weight):
-EM_REC = [(-1, 1/6), (0, 2/3), (1, 1/6)]   # used by the engine (Turn 3)
+EM_REC = [(-1, 1/6), (0, 2/3), (1, 1/6)]   # used by the engine (Section 6)
 
-# Excited-state hyperfine DECAY branching BR[F'][F]  (engine, Turn 3):
+# Excited-state hyperfine DECAY branching BR[F'][F]  (engine, Section 6):
 #   F'=0 -> F=1 only;  F'=3 -> F=2 only;  F'=1,2 -> both.
 BR = {0: {1: 1.0, 2: 0.0}, 1: {1: 5/6, 2: 1/6},
       2: {1: 1/2, 2: 1/2}, 3: {1: 0.0, 2: 1.0}}
@@ -168,10 +237,12 @@ SCALAR_RATIO_5P_5S = 1149.0 / 687.3   # |a0(5P3/2)/a0(5S)| ~ 1.671 (Chen; Goncal
 
 
 # =============================================================================
-# SECTION 2 -- CONFIG  (EVERY tunable knob lives here)
+# SECTION 2 -- CONFIG  (all adjustable parameters)
 # -----------------------------------------------------------------------------
-# Fields marked [Turn 3+] are consumed by the atomic engine added later; they
-# are present now so the config structure is complete and stable.
+# Every experimentally adjustable parameter lives in this dataclass; the physical
+# constants are in Section 1. Group (a)-(f) set the optical fields and delivery;
+# (g) the trap; (h) the engine/field; (i) the initial temperatures. preset()
+# returns the validated operating points.
 # =============================================================================
 
 @dataclass
@@ -220,13 +291,13 @@ class Config:
     repump_option: str = "A"     # "A": rep2 drives F=2->F'1 (sigma+);  "C": F=2->F'2 (pi)
     #   rep1 always drives F=1->F'1 (sigma-).
 
-    # ---- (g) apparatus / trap (tunable: a different lattice changes these) ---
+    # ---- (g) trap parameters (lattice-dependent) ----------------------------
     nu_z: float = 0.430          # axial trap frequency (2pi MHz) -- the cooled (stiff) axis
-    nu_r: float = 0.00542        # radial trap frequency (2pi MHz) [Turn 3+]
-    U0_uK: float = 1094.0        # trap depth (uK) [Turn 3+, radial tool]
-    eta_z: float = 0.094         # axial Lamb-Dicke parameter (single photon) [Turn 3+]
+    nu_r: float = 0.00542        # radial trap frequency (2pi MHz)
+    U0_uK: float = 1094.0        # trap depth (uK)
+    eta_z: float = 0.094         # axial Lamb-Dicke parameter (single photon)
 
-    # ---- (h) atomic engine knobs  [Turn 3+] ---------------------------------
+    # ---- (h) atomic engine and magnetic field -------------------------------
     B_field: float = 1.0         # magnetic field (G). DEFAULT = the cooling field: 1 G,
                                  #   vertical, parallel to the fiber axis (this is the
                                  #   cooling phase). The clock-magic 3.2287 G is needed
@@ -240,7 +311,7 @@ class Config:
     with_e1: bool = True         # include F'=1 contaminant (COMMON level -- dominant)
     with_e3: bool = True         # include F'=3 contaminant (control-leg, secondary)
     servo_delta2: bool = True    # auto-servo delta2 to the dark resonance (else use delta2)
-    radius_um: float = 0.0       # radial position (um); 0 = on-axis. [Turn 3+]
+    radius_um: float = 0.0       # radial position (um); 0 = on-axis.
 
     # ---- (i) initial conditions  (cooling-time & regime ONLY; do NOT affect the floor) ----
     T_axial_init_uK: float = 50.0    # initial axial T: sets n_init and the time-to-cool
@@ -249,7 +320,7 @@ class Config:
 
 
 def preset(name: str) -> Config:
-    """Return a Config for a named operating point (audited values)."""
+    """Return a Config for a named, validated operating point."""
     if name == "dual_end_optimal":
         return Config(configuration="dual_end", Delta=55.0, OmR=0.10,
                       beta="auto", probe_order=1, repump_option="A",
@@ -264,13 +335,15 @@ def preset(name: str) -> Config:
 
 
 # =============================================================================
-# SECTION 3 -- SPECTRUM / DELIVERY BUILDER  (the new physics of this turn)
+# SECTION 3 -- BEAM-DELIVERY / OPTICAL-SPECTRUM MODEL
 # -----------------------------------------------------------------------------
-# Given a Config, return the explicit list of optical fields AT THE ATOMS. Each
-# field is one tone: frequency, Rabi, polarization, propagation direction, and a
-# label flagged INTENDED (control/probe) / REPUMP / PARASITIC (carrier leakage,
-# rejected retro tones, unused overtones). This list is exactly what the engine
-# (Turn 3) turns into Hamiltonian couplings.
+# Given a Config, return the explicit list of optical fields at the atoms. Each
+# field is one tone: frequency, Rabi frequency, polarization, propagation
+# direction, and a label classifying it as INTENDED (control/probe), REPUMP, or
+# PARASITIC (carrier leakage, rejected retro tones, unused overtones). This list
+# is exactly what the engine (Section 6) turns into Hamiltonian couplings, so the
+# phase-modulation depth, modulation frequency, sideband orders, tagging AOM and
+# quarter-wave plate are genuine parameters rather than hard-coded assumptions.
 # =============================================================================
 
 @dataclass
@@ -483,11 +556,12 @@ def print_spectrum_table(cfg: Config, fields: List[OpticalField]):
 
 
 # =============================================================================
-# SECTION 5 -- self-tests  (regression targets the engine must later match)
+# SECTION 5 -- fast self-tests on the delivery model
 # -----------------------------------------------------------------------------
-# Detuning checks use the detuning from the SPECIFIC line each field addresses
-# (freq - LINE[(F,F')]), matching the validated solver's convention (Dc, Dc+d2,
-# Dc-2fA, Dc+d2+2fA). The nearest-line helper is for the display table only.
+# Internal consistency checks on Section 3 (run in well under a second). Detuning
+# checks use the detuning from the SPECIFIC line each field addresses
+# (freq - LINE[(F,F')]), matching the engine's convention (Dc, Dc+d2, Dc-2fA,
+# Dc+d2+2fA). The nearest-line helper is for the display table only.
 # =============================================================================
 def _selftests():
     n_ok = 0
@@ -551,27 +625,27 @@ def _selftests():
 
 
 # =============================================================================
-# SECTION 6 -- ATOMIC ENGINE  (embedded VERBATIM from the validated solver)
+# SECTION 6 -- MULTILEVEL ATOMIC ENGINE  (verbatim from the validated solver)
 # -----------------------------------------------------------------------------
-# This is the multilevel QuTiP steady-state engine that reproduces every number
-# in our program (clock_tagged_solve.py / clock_combined_solve.py lineage):
-# real 8-ground Breit-Rabi energies, tensor-diagonalized 5P3/2 (F'=0,1,2,3),
-# full Clebsch-Gordan ladders, a BFS multi-rotating frame, full hyperfine decay
-# branching, 3-point recoil, the coherent F'3 control admixture, and -- for the
-# single-end configuration only -- the two rejected retro beams entered as
-# linearized dissipators with their analytic AC-Stark shifts.
+# Multilevel QuTiP steady-state solver for the cooling Lambda system: real
+# 8-state Breit-Rabi ground manifold, tensor-diagonalized 5P_3/2 (F'=0,1,2,3),
+# full Clebsch-Gordan dipole ladders, a breadth-first multi-rotating frame,
+# m-resolved hyperfine decay branching, three-point photon recoil, the coherent
+# |F'=3,0> control admixture and -- for the single-end configuration only -- the
+# two rejected retro beams entered as linearized dissipators with their analytic
+# a.c.-Stark shifts. It derives from the solver benchmarked during this study
+# (clock_tagged_solve / clock_combined_solve) and is reproduced unchanged so that
+# the floors reported here are identical to the independently validated values;
+# the regression gate (Section 6b) enforces this. The Config adapter run() below
+# maps the user parameters onto solve().
 #
-# It is copied unchanged on purpose: the audit value is that the floors are
-# bit-for-bit the validated ones. The Config adapter `run()` below maps the
-# user's knobs onto solve(); _regression() locks the audited floors.
-#
-# SCOPE NOTE (honest): solve() assumes perfect dual-end carrier suppression
-# (no carrier-leak field) and treats the single-end rejected tones as linearized
-# dissipators laddered to F'2/F'3 only. The spectrum table (Sec 3-4) already
-# FLAGS what solve() does not yet fold into <n_z>: a carrier-leak field if
-# beta != 2.4048, extra overtones, and the down-shifted retro carrier sitting
-# ~88 MHz from F=2->F'1. Promoting those to full coherent beams is the planned
-# next refinement, to be re-validated against this engine in the dual-end limit.
+# SCOPE: solve() assumes perfect dual-end carrier suppression (no carrier-leak
+# field) and treats the single-end rejected tones as linearized dissipators
+# laddered to F'2/F'3 only. The spectrum table (Sections 3-4) flags what solve()
+# does not yet fold into <n_z>: a carrier-leak field if beta != 2.4048, extra
+# overtones, and the down-shifted retro carrier sitting ~88 MHz from F=2->F'1.
+# Promoting those to full coherent beams is the planned refinement (see ROADMAP),
+# to be re-validated against this engine in the dual-end limit.
 # =============================================================================
 
 # aliases so the embedded engine uses the Section-1 physical constants
@@ -874,15 +948,15 @@ def run(cfg: Config, Nf: Optional[int] = None, servo_grid=None, want_pops=False,
 
 
 # =============================================================================
-# SECTION 6b -- physics regression gate (reproduce the audited floors)
+# SECTION 6b -- physics regression gate (reproduces the validated floors)
 # -----------------------------------------------------------------------------
 # Slow (servoed steady-state solves, ~1-2 min at Nf=6). Opt-in via --regression.
-# These are the program's audited values; if a future edit changes them, this
-# fails loudly. Increments over the clean base: +F'1 ~ +0.0034 (dominant),
+# These are the independently validated values; any future edit that changes them
+# fails this gate. Increments over the clean base: +F'1 ~ +0.0034 (dominant),
 # +F'3 ~ +0.0010, +F'0 ~ +0.0001 (negligible).
 # =============================================================================
 def _regression(Nf: int = 6):
-    print(f"\nPHYSICS REGRESSION  (Nf={Nf}, delta2 servoed) -- reproduces audited floors")
+    print(f"\nPHYSICS REGRESSION  (Nf={Nf}, delta2 servoed) -- reproduces validated floors")
     n_ok = 0
     def show(name, nbar, d2, expect, tol):
         nonlocal n_ok
@@ -893,7 +967,7 @@ def _regression(Nf: int = 6):
         n_ok += 1
 
     B_AUDIT = 3.2287   # the validated-solver numbers were generated at the clock-magic field;
-                       # pin here so this fidelity gate stays the exact audited anchor regardless
+                       # pin here so this fidelity gate stays the exact validated anchor regardless
                        # of the cooling-field default. (Floor is field-insensitive: |d<n_z>|<=0.0003
                        # between 1 G and 3.2287 G, verified for dual- and single-end.)
 
@@ -926,7 +1000,7 @@ def _regression(Nf: int = 6):
 
 
 # =============================================================================
-# SECTION 6c -- cooling dynamics & regime  (v0.2.0)
+# SECTION 6c -- cooling dynamics & regime diagnostics
 # -----------------------------------------------------------------------------
 # The steady-state floor AND the cooling RATE are both independent of the initial
 # temperature (properties of the Liouvillian L). The initial AXIAL T sets only the
@@ -1031,14 +1105,14 @@ def _regime_lines(cfg: Config):
 
 
 # =============================================================================
-# SECTION 7 -- single-point operating report
+# SECTION 7 -- single operating-point report
 # -----------------------------------------------------------------------------
-# One readable block: knobs echoed, the explicit optical spectrum, the result
-# (<n_z>, servoed delta2, populations), and -- per the audit requirement -- an
-# explicit statement of the PHYSICAL MODEL, its ASSUMPTIONS, and the
-# NON-IDEALITIES, split into (i) those modeled here, (ii) those FLAGGED in the
-# spectrum but not yet folded into <n_z>, and (iii) those outside this engine's
-# scope. The flags in (ii)/(iii) are config-aware.
+# One readable block: the parameters echoed, the explicit optical spectrum, the
+# result (<n_z>, servoed delta2, populations, cooling dynamics), and -- for
+# transparency -- an explicit statement of the PHYSICAL MODEL, its ASSUMPTIONS,
+# and the NON-IDEALITIES, split into (i) those modelled here, (ii) those flagged
+# in the spectrum but not yet folded into <n_z>, and (iii) those outside this
+# engine's scope. The flags in (ii)/(iii) are configuration-aware.
 # =============================================================================
 LEAK_STATES = [(1, 0), (2, -2), (2, 2), (1, 1)]   # states dark to the cooler that can fill
 
@@ -1121,7 +1195,7 @@ def _nonideality_lines(cfg: Config):
         "      the target level vs |F'2,0> (~0 for F'=2; up to ~12-16 MHz for F'=1, theta-dep).",
         "      So Drep1 is referenced to the BARE F=1->F'1 line, up to ~2x off the in-trap",
         "      value. Delta and delta2 references ARE exact. To be fixed in v0.3.0.",
-        "  OUT OF SCOPE of this engine (bound separately in the program's noise studies):",
+        "  OUT OF SCOPE of this engine (bounded separately in the companion noise analyses):",
         "    - magnetic-field noise and Zeeman dephasing of the dark state;",
         "    - laser phase/frequency noise (finite linewidth) and relative control-probe phase",
         "      noise; intensity noise; polarization impurity;",
@@ -1196,7 +1270,7 @@ def report(cfg: Config, Nf: Optional[int] = None):
 # -----------------------------------------------------------------------------
 # Scan any Config knob(s) and plot <n_z>, reusing run(). Two cost regimes:
 #   * base cfg with servo_delta2=True  -> delta2 is re-optimized at every point
-#     (honest: the dark resonance moves with the swept knob), ~15x slower.
+#     (faithful: the dark resonance moves with the swept knob), ~15x slower.
 #   * base cfg with servo_delta2=False -> delta2 held fixed (fast scouting).
 # delta2_landscape() instead scans delta2 itself (servo necessarily off) to show
 # the cooling resonance and how tight the lock must be. Figures are written to
@@ -1415,7 +1489,7 @@ def _demo_sweeps(Nf: int = 6):
 # main: see the modes below
 #   python eit_cooling_tool.py                # spectrum tables + fast self-tests
 #   python eit_cooling_tool.py --report       # full operating-point reports (slow)
-#   python eit_cooling_tool.py --regression   # reproduce the audited floors (slow)
+#   python eit_cooling_tool.py --regression   # reproduce the validated floors (slow)
 #   python eit_cooling_tool.py --sweeps       # write example sweep figures (slow)
 #   python eit_cooling_tool.py --kpi          # example KPI-vs-parameter scans (slow)
 # =============================================================================

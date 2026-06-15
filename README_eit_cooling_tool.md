@@ -1,6 +1,6 @@
 # EIT Cooling Tool — `eit_cooling_tool.py`
 
-**Version 0.2.1.** A single, self-contained Python file to **audit and explore** clock-EIT
+**Version 0.2.2.** A single, self-contained Python file to **audit and explore** clock-EIT
 ground-state sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
 Given a `Config` of every experimental knob, it returns the steady-state axial mean phonon
 number ⟨n_z⟩ from a multilevel QuTiP engine, the **cooling dynamics** (rate and time-to-cool from
