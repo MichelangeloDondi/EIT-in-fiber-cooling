@@ -71,19 +71,22 @@ DETUNING REFERENCE  (subtle with the 1064 nm trap -- read before trusting a numb
         but up to ~12-16 MHz for F'=1 (rep1, rep2 option A, dominant F'1
         contaminant) and theta-dependent. So Drep1=15 is 15 MHz from the BARE
         F=1->F'1 line, which can be ~2x off the actual in-trap detuning. To be
-        fixed in v0.2.0 (add theta + per-(F',m') Stark shifts so every detuning
+        fixed in v0.3.0 (add theta + per-(F',m') Stark shifts so every detuning
         is referenced to the in-trap on-axis transition).
 
 STATUS
-    v0.2.0. Sections 1-8 in place: spectrum/delivery layer; embedded validated
+    v0.2.1. Sections 1-8 in place: spectrum/delivery layer; embedded validated
     engine via run(Config); self-documenting report (model/assumptions/non-
     idealities + cooling dynamics + regime); sweeps/plots; kpi_scan; and
-    cooling_dynamics (tau=1/gap + time-to-cool from the initial T). `--regression`
-    reproduces the audited floors (clean base 0.0014; +F'1 0.0048 / +F'3 0.0024 /
-    +F'0 0.0015; dual 0.0048; single 0.0075). Modes: default; --report;
-    --regression; --sweeps; --kpi. Pending v0.3.0: Stark-aware repump/contaminant
-    detuning references (needs theta; geometry given: B=1 G vertical || fiber axis
-    -> 1064 transverse linear pol perpendicular to B, theta=90 deg).
+    cooling_dynamics (tau=1/gap + time-to-cool from the initial T). Default field
+    is the COOLING field B=1 G (|| fiber axis); the clock-magic 3.2287 G is for
+    interrogation only, and the floor is field-insensitive (|d<n_z>|<=0.0003).
+    `--regression` reproduces the audited floors (clean base 0.0014; +F'1 0.0048 /
+    +F'3 0.0024 / +F'0 0.0015; dual 0.0048; single 0.0075), pinned at 3.2287 G as
+    the exact fidelity anchor. Modes: default; --report; --regression; --sweeps;
+    --kpi. Pending v0.3.0: Stark-aware repump/contaminant detuning references
+    (needs theta; geometry given: B=1 G vertical || fiber axis -> 1064 transverse
+    linear pol perpendicular to B, theta=90 deg).
 ================================================================================
 """
 
@@ -96,8 +99,14 @@ import qutip as qt                                            # engine (Section 
 from sympy.physics.wigner import clebsch_gordan, wigner_6j    # CG and 6j (Section 6)
 from sympy import S
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 # CHANGELOG (bump on every physics/interface change; update README + report + regression too)
+#   0.2.1  default B_field -> 1 G (the COOLING field: vertical, || fiber axis), since the tool
+#          computes the cooling phase; 3.2287 G (clock-magic) is interrogation-only. The cooling
+#          dark pair |1,-1>/|2,+1> is field-insensitive, so the floor is essentially B-independent
+#          -- verified |d<n_z>| <= 0.0003 between 1 G and 3.2287 G for dual- and single-end. The
+#          regression is pinned at 3.2287 G to keep the audited baseline as an exact fidelity
+#          anchor; report() now labels the field (cooling vs interrogation).
 #   0.2.0  cooling dynamics & regime: initial axial/radial T knobs; cooling_dynamics()
 #          (tau=1/gap via the validated delta_tau method; time-to-<n>=0.1 and to 2x floor
 #          from T_axial_init); regime block in report() (Lamb-Dicke, EIT sideband
@@ -218,8 +227,14 @@ class Config:
     eta_z: float = 0.094         # axial Lamb-Dicke parameter (single photon) [Turn 3+]
 
     # ---- (h) atomic engine knobs  [Turn 3+] ---------------------------------
-    B_field: float = 3.2287      # magnetic field (G). Cooling works at any field; 3.229 G
-                                 #   is clock-magic (only needed for interrogation).
+    B_field: float = 1.0         # magnetic field (G). DEFAULT = the cooling field: 1 G,
+                                 #   vertical, parallel to the fiber axis (this is the
+                                 #   cooling phase). The clock-magic 3.2287 G is needed
+                                 #   ONLY for clock interrogation, a separate phase. The
+                                 #   cooling dark pair |1,-1>/|2,+1> is field-insensitive
+                                 #   (both g_F m_F = +1/2), so the floor is essentially
+                                 #   B-independent: verified |d<n_z>| <= 0.0003 between
+                                 #   1 G and 3.2287 G for both dual- and single-end.
     N_f: int = 6                 # axial Fock-space truncation
     with_e0: bool = True         # include 5P3/2 F'=0 contaminant (probe-leg, negligible)
     with_e1: bool = True         # include F'=1 contaminant (COMMON level -- dominant)
@@ -877,29 +892,34 @@ def _regression(Nf: int = 6):
         assert ok, f"{name}: got {nbar:.4f}, expected {expect:.4f}+-{tol:.4f}"
         n_ok += 1
 
+    B_AUDIT = 3.2287   # the validated-solver numbers were generated at the clock-magic field;
+                       # pin here so this fidelity gate stays the exact audited anchor regardless
+                       # of the cooling-field default. (Floor is field-insensitive: |d<n_z>|<=0.0003
+                       # between 1 G and 3.2287 G, verified for dual- and single-end.)
+
     def contam_off(c):
-        c.with_e1 = c.with_e0 = c.with_e3 = False; return c
+        c.with_e1 = c.with_e0 = c.with_e3 = False; c.B_field = B_AUDIT; c.N_f = Nf; return c
 
     # historical recoil-limit gate: clean Lambda at OmR=0.25
     c = Config(configuration="clean_lambda", Delta=80.0, OmR=0.25,
-               servo_delta2=False, delta2=0.0, N_f=Nf)
+               servo_delta2=False, delta2=0.0, N_f=Nf, B_field=B_AUDIT)
     show("G0 clean-Lambda recoil (OmR.25)", run(c)[0], 0.0, 0.0072, 0.0012)
 
     # clean base (contaminants OFF), optimized repump
-    c = contam_off(preset("dual_end_optimal")); c.N_f = Nf
+    c = contam_off(preset("dual_end_optimal"))
     nb, d = run(c); show("clean base (contaminants off)", nb, d, 0.0014, 0.0005)
 
     # contaminant budget -- each contaminant toggled alone on the clean base
     for tag, flag, exp in [("budget +F'1 (dominant)", "with_e1", 0.0048),
                            ("budget +F'3 (control-leg)", "with_e3", 0.0024),
                            ("budget +F'0 (negligible)", "with_e0", 0.0015)]:
-        c = contam_off(preset("dual_end_optimal")); setattr(c, flag, True); c.N_f = Nf
+        c = contam_off(preset("dual_end_optimal")); setattr(c, flag, True)
         nb, d = run(c); show(tag, nb, d, exp, 0.0006)
 
     # full configurations
-    c = preset("dual_end_optimal"); c.N_f = Nf
+    c = preset("dual_end_optimal"); c.N_f = Nf; c.B_field = B_AUDIT
     nb, d = run(c); show("dual-end full (preferred)", nb, d, 0.0048, 0.0007)
-    c = preset("single_end_tagged"); c.N_f = Nf
+    c = preset("single_end_tagged"); c.N_f = Nf; c.B_field = B_AUDIT
     nb, d = run(c); show("single-end tagged full", nb, d, 0.0075, 0.0009)
 
     print(f"\n  {n_ok}/{n_ok} regression checks passed.")
@@ -1100,7 +1120,7 @@ def _nonideality_lines(cfg: Config):
         "    - repump/contaminant detunings omit the differential tensor 1064 Stark shift of",
         "      the target level vs |F'2,0> (~0 for F'=2; up to ~12-16 MHz for F'=1, theta-dep).",
         "      So Drep1 is referenced to the BARE F=1->F'1 line, up to ~2x off the in-trap",
-        "      value. Delta and delta2 references ARE exact. To be fixed in v0.2.0.",
+        "      value. Delta and delta2 references ARE exact. To be fixed in v0.3.0.",
         "  OUT OF SCOPE of this engine (bound separately in the program's noise studies):",
         "    - magnetic-field noise and Zeeman dephasing of the dark state;",
         "    - laser phase/frequency noise (finite linewidth) and relative control-probe phase",
@@ -1123,7 +1143,10 @@ def report(cfg: Config, Nf: Optional[int] = None):
     print(f" OPERATING POINT REPORT  --  configuration: {cfg.configuration}")
     print("=" * 96)
     print("KNOBS")
-    print(f"  Delta={cfg.Delta:g}  OmR={cfg.OmR:g}  B={cfg.B_field:g} G  Nf={Nf}  "
+    _btag = ("cooling field" if cfg.B_field < 2.0
+             else "clock-magic interrogation field" if abs(cfg.B_field - 3.2288) < 0.05
+             else "non-standard field")
+    print(f"  Delta={cfg.Delta:g}  OmR={cfg.OmR:g}  B={cfg.B_field:g} G ({_btag})  Nf={Nf}  "
           f"repump={cfg.repump_option} (Om_rep={cfg.Omega_rep:g}, Drep1={cfg.Drep1:g}, "
           f"Drep2={cfg.Drep2:g})")
     if cfg.configuration == "single_end_tagged":

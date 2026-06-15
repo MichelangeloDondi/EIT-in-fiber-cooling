@@ -1,6 +1,6 @@
 # EIT Cooling Tool — `eit_cooling_tool.py`
 
-**Version 0.2.0.** A single, self-contained Python file to **audit and explore** clock-EIT
+**Version 0.2.1.** A single, self-contained Python file to **audit and explore** clock-EIT
 ground-state sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
 Given a `Config` of every experimental knob, it returns the steady-state axial mean phonon
 number ⟨n_z⟩ from a multilevel QuTiP engine, the **cooling dynamics** (rate and time-to-cool from
@@ -73,7 +73,7 @@ All in `2π·MHz` (trap frequencies too: `nu_z=0.430` means 2π·430 kHz). Detun
 
 **(g) apparatus / trap** (tunable — a different lattice changes these) — `nu_z` (0.430); `nu_r` (0.00542); `U0_uK` (1094); `eta_z` (axial Lamb-Dicke, 0.094).
 
-**(h) engine** — `B_field` (G; cooling works at any field, 3.2287 G is clock-magic, default); `N_f` (Fock truncation, 6); `with_e0`/`with_e1`/`with_e3` (include the F′=0/1/3 contaminants, all `True`); `servo_delta2` (auto-optimize δ₂, `True`); `radius_um` (on-axis = 0).
+**(h) engine** — `B_field` (G; **default = 1 G, the cooling field — vertical, ∥ fiber axis**; the clock-magic 3.2287 G is needed only for clock *interrogation*. The cooling dark pair |1,−1⟩/|2,+1⟩ is field-insensitive, so the floor is essentially B-independent: **verified |Δ⟨n_z⟩| ≤ 0.0003** between 1 G and 3.2287 G for both delivery modes); `N_f` (Fock truncation, 6); `with_e0`/`with_e1`/`with_e3` (include the F′=0/1/3 contaminants, all `True`); `servo_delta2` (auto-optimize δ₂, `True`); `radius_um` (on-axis = 0).
 
 **(i) initial conditions** (cooling-time & regime **only** — they do **not** affect the floor) — `T_axial_init_uK` (initial axial T; sets `n_init` and the time-to-cool, default 50); `T_radial_init_uK` (initial radial T; regime/inhomogeneity only — radial motion is decoupled from the axial cooling rate, default 100).
 
@@ -169,7 +169,9 @@ radially trapped with a ~5.6 MHz cloud Δ_eff spread). Cooling slows monotonical
 
 Contaminant increments over the clean base are non-additive; F′1 dominates. The Δ floor is flat
 across 45–80 (with F′1 on) and rises monotonically with OmR (the weaker-probe lever) — both
-reproducible with `--sweeps`.
+reproducible with `--sweeps`. The regression is **pinned at B=3.2287 G** (the clock-magic field at
+which the validated-solver numbers were generated) so it stays an exact fidelity anchor; this is
+independent of the 1 G cooling-field default, since the floor is field-insensitive (|Δ⟨n_z⟩|≤0.0003).
 
 ---
 
