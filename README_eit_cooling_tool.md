@@ -1,6 +1,6 @@
 # EIT Cooling Tool — `eit_cooling_tool.py`
 
-**Version 0.2.2.** A single, self-contained Python file to **audit and explore** clock-EIT
+**Version 0.2.3.** A single, self-contained Python file to **audit and explore** clock-EIT
 ground-state sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
 Given a `Config` of every experimental knob, it returns the steady-state axial mean phonon
 number ⟨n_z⟩ from a multilevel QuTiP engine, the **cooling dynamics** (rate and time-to-cool from
@@ -135,13 +135,18 @@ The steady-state floor **and** the cooling **rate** are properties of the Liouvi
 **independent of the initial temperature**. The initial temperature enters only two places, which
 `--report` now prints and `cooling_dynamics(cfg)` returns:
 
-- **Cooling rate / time.** `W` = the slowest motional-relaxation eigenmode of L — the asymptotic
-  rate governing the approach to the floor. (This refines `delta_tau.py`'s max-motional-content
-  pick, which is ambiguous because ⟨n⟩-relaxation is spread over several eigenmodes; the slowest
-  one with motional character is what survives at long times.) `tau_1e = 1/W`. The initial **axial**
-  T sets `n_init`, and the **time-to-⟨n_z⟩=0.1** and **time-to-2×floor** follow from the
-  Lamb-Dicke-exponential estimate `n(t)=n_ss+(n_init−n_ss)·exp(−Wt)` — time-to-0.1 is an **upper
-  bound** (real multi-exponential cooling is faster while the atom is still hot).
+- **Cooling rate / time.** `W` is the **asymptotic** axial-cooling rate: the slowest relaxation
+  eigenmode of the Liouvillian L that carries motional content, i.e. the rate that governs the
+  final approach to the floor. It is obtained from a deterministic, ghost-free shift-invert
+  eigensolve (a small off-zero shift avoids the Liouvillian's singular steady-state eigenvalue; a
+  fixed start vector makes it reproducible run-to-run) and is k-converged. `tau_1e = 1/W`. The
+  initial **axial** T sets `n_init`, and the **time-to-⟨n_z⟩=0.1** and **time-to-2×floor** follow
+  from the Lamb-Dicke-exponential estimate `n(t)=n_ss+(n_init−n_ss)·exp(−Wt)` — time-to-0.1 is an
+  **upper bound** (real multi-exponential cooling is faster while the atom is still hot). Reducing
+  multi-exponential cooling to a single rate is a modelling choice: this **slowest-motional**
+  (asymptotic) definition can differ from a **dominant-mode** (maximum-motional-content) definition
+  when the motional weight is spread over several modes; at the optimised operating point the two
+  nearly coincide.
 - **Regime / validity.** Whether the *start* sits where this steady-state picture holds: Lamb-Dicke
   `η·√(2n_init+1) ≪ 1`; EIT sideband resolution `Δ/Γ` (feature width `Γ·ν_z/Δ` vs ν_z); the EIT
   bright-peak tuning `Ω_tot` vs `√(4Δν_z)`; `n_init` vs `N_f`; and, from the **radial** T, whether

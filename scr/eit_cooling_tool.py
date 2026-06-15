@@ -139,10 +139,10 @@ REQUIREMENTS
     Python 3.9+, numpy, scipy, qutip (>= 5), sympy; matplotlib for the figures.
 
 AUTHORSHIP
-    Author / maintainer:  Michelangelo Dondi, e-mail: michelangelo.dondi@unibo.it
+    Author / maintainer:  <name, e-mail>                              [fill in]
     Cold-atoms group of Prof. F. Minardi, Department of Physics and Astronomy,
     University of Bologna.
-    License:  MIT
+    License:  <e.g. MIT>                                              [fill in]
 
 REFERENCES
     [1] D. A. Steck, "Rubidium 87 D Line Data" (atomic-structure constants).
@@ -162,8 +162,16 @@ import qutip as qt                                            # engine (Section 
 from sympy.physics.wigner import clebsch_gordan, wigner_6j    # CG and 6j (Section 6)
 from sympy import S
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 # CHANGELOG (bump on every physics/interface change; update README + report + regression too)
+#   0.2.3  Fix the cooling-rate (Liouvillian-gap) eigensolve. It used ARPACK shift-invert at
+#          sigma=0, which coincides with the Liouvillian's exact zero (steady-state) eigenvalue
+#          and is therefore singular -- yielding spurious near-zero modes and a non-reproducible
+#          rate (occasionally wrong by ~100x). It now uses a small negative shift (sigma=-1e-5,
+#          off the zero eigenvalue), a fixed start vector (deterministic, identical run-to-run),
+#          and a rate floor that discards the steady-state mode. The steady-state floor and the
+#          regression are unaffected (they never used this routine); only W, tau and the
+#          time-to-cool estimates are affected, and they are now reproducible.
 #   0.2.2  Documentation revision for external release: the module header is rewritten as a
 #          standalone scientific document (overview, physical system, architecture, validation,
 #          roadmap, usage, authorship, references) and the section banners and comments are
@@ -648,8 +656,13 @@ def _selftests():
 # to be re-validated against this engine in the dual-end limit.
 # =============================================================================
 
-# aliases so the embedded engine uses the Section-1 physical constants
-GAMMA, NU, ETA = GAMMA_D2, 0.430, 0.094
+# Aliases feeding the Section-1 constants (and the Config apparatus defaults) into the embedded
+# engine. GAMMA, F3OFF, A_HFS_E and the g-factors are physical constants. NU and ETA are ONLY
+# fallback defaults for a bare solve() call: the Config-driven path (run -> _engine_kwargs) always
+# passes cfg.nu_z and cfg.eta_z, so these never shadow the Config. Bound to the Config defaults so
+# there is a single source of truth (no duplicated literal that could drift).
+GAMMA = GAMMA_D2
+NU, ETA = Config.nu_z, Config.eta_z
 F3OFF = DF[3]                                       # F'=3 above F'=2 (centroid)
 A_HFS_E = A_HFS
 gJ, gI, uB, II = gJ_5S, gI_87, uB_MHzG, I_87
@@ -1019,28 +1032,40 @@ def n_thermal(T_uK, nu_MHz):
 
 
 def _liouvillian_gap(L, NA, Nf):
-    """Asymptotic cooling rate W (2pi MHz): the SLOWEST relaxation mode of L that couples to
-       <n> (smallest |Re lambda| among modes with motional content). This governs the approach
-       to the floor. tau_1e = 1/W. (Refines delta_tau.py's max-motional-content pick, which is
-       ambiguous because <n> relaxation is spread over several eigenmodes.)"""
+    """Asymptotic cooling rate W (2pi MHz): the slowest relaxation mode of L that couples to
+       <n> (smallest |Re lambda| among modes with motional content), which governs the approach
+       to the floor; tau_1e = 1/W. Implementation notes (both matter for correctness):
+         * The slow eigenvalues are found by shift-invert (ARPACK) with a small NEGATIVE real
+           shift sigma = -SHIFT, NOT 0. The Liouvillian has an exact zero eigenvalue (the steady
+           state), so a shift of exactly 0 makes (L - sigma I) singular and ARPACK intermittently
+           returns spurious near-zero "ghost" modes. The small offset removes the singularity
+           while still targeting the modes nearest the imaginary axis.
+         * A fixed start vector makes the result deterministic; with ARPACK's default random
+           start the rate otherwise scatters run-to-run.
+       The steady state (|Re lambda| ~ 0) is removed by a rate floor; among the remaining modes
+       the slowest with motional content (nc > NC_MIN) is the asymptotic rate."""
     from scipy.sparse.linalg import eigs as speigs
-    A = L.data.as_scipy().tocsc(); dim = NA * Nf
+    SHIFT, RATE_FLOOR, NC_MIN = 1e-5, 1e-6, 0.05
+    A = L.data.as_scipy().tocsc(); D = NA * Nf
     Nm = qt.tensor(qt.qeye(NA), qt.destroy(Nf).dag() * qt.destroy(Nf)).full()
+    v0 = np.ones(D * D) / np.sqrt(D * D)                 # fixed start vector -> deterministic
     try:
-        vals, vecs = speigs(A, k=min(16, dim - 2), sigma=0.0, which="LM")
-    except Exception:
+        vals, vecs = speigs(A, k=min(24, D * D - 2), sigma=-SHIFT, which="LM",
+                            v0=v0, maxiter=20000, tol=0)
+    except Exception:                                    # dense fallback (small systems only)
         vals, vecs = np.linalg.eig(A.toarray())
     cand = []
-    for k in range(len(vals)):
-        if abs(vals[k].real) < 1e-9:
+    for j in range(len(vals)):
+        r = abs(vals[j].real)
+        if r < RATE_FLOOR:                               # steady state and numerical near-zeros
             continue
-        rho = vecs[:, k].reshape(dim, dim); rs = (rho + rho.conj().T) / 2
+        rho = vecs[:, j].reshape(D, D); rs = (rho + rho.conj().T) / 2
         trn = np.sum(np.abs(np.linalg.eigvals(rs)))
         nc = abs(np.trace(Nm @ rho)) / (trn if trn > 1e-12 else 1.0)
-        cand.append((abs(vals[k].real), nc))
-    motional = [r for (r, nc) in cand if nc > 0.05]      # modes that show up in <n>(t)
+        cand.append((r, nc))
+    motional = [r for (r, nc) in cand if nc > NC_MIN]    # modes that appear in <n>(t)
     if motional:
-        return min(motional)                              # slowest such mode = asymptotic rate
+        return min(motional)                             # slowest such mode = asymptotic rate
     return min((r for (r, _) in cand), default=None)
 
 
