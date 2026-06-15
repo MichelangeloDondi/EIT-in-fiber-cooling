@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "eit_cooling_tool"
+abstract: >-
+  Steady-state and dynamics model of clock-EIT (electromagnetically-induced-
+  transparency) ground-state sideband cooling of rubidium-87 in a 1064 nm
+  optical lattice formed inside a kagome hollow-core photonic-crystal fibre.
+type: software
+version: 0.2.3
+license: MIT
+authors:
+  - family-names: Dondi
+    given-names: Michelangelo
+    email: michelangelo.dondi@unibo.it
+    affiliation: "Department of Physics and Astronomy, University of Bologna"
+keywords:
+  - laser cooling
+  - electromagnetically induced transparency
+  - sideband cooling
+  - hollow-core photonic-crystal fibre
+  - rubidium 87
+  - QuTiP

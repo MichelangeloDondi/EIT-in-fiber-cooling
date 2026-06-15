@@ -139,10 +139,10 @@ REQUIREMENTS
     Python 3.9+, numpy, scipy, qutip (>= 5), sympy; matplotlib for the figures.
 
 AUTHORSHIP
-    Author / maintainer:  <name, e-mail>                              [fill in]
+    Author / maintainer:  Michelangelo Dondi, e-mail: michelangelo.dondi@unibo.it
     Cold-atoms group of Prof. F. Minardi, Department of Physics and Astronomy,
     University of Bologna.
-    License:  <e.g. MIT>                                              [fill in]
+    License:  MIT
 
 REFERENCES
     [1] D. A. Steck, "Rubidium 87 D Line Data" (atomic-structure constants).
