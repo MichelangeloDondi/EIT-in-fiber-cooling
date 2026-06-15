@@ -1,6 +1,6 @@
 # EIT Cooling Tool — `eit_cooling_tool.py`
 
-**Version 0.2.3.** A single, self-contained Python file to **audit and explore** clock-EIT
+**Version 0.2.4.** A single, self-contained Python file to **audit and explore** clock-EIT
 ground-state sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
 Given a `Config` of every experimental knob, it returns the steady-state axial mean phonon
 number ⟨n_z⟩ from a multilevel QuTiP engine, the **cooling dynamics** (rate and time-to-cool from
@@ -87,8 +87,13 @@ varied because no experiment changes them.
 The engine carries **bare** internal energies (no 1064 Stark term). The 1064 shifts split into a
 ground scalar −U₀ (the trap, common to both clock grounds), a common 5P₃/₂ scalar ≈ +37 MHz, and
 an F′/m′-dependent **tensor** part (zero for F′=2). Consequence — what each detuning is measured against:
-- **δ₂** (two-photon): the ground hyperfine splitting; the ground scalar shift cancels, so δ₂ is
-  trap-independent and δ₂=0 is the true dark resonance at every radius. **Exact.**
+- **δ₂** (two-photon): the ground hyperfine splitting; the **common** 5S scalar shift cancels, so
+  δ₂ is trap-independent **to leading order** and δ₂=0 is the dark resonance at every radius. The
+  residual is the small **F=1/F=2 differential scalar shift** from the 6.835 GHz hyperfine splitting
+  (≈6×10⁻⁵ of U₀, i.e. **~1.4 kHz·(1−s)**) — the dominant 1064 nm *clock* light shift, but ~1% of the
+  cooling feature, so **negligible for cooling** (it changes the cloud-averaged floor by ~0.4%). For
+  a linear lattice polarization the vector shift is zero. The radial walk is modelled in
+  `radial_inhomogeneity.py`.
 - **Δ** (single-photon): the **actual in-trap, on-axis (trap-bottom) |F′2,0⟩** transition — the
   |F′2,0⟩ scalar (+38) and ground (−U₀) shifts are a common ≈+61 MHz offset that cancels, so the
   number you set is the on-axis in-trap detuning (radial: Δ_eff(r)=Δ+61·(1−s)). **Exact.**
@@ -151,8 +156,8 @@ The steady-state floor **and** the cooling **rate** are properties of the Liouvi
   `η·√(2n_init+1) ≪ 1`; EIT sideband resolution `Δ/Γ` (feature width `Γ·ν_z/Δ` vs ν_z); the EIT
   bright-peak tuning `Ω_tot` vs `√(4Δν_z)`; `n_init` vs `N_f`; and, from the **radial** T, whether
   the atom is trapped (`T_rad/U₀ ≪ 1`) and the **mean Δ_eff shift across the radial cloud**
-  (`≈ (1+1.671)·U₀·(T_rad/U₀)`) that the on-axis number ignores — the separate radial Monte-Carlo
-  handles the full cloud average.
+  (`≈ (1+1.671)·U₀·(T_rad/U₀)`) that the on-axis number ignores — the companion
+  `radial_inhomogeneity.py` handles the full cloud average.
 
 Representative (dual-end, default knobs, `T_axial_init=50 µK` → n_init≈2): `W≈0.0031` → `τ_1e≈0.33 ms`,
 time-to-⟨n_z⟩=0.1 ≈1.0 ms, time-to-2×floor ≈1.9 ms; regime all-green (LD 0.21, Δ/Γ=9, on tuning,
@@ -180,7 +185,42 @@ independent of the 1 G cooling-field default, since the floor is field-insensiti
 
 ---
 
-## The two delivery architectures
+## Radial inhomogeneity (companion: `radial_inhomogeneity.py`)
+The engine above is **on-axis**. Off-axis the atom sees a weaker, more-detuned drive, so the
+companion averages the floor over the radial thermal cloud in the **frozen** approximation
+(ν_r ≪ ν_z, so each atom is treated at a fixed radius). It **reuses the validated engine** — every
+local floor `n_f(r)` is a full solve — and only adds the position laws and the thermal average.
+
+Position laws (Gaussian waist w=19 µm, intensity fraction `s(r)=exp(−2r²/w²)`): `ν_z(r)=ν_z·√s`,
+`η_z(r)=η_z·s^(−¼)`, `Ω(r)=Ω·√s` (beam attenuation), and the two differential-Stark **detuning
+walks**:
+- **Single-photon** `Δ_eff(r)=Δ+c·(1−s)`, with `c = c_ground + c_excited = U₀ + (α_5P/α_5S)·U₀ ≈
+  22.8 + 38.1 = 60.9 MHz` (the 5S is trapped/shifts down, the 5P₃/₂ is anti-trapped/shifts up, so
+  the transition walks by the **sum**). This is the dominant radial effect; toggles
+  `include_ground_stark` / `include_excited_stark` isolate each.
+- **Two-photon** `δ₂_eff(r)=δ₂+d_clk·(1−s)`, with `d_clk=(α_F2−α_F1)/α·U₀ ≈ 6.1×10⁻⁵·U₀ ≈ 1.4 kHz`
+  (the **F=1/F=2 differential scalar shift** from the 6.835 GHz hyperfine dispersion, computed from
+  the D-line data). Toggle `include_clock_diff_stark`.
+
+**How much the differential shifts matter** (cloud-averaged floor, frozen 2D-harmonic cloud):
+
+| T_rad | no walk (≈ frozen bound) | + excited only | + full ground+excited | + clock differential |
+|---|---|---|---|---|
+| 25 µK | 0.0048 | 0.0058 | 0.0070 | +0.3% |
+| **100 µK** | 0.0054 | 0.0159 | **0.0277** | +0.4% |
+| 400 µK | 0.0083 | 0.063 | 0.123 | +0.5% |
+
+So the **ground** scalar contributes ~37% of the single-photon walk and raises the 100 µK cloud
+floor ~70% over counting the excited shift alone; the **F=1/F=2 differential** (clock light shift)
+changes the cooling floor by <0.5% — negligible for cooling, though it is the dominant 1064 nm
+*clock-interrogation* systematic. Setting both `include_*_stark` walks off reproduces the no-walk
+model of the legacy frozen-bound analysis (`radial_frozen.py`); on axis (r=0) every model reduces
+to the engine's floor exactly. **Caveat:** far off-axis / hot clouds push `n_f` past ~0.1 where the
+N_f=6 / Lamb-Dicke / steady-state picture is stretched, so the 400 µK row is indicative; the cooled
+fraction and the ≤100 µK averages are robust. Run `python radial_inhomogeneity.py`.
+
+---
+
 **`dual_end` (preferred, floor ~0.005).** Control σ⁻ as a clean tone one end; probe = upper J₁
 sideband of a phase-EOM carrier injected the other end, with β=2.4048 so the carrier vanishes.
 Two-photon detuning δ₂ = probe_order·f_mod − A_HFS. No SSB, slave, filter, or tag AOM.

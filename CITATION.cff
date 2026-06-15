@@ -6,7 +6,7 @@ abstract: >-
   transparency) ground-state sideband cooling of rubidium-87 in a 1064 nm
   optical lattice formed inside a kagome hollow-core photonic-crystal fibre.
 type: software
-version: 0.2.3
+version: 0.2.4
 license: MIT
 authors:
   - family-names: Dondi

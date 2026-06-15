@@ -86,10 +86,14 @@ DETUNING REFERENCE  (subtle with the 1064 nm trap -- read before trusting a numb
     5P3/2 scalar ~+37 MHz; and an F'- and m'-dependent TENSOR part (exactly zero
     for F'=2, nonzero for F'=0,1,3 and dependent on the lattice polarization
     angle theta). Therefore:
-      * delta2 (two-photon): referenced to the ground hyperfine splitting. The
-        ground scalar shift is identical on |1,-1> and |2,+1> and CANCELS, so
-        delta2 is trap-independent and delta2=0 is the true dark resonance at
-        every radius. (Exact; the three "which Stark reference" options coincide.)
+      * delta2 (two-photon): referenced to the ground hyperfine splitting. The 5S
+        scalar shift common to |1,-1> and |2,+1> CANCELS, so delta2 is trap-
+        independent to leading order and delta2=0 is the dark resonance at every
+        radius. The residual is the small F=1/F=2 differential scalar shift from
+        the 6.835 GHz hyperfine splitting (~6e-5 of U0, ~1.4 kHz*(1-s)): the
+        dominant 1064 nm clock light shift, but negligible for cooling (~1% of the
+        cooling feature). For a linear lattice polarization the vector shift is
+        zero. The radial walk is modelled in radial_inhomogeneity.py.
       * Delta (single-photon): referenced to the ACTUAL in-trap, on-axis
         (trap-bottom) |F'2,0> transition. The |F'2,0> scalar (+38) and ground
         (-U0) shifts are a common ~+61 MHz offset that cancels (the engine only
@@ -162,8 +166,14 @@ import qutip as qt                                            # engine (Section 
 from sympy.physics.wigner import clebsch_gordan, wigner_6j    # CG and 6j (Section 6)
 from sympy import S
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 # CHANGELOG (bump on every physics/interface change; update README + report + regression too)
+#   0.2.4  Documentation correction: the two-photon detuning delta2 is trap-independent only to
+#          leading order. The 5S scalar shift common to both clock states cancels, but the small
+#          F=1/F=2 differential scalar shift (6.835 GHz hyperfine dispersion, ~6e-5 of U0,
+#          ~1.4 kHz*(1-s)) remains -- the dominant 1064 nm clock light shift, negligible for
+#          cooling. The detuning-reference section is corrected accordingly; the radial walk of
+#          both detunings is modelled in the companion radial_inhomogeneity.py. No code change.
 #   0.2.3  Fix the cooling-rate (Liouvillian-gap) eigensolve. It used ARPACK shift-invert at
 #          sigma=0, which coincides with the Liouvillian's exact zero (steady-state) eigenvalue
 #          and is therefore singular -- yielding spurious near-zero modes and a non-reproducible
@@ -1023,7 +1033,7 @@ def _regression(Nf: int = 6):
 # Cooling time uses the validated tau = 1/gap method (gap = slowest motional
 # relaxation eigenvalue of L; cf. delta_tau.py). Radial motion is decoupled from
 # the axial rate (k.v_r = 0); the radial T enters only as a regime annotation and
-# feeds the separate radial Monte-Carlo for the cloud-averaged floor.
+# feeds the companion radial_inhomogeneity.py for the cloud-averaged floor.
 # =============================================================================
 
 def n_thermal(T_uK, nu_MHz):
@@ -1173,7 +1183,7 @@ def _assumption_lines(cfg: Config):
         "    so the axial mode is treated alone (radial spread handled by the separate MC tool).",
         "  - Lamb-Dicke regime (eta_z = %.3f)." % cfg.eta_z,
         "  - detuning reference: Delta from the in-trap on-axis |F'2,0> (1064 scalar cancels),",
-        "    delta2 from the Stark-immune ground splitting; BUT repump/contaminant detunings",
+        "    delta2 from the near-Stark-immune ground splitting; BUT repump/contaminant detunings",
         "    use BARE 5P3/2 spacings -- see NON-IDEALITIES [v0.1.0].",
     ]
     if cfg.configuration == "dual_end":
