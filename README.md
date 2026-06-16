@@ -1,268 +1,69 @@
-# EIT Cooling Tool — `eit_cooling_tool.py`
+# EIT-in-fiber cooling — ⁸⁷Rb ground-state cooling in a kagome HCPCF
 
-**Version 0.2.4.** A single, self-contained Python file to **audit and explore** clock-EIT
-ground-state sideband cooling of ⁸⁷Rb in the 1064 nm intra-fiber **axial** lattice (kagome HCPCF).
-Given a `Config` of every experimental knob, it returns the steady-state axial mean phonon
-number ⟨n_z⟩ from a multilevel QuTiP engine, the **cooling dynamics** (rate and time-to-cool from
-the initial temperature) and a **regime check**, and prints the explicit optical spectrum that
-arrives at the atoms.
+Modeling and design program for **clock-EIT sideband cooling** of ⁸⁷Rb to the motional
+ground state in a 1064 nm **axial lattice inside a kagome hollow-core photonic-crystal fibre**,
+on a **first-order field-insensitive clock pair** |1,−1⟩ / |2,+1⟩ → |F′=2, m′=0⟩. This repo holds
+the validated solvers, a self-checking exploration tool, the consolidated technical brief, and
+the paper plan.
 
-The atomic engine (Section 6 of the file) is **embedded verbatim** from the validated
-solver that reproduces every number in the cooling program; the `--regression` mode
-re-derives those numbers, so the tool is self-checking rather than a fresh re-derivation.
+## Headline results
+- **⟨n_z⟩ ≈ 0.005** (dual-end carrier-suppressed EOM delivery) → >99 % axial ground-state population; field-insensitive at any B.
+- **⟨n_z⟩ ≈ 0.0072** (single-ended tagged retro), and the **retro reflectivity (20–40 %) is non-binding** at a 2f_A = 400 MHz tag — the atom-frame operating point is identical across caps; only EOM depth / launch power scale.
+- Operating point: **Δ ≈ 45 MHz (flat 40–55), Ω_p/Ω_c ≈ 0.10–0.12**; cloud-robust to ~100 µK (semiclassical MC).
+- A designed route to the **3D ground state** (radial compression + degenerate RSC + adiabatic transfer).
 
----
+See `docs/clock_EIT_consolidated.md` (v14) for the full technical state and the conceptual path.
 
-## Requirements
-Python 3 with `numpy`, `scipy`, `sympy`, `qutip` (5.x), `matplotlib`. No other files.
+## Layout
+- `docs/` — consolidated brief + per-topic findings + `papers/`
+- `src/` — validated solvers + the exploration tool
+- `data/` — inputs the scripts need (`rategrid.npz`)
+- `figures/` — key figures
 
-```
-pip install numpy scipy sympy qutip matplotlib
-```
+### Canonical doc map
+| topic | authoritative doc |
+|---|---|
+| full technical state + history | `docs/clock_EIT_consolidated.md` (v14) |
+| operating point (+ retro-cap) | `docs/operating_point.md` |
+| experimental sequence | `docs/full_sequence_config.md` |
+| laser / delivery / thermometry | `docs/architecture_delivery_thermometry.md` |
+| radial inhomogeneity | `docs/radial_inhomogeneity_findings.md` |
+| scheme comparison / tradeoffs | `docs/scheme_comparison.md`, `docs/configuration_tradeoffs.md` |
+| 5P₃/₂ 1064 nm polarizability | `docs/polarizability_5P32_1064.md` |
+| D1 / hybrid | `docs/D1_hybrid_findings.md` |
+| paper plan | `docs/papers/paper_planning_memo.md` |
 
-## Run modes
+## Engines (`src/`)
+| file | what it is |
+|---|---|
+| `eit_cooling_tool.py` | self-contained, self-checking exploration tool (embeds the validated engine) |
+| `tagged_solver.py` | validated tagged-EIT steady-state solver (single-ended retro) |
+| `raman_sbc.py` | Raman sideband-cooling engine (RSC vs EIT comparison) |
+| `radial_inhomogeneity.py` | radial M1/M2/M3 light-shift physics |
+| `radial_floor_mc.py` | semiclassical ensemble MC of the radial-cloud floor (needs `data/rategrid.npz`) |
+| `thermometry.py` | sideband-thermometry / readout engine |
+
+## The tool (`eit_cooling_tool.py`, v0.3.0)
+Requirements: Python 3 + `numpy scipy sympy qutip` (5.x) `matplotlib` — `pip install -r requirements.txt`.
+
 | command | what it does | time |
 |---|---|---|
-| `python src/eit_cooling_tool.py` | print the spectrum table for the 3 presets + 14 fast self-tests | < 1 s |
-| `python src/eit_cooling_tool.py --report` | full reports (spectrum, floor, **cooling dynamics**, **regime**) — dual + single | ~45 s |
+| `python src/eit_cooling_tool.py` | spectrum tables for the presets + 14 fast self-tests | < 1 s |
+| `python src/eit_cooling_tool.py --report` | full reports (spectrum, floor, cooling dynamics, regime) | ~45 s |
 | `python src/eit_cooling_tool.py --regression` | reproduce the validated floors (the validation gate) | ~2 min |
-| `python src/eit_cooling_tool.py --sweeps` | write example sweep figures (PNG) | ~3 min |
-| `python src/eit_cooling_tool.py --kpi` | example KPI-vs-parameter scans (δ₂ landscape + Δ) | ~3 min |
 
-## Programmatic use
+Presets: `dual_end_optimal`, `single_end_tagged`, `single_end_tagged_v14` (retro-capped, 2f_A = 400), `clean_lambda`.
 ```python
-from eit_cooling_tool import Config, preset, run, report, build_spectrum, \
-                             print_spectrum_table, sweep1d, plot_sweep1d, cooling_dynamics
-
-cfg = preset("dual_end_optimal")          # "single_end_tagged" | "clean_lambda"
-nbar, delta2 = run(cfg)                    # steady-state <n_z>, servoed delta2
-report(cfg)                                # full report: spectrum, floor, cooling dynamics, regime
-
-# cooling dynamics (uses the initial temperatures in the Config):
-cd = cooling_dynamics(cfg)                 # dict: n_ss, W, tau_1e_ms, n_init, t_to_0p1_ms, t_to_2fl_ms
-
-# change any knob (everything is a Config field, incl. initial temperatures):
-cfg = Config(configuration="dual_end", Delta=50, OmR=0.08, B_field=1.0,
-             T_axial_init_uK=30, T_radial_init_uK=80)
-print_spectrum_table(cfg, build_spectrum(cfg))
-
-# sweep any knob, reusing the engine:
-v, nb, d2 = sweep1d(cfg, "Delta", [45, 55, 65, 80])
-plot_sweep1d(v, nb, "Delta", "delta_scan.png", d2s=d2)
+from eit_cooling_tool import Config, preset, run, report
+nbar, delta2 = run(preset("single_end_tagged_v14"))
+report(preset("dual_end_optimal"))
 ```
-`run(cfg, want_pops=True)` also returns ground-state populations; `run(cfg, full=True)` returns a
-dict with the Fock diagonal and the Liouvillian. `sweep1d/sweep2d` accept `servo_grid=` (coarser =
-faster); `delta2_landscape(cfg)` maps the dark-resonance cooling curve directly.
 
----
+## Status
+The internal physics budget is closed: scheme, operating point, both delivery architectures, the
+F′=0–3 contaminant budget, the optimized repumpers, the radial cloud, the anti-trap, and
+field-insensitivity all agree. Remaining open items are bench-resident (the as-built 6.835 GHz
+two-photon linewidth; the radial pre-cool + ferrule load-in number) and the applications
+OD-vs-cooling question (`docs/clock_EIT_consolidated.md` §11).
 
-## Config knobs (everything you can vary)
-All in `2π·MHz` (trap frequencies too: `nu_z=0.430` means 2π·430 kHz). Detunings positive = blue.
-
-**(a) delivery** — `configuration`: `"dual_end"` (preferred), `"single_end_tagged"`, or `"clean_lambda"` (ideal reference).
-
-**(b) detunings** — `Delta` (single-photon, blue of F′=2; default 55); `delta2` (**primary** two-photon detuning, default 0 — `f_mod` is derived from it); `Drep1` (15); `Drep2` (5).
-
-**(c) intensities** — `OmR` = Ω_p/Ω_c (the key lever, default 0.10); `Omega_rep` (each repumper, 3); `Omega_tot_abs` (default `None` → Ω_tot pinned to √(4·Δ·ν_z); set a number to override).
-
-**(d) EOM / comb** — `f_mod` (default `"auto"` → derived from `delta2`; a number overrides and `delta2` is reported back); `beta` (default `"auto"` → 2.4048 for dual-end carrier suppression, or the depth giving `OmR` for single-end); `probe_order` (which sideband is the probe; 1 = fundamental, 2 = use the 2nd overtone with f_mod≈A_HFS/2); `keep_orders` (sidebands to include in the spectrum).
-
-**(e) retro / tag (single-end only)** — `tag_2fA` (double-passed AOM down-shift, 300); `eta_dp` (round-trip efficiency, 0.5); `quarter_wave` (helicity flip on the return, `True`).
-
-**(f) repump** — `repump_option`: `"A"` (rep2 = F=2→F′1, σ⁺) or `"C"` (F=2→F′2, π). rep1 is always F=1→F′1, σ⁻.
-
-**(g) apparatus / trap** (tunable — a different lattice changes these) — `nu_z` (0.430); `nu_r` (0.00542); `U0_uK` (1094); `eta_z` (axial Lamb-Dicke, 0.094).
-
-**(h) engine** — `B_field` (G; **default = 1 G, the cooling field — vertical, ∥ fiber axis**; the clock-magic 3.2287 G is needed only for clock *interrogation*. The cooling dark pair |1,−1⟩/|2,+1⟩ is field-insensitive, so the floor is essentially B-independent: **verified |Δ⟨n_z⟩| ≤ 0.0003** between 1 G and 3.2287 G for both delivery modes); `N_f` (Fock truncation, 6); `with_e0`/`with_e1`/`with_e3` (include the F′=0/1/3 contaminants, all `True`); `servo_delta2` (auto-optimize δ₂, `True`); `radius_um` (on-axis = 0).
-
-**(i) initial conditions** (cooling-time & regime **only** — they do **not** affect the floor) — `T_axial_init_uK` (initial axial T; sets `n_init` and the time-to-cool, default 50); `T_radial_init_uK` (initial radial T; regime/inhomogeneity only — radial motion is decoupled from the axial cooling rate, default 100).
-
-### Fixed physical constants (NOT knobs)
-Atomic/EM properties, in Section 1 of the file: `A_HFS`, the 5P₃/₂ hyperfine centroids,
-`GAMMA_D2`/`GAMMA_D1`, the Landé/nuclear g-factors and μ_B/h, the dipole recoil distribution,
-the hyperfine decay branching, and the F=2→F′2 frequency reference (= 0). These cannot be
-varied because no experiment changes them.
-
-### Detuning reference — important with the 1064 nm trap
-The engine carries **bare** internal energies (no 1064 Stark term). The 1064 shifts split into a
-ground scalar −U₀ (the trap, common to both clock grounds), a common 5P₃/₂ scalar ≈ +37 MHz, and
-an F′/m′-dependent **tensor** part (zero for F′=2). Consequence — what each detuning is measured against:
-- **δ₂** (two-photon): the ground hyperfine splitting; the **common** 5S scalar shift cancels, so
-  δ₂ is trap-independent **to leading order** and δ₂=0 is the dark resonance at every radius. The
-  residual is the small **F=1/F=2 differential scalar shift** from the 6.835 GHz hyperfine splitting
-  (≈6×10⁻⁵ of U₀, i.e. **~1.4 kHz·(1−s)**) — the dominant 1064 nm *clock* light shift, but ~1% of the
-  cooling feature, so **negligible for cooling** (it changes the cloud-averaged floor by ~0.4%). For
-  a linear lattice polarization the vector shift is zero. The radial walk is modelled in
-  `radial_inhomogeneity.py`.
-- **Δ** (single-photon): the **actual in-trap, on-axis (trap-bottom) |F′2,0⟩** transition — the
-  |F′2,0⟩ scalar (+38) and ground (−U₀) shifts are a common ≈+61 MHz offset that cancels, so the
-  number you set is the on-axis in-trap detuning (radial: Δ_eff(r)=Δ+61·(1−s)). **Exact.**
-- **Repumper & contaminant detunings** *(still a limitation through v0.2.0)*: referenced to **bare**
-  5P₃/₂ spacings; the differential tensor 1064 Stark shift of the target level vs |F′2,0⟩ is omitted —
-  ~0 for F′=2 targets (`rep2` option C), but up to **~12–16 MHz for F′=1** (`rep1`, `rep2`-A, and
-  the dominant F′1 contaminant) and θ-dependent. So `Drep1=15` is 15 MHz from the *bare* F=1→F′1
-  line, which can be ~2× off the in-trap value. To be fixed in **v0.3.0** (adds θ + per-(F′,m′)
-  Stark shifts; geometry given: B=1 G vertical ∥ fiber axis → 1064 transverse linear pol ⟂ B,
-  **θ=90°**, where the F′=1 targets are off by ~−12 MHz).
-
----
-
-## What the engine models / assumes / omits
-(The `--report` output states this per-config; summarized here.)
-
-**Modeled:** 8 ground sublevels via Breit-Rabi; 5P₃/₂ F′=0..3 via full tensor diagonalization;
-the clock Λ (σ⁻ control |2,+1⟩, σ⁺ probe |1,−1⟩ → |F′2,0⟩) plus the coherent |F′3,0⟩ control
-admixture; contaminant ladders into F′=0/1/3; two repumpers; one axial mode with Lamb-Dicke
-displacement and 3-point recoil on every absorption/emission; full m-resolved hyperfine decay;
-steady state of the Liouvillian. For `single_end_tagged`, the two rejected retro tones are
-entered as **linearized** dissipators with analytic AC-Stark shifts (valid: (Ω/2f_A)²~10⁻³).
-
-**Assumed:** steady state (no loading transient, finite pulse time, or atom loss); classical
-drive fields; radial motion frozen/decoupled (k·v_r = 0 by geometry, ν_r ≪ ν_z — radial spread
-is handled by the separate Monte-Carlo tool); Lamb-Dicke regime; for dual-end, **perfect** carrier
-suppression (β = 2.4048); δ₂ held at the servo optimum.
-
-**Flagged in the spectrum but NOT yet folded into ⟨n_z⟩:** a carrier-leak tone if β≠2.4048;
-EOM overtones that land near a line; the single-end down-shifted **retro carrier sitting ~88 MHz
-from F=2→F′1** (the rejected tones are laddered to F′2/F′3 only). The spectrum table prints a
-warning for each of these.
-
-**Out of scope (bound separately in the program's noise studies):** magnetic-field noise and
-Zeeman dephasing of the dark state; laser phase/frequency noise (finite linewidth) and relative
-control–probe phase noise; intensity noise; polarization impurity; beam pointing / non-axiality
-(~0.08 kHz/°); trap anharmonicity and higher bands; radial–axial coupling beyond the frozen
-approximation; collisions / background-gas loss.
-
----
-
-## Cooling dynamics & regime (v0.2.0)
-The steady-state floor **and** the cooling **rate** are properties of the Liouvillian, so both are
-**independent of the initial temperature**. The initial temperature enters only two places, which
-`--report` now prints and `cooling_dynamics(cfg)` returns:
-
-- **Cooling rate / time.** `W` is the **asymptotic** axial-cooling rate: the slowest relaxation
-  eigenmode of the Liouvillian L that carries motional content, i.e. the rate that governs the
-  final approach to the floor. It is obtained from a deterministic, ghost-free shift-invert
-  eigensolve (a small off-zero shift avoids the Liouvillian's singular steady-state eigenvalue; a
-  fixed start vector makes it reproducible run-to-run) and is k-converged. `tau_1e = 1/W`. The
-  initial **axial** T sets `n_init`, and the **time-to-⟨n_z⟩=0.1** and **time-to-2×floor** follow
-  from the Lamb-Dicke-exponential estimate `n(t)=n_ss+(n_init−n_ss)·exp(−Wt)` — time-to-0.1 is an
-  **upper bound** (real multi-exponential cooling is faster while the atom is still hot). Reducing
-  multi-exponential cooling to a single rate is a modelling choice: this **slowest-motional**
-  (asymptotic) definition can differ from a **dominant-mode** (maximum-motional-content) definition
-  when the motional weight is spread over several modes; at the optimised operating point the two
-  nearly coincide.
-- **Regime / validity.** Whether the *start* sits where this steady-state picture holds: Lamb-Dicke
-  `η·√(2n_init+1) ≪ 1`; EIT sideband resolution `Δ/Γ` (feature width `Γ·ν_z/Δ` vs ν_z); the EIT
-  bright-peak tuning `Ω_tot` vs `√(4Δν_z)`; `n_init` vs `N_f`; and, from the **radial** T, whether
-  the atom is trapped (`T_rad/U₀ ≪ 1`) and the **mean Δ_eff shift across the radial cloud**
-  (`≈ (1+1.671)·U₀·(T_rad/U₀)`) that the on-axis number ignores — the companion
-  `radial_inhomogeneity.py` handles the full cloud average.
-
-Representative (dual-end, default knobs, `T_axial_init=50 µK` → n_init≈2): `W≈0.0031` → `τ_1e≈0.33 ms`,
-time-to-⟨n_z⟩=0.1 ≈1.0 ms, time-to-2×floor ≈1.9 ms; regime all-green (LD 0.21, Δ/Γ=9, on tuning,
-radially trapped with a ~5.6 MHz cloud Δ_eff spread). Cooling slows monotonically with Δ
-(τ_1e ≈0.60 / 0.65 / 0.67 ms at Δ=45 / 60 / 80 with the legacy repump, matching `delta_tau.py`).
-
----
-
-## Validated floors (regression baseline, N_f=6, δ₂ servoed)
-| case | ⟨n_z⟩ | servo δ₂ |
-|---|---|---|
-| clean-Λ recoil limit (OmR=0.25) | 0.0072 | 0 |
-| clean base (contaminants off) | 0.0014 | −0.01 |
-| + F′1 (common level, dominant) | 0.0048 | +0.02 |
-| + F′3 (control leg) | 0.0024 | −0.13 |
-| + F′0 (probe leg, negligible) | 0.0015 | −0.01 |
-| **dual-end full (preferred)** | **0.0048** | −0.13 |
-| **single-end tagged full** | **0.0075** | −0.25 |
-
-Contaminant increments over the clean base are non-additive; F′1 dominates. The Δ floor is flat
-across 45–80 (with F′1 on) and rises monotonically with OmR (the weaker-probe lever) — both
-reproducible with `--sweeps`. The regression is **pinned at B=3.2287 G** (the clock-magic field at
-which the validated-solver numbers were generated) so it stays an exact fidelity anchor; this is
-independent of the 1 G cooling-field default, since the floor is field-insensitive (|Δ⟨n_z⟩|≤0.0003).
-
----
-
-## Radial inhomogeneity (companion: `radial_inhomogeneity.py`)
-The engine above is **on-axis**. Off-axis the atom sees a weaker, more-detuned drive, so the
-companion averages the floor over the radial thermal cloud in the **frozen** approximation
-(ν_r ≪ ν_z, so each atom is treated at a fixed radius). It **reuses the validated engine** — every
-local floor `n_f(r)` is a full solve — and only adds the position laws and the thermal average.
-
-Position laws (Gaussian waist w=19 µm, intensity fraction `s(r)=exp(−2r²/w²)`): `ν_z(r)=ν_z·√s`,
-`η_z(r)=η_z·s^(−¼)`, `Ω(r)=Ω·√s` (beam attenuation), and the two differential-Stark **detuning
-walks**:
-- **Single-photon** `Δ_eff(r)=Δ+c·(1−s)`, with `c = c_ground + c_excited = U₀ + (α_5P/α_5S)·U₀ ≈
-  22.8 + 38.1 = 60.9 MHz` (the 5S is trapped/shifts down, the 5P₃/₂ is anti-trapped/shifts up, so
-  the transition walks by the **sum**). This is the dominant radial effect; toggles
-  `include_ground_stark` / `include_excited_stark` isolate each.
-- **Two-photon** `δ₂_eff(r)=δ₂+d_clk·(1−s)`, with `d_clk=(α_F2−α_F1)/α·U₀ ≈ 6.1×10⁻⁵·U₀ ≈ 1.4 kHz`
-  (the **F=1/F=2 differential scalar shift** from the 6.835 GHz hyperfine dispersion, computed from
-  the D-line data). Toggle `include_clock_diff_stark`.
-
-**How much the differential shifts matter** (cloud-averaged floor, frozen 2D-harmonic cloud):
-
-| T_rad | no walk (≈ frozen bound) | + excited only | + full ground+excited | + clock differential |
-|---|---|---|---|---|
-| 25 µK | 0.0048 | 0.0058 | 0.0070 | +0.3% |
-| **100 µK** | 0.0054 | 0.0159 | **0.0277** | +0.4% |
-| 400 µK | 0.0083 | 0.063 | 0.123 | +0.5% |
-
-So the **ground** scalar contributes ~37% of the single-photon walk and raises the 100 µK cloud
-floor ~70% over counting the excited shift alone; the **F=1/F=2 differential** (clock light shift)
-changes the cooling floor by <0.5% — negligible for cooling, though it is the dominant 1064 nm
-*clock-interrogation* systematic. Setting both `include_*_stark` walks off reproduces the no-walk
-model of the legacy frozen-bound analysis (`radial_frozen.py`); on axis (r=0) every model reduces
-to the engine's floor exactly. **Caveat:** far off-axis / hot clouds push `n_f` past ~0.1 where the
-N_f=6 / Lamb-Dicke / steady-state picture is stretched, so the 400 µK row is indicative; the cooled
-fraction and the ≤100 µK averages are robust. Run `python radial_inhomogeneity.py`.
-
----
-
-**`dual_end` (preferred, floor ~0.005).** Control σ⁻ as a clean tone one end; probe = upper J₁
-sideband of a phase-EOM carrier injected the other end, with β=2.4048 so the carrier vanishes.
-Two-photon detuning δ₂ = probe_order·f_mod − A_HFS. No SSB, slave, filter, or tag AOM.
-
-**`single_end_tagged` (fallback, floor ~0.0075).** Control carrier + probe sideband co-propagate
-one end; a retro with a double-passed tag AOM (down-shift 2f_A = 300) and a λ/4 (helicity flip)
-returns them; the intended probe is the return sideband. δ₂ = probe_order·f_mod − A_HFS − 2f_A.
-Watch the rejected retro carrier (−88 MHz from F=2→F′1, flagged in the table).
-
----
-
-## Adding a sweep
-Any `Config` field name works as the swept knob. Pass `servo_grid` to trade accuracy for speed.
-```python
-base = preset("single_end_tagged")
-# tag-AOM sensitivity (single-end):
-v, nb, d2 = sweep1d(base, "tag_2fA", [220, 260, 300, 360], servo_grid=[-0.30,-0.25,-0.20])
-# 2D map:
-x, y, Z = sweep2d(base, "Delta", [45,55,65], "OmR", [0.08,0.10,0.12])
-```
-With `servo_delta2=True` on the base config, δ₂ is re-optimized at every point (honest, since the
-dark resonance moves with the swept knob); set it `False` to hold δ₂ fixed for fast scouting.
-
-## KPI scan vs a parameter
-`kpi_scan` generalizes the δ₂ landscape: give it any knob and a `[vmin, vmax]` range and it prints
-a short report of the figures of merit per point, flags the optimum and the trend, and (optionally)
-writes a 3-panel figure.
-
-```python
-from eit_cooling_tool import preset, kpi_scan
-base = preset("dual_end_optimal")
-kpi_scan(base, "Delta", 45, 80, n=8, plot_path="kpi_delta.png")
-kpi_scan(base, "delta2", -0.45, 0.25, n=18)        # the landscape, with KPIs (servo auto-off)
-kpi_scan(base, "OmR", 0.05, 0.25, n=9)             # the weaker-probe lever
-```
-KPIs reported per point (all read off the same steady state):
-- **⟨n_z⟩** — mean axial phonon number (headline).
-- **P(n=0)** — the *true* motional ground-state fraction (Fock diagonal, not a thermal estimate).
-- **excited population** — total excited-state occupancy ≈ photon-scatter load (a heating/loss/
-  decoherence proxy that can rise even where ⟨n_z⟩ is flat — e.g. it climbs with Δ).
-- **δ₂** — the two-photon detuning used (servoed optimum per point, unless fixed or being scanned).
-
-If `param=="delta2"` the servo is disabled automatically so the scanned value is the one used.
-Integer knobs (e.g. `N_f`) are scanned on integers. Pass `servo_grid=` to trade accuracy for speed
-on servoed scans. Returns a dict of arrays (`values`, `nbar`, `P0`, `excited`, `delta2`).
+License: `LICENSE`. Citation: `CITATION.cff`.
