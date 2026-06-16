@@ -1,3 +1,5 @@
+> *Scope: detailed sideband-thermometry analysis. Laser/delivery/thermometry overview: `architecture_delivery_thermometry.md`.*
+
 # External audit — thermometry / readout configuration (Δm=0 clock Raman under tagging)
 
 Purpose: falsify the readout scheme that verifies the cooling. The cooling floor is worthless if ⟨n_z⟩ cannot be measured without bias at the 0.02 level. Each claim tagged **[V]** verified (computed/derived or validated prior work), **[I]** inference (reasoned, not computed), **[O]** open (needs computation or a spec). Attack the **[O]** items first — unlike the cooling, this configuration has **no solve behind it**: the contrast and the inferred-⟨n⟩ bias are the explicitly-deferred "sandbox-sized computation not yet run."

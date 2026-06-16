@@ -1,6 +1,8 @@
 # Clock-EIT Sideband Cooling of ⁸⁷Rb in a 1064 nm Kagome-HCPCF Lattice
 ## Consolidated technical state and the conceptual path that produced it
 
+**Version 14.** Folds in the retro-reflectivity-capped operating-point optimization (the single-ended tagged retro cap of 20–40 % is non-binding at a 2f_A = 400 MHz tag — §4b), harmonizes the operating point with `operating_point.md`, and adds two scoping sections (PART I-B): the OD-vs-cooling applications tension and the out-of-chamber-delivery significance.
+
 *Text-only document — figures omitted (chat image limit reached). All numbers are from the multilevel QuTiP steady-state solver unless noted. Tags: [V] computed/verified in this program, [I] inferred/estimate, [O] open.*
 
 ---
@@ -43,10 +45,10 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 
 | parameter | value | note |
 |---|---|---|
-| single-photon detuning Δ | **+55 MHz blue** (range 45–55) | flat floor optimum; time + cloud favour low end |
-| probe/control ratio Ω_p/Ω_c | **0.10** | the weaker-probe lever (§6) |
-| total Rabi Ω_tot | √(4Δ·ν_z) ≈ 9.7 MHz | pinned to the EIT condition |
-| → Ω_c, Ω_p | ≈ 9.68, 0.97 MHz | at Δ=55, OmR=0.10 |
+| single-photon detuning Δ | **+45 MHz blue** (flat optimum 40–55) | floor insensitive across the band; time + cloud favour the low end |
+| probe/control ratio Ω_p/Ω_c | **0.10–0.12** | rate/floor dial — the weaker-probe lever (§6) |
+| total Rabi Ω_tot | √(4Δ·ν_z) ≈ 8.8 MHz | pinned to the EIT condition |
+| → Ω_c, Ω_p | ≈ 8.74, 1.05 MHz | at Δ=45, OmR=0.12 (authoritative: `operating_point.md`) |
 | δ₂ servo set-point | ≈ −0.14 MHz (dual-end) / −0.25 (single-ended) | architecture-dependent |
 | repump Rabi Ω_rep | **≈ 3** (not 1.5) | audited/optimized this session |
 | repump detuning Δ_rep1 (F=1→F′1) | **≈ 15 MHz** (not 30) | closer = better |
@@ -59,7 +61,7 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 
 **(a) Dual-end, carrier-suppressed EOM — PREFERRED.** Arm A carries the control (σ⁻, direct, clean tone). Arm B carries the probe via a plain phase EOM at the 6.835 GHz hyperfine splitting, depth **β = 2.405 (first J₀ zero)** → the carrier vanishes and the σ⁺ probe is the upper J₁ sideband (F=1 sits 6.835 GHz below the control's F=2); all other sidebands land ≥6.835 GHz off-resonance and are harmless. Opposite-end injection, **f_A = 0** (AOMs for intensity/pulsing only). Arm power split A:B ≈ **95:5** at OmR=0.10. No SSB modulator, slave laser, or filter cavity. **Floor ~0.005.**
 
-**(b) Single-ended tagged retro — FALLBACK** (if two-ended vacuum access is impractical). One fibre end: control carrier + probe upper-sideband from a phase EOM at **β ≈ 0.59**, co-propagating; a double-passed tag AOM **2f_A = 300 MHz** down-shifts the return; a λ/4 in the retro arm flips helicity. The **down-shift** is essential — an up-shift would crash the rejected return-control into F′=3. **Floor ~0.0075** (OmR=0.10) / ~0.0092 (OmR=0.12). The extra cost vs (a) is the rejected-field scatter.
+**(b) Single-ended tagged retro — FALLBACK** (if two-ended vacuum access is impractical). One fibre end: control carrier + probe upper-sideband from a phase EOM, co-propagating; a double-passed tag AOM **2f_A = 400 MHz** (200 MHz AOM) down-shifts the return; a λ/4 in the retro arm flips helicity. The **down-shift** is essential — an up-shift would crash the rejected return-control into F′=3. **Floor ~0.0072** (OmR=0.12, 2f_A=400). **The retro reflectivity (AOM double-pass × re-injection) is non-binding over 20–40 %** [V, this session]: at a 400 MHz tag the floor is flat in η_dp (0.0073/0.0072/0.0072 at 0.20/0.30/0.40) because the tag pushes the amplified rejected-forward-probe scatter far off-resonance. The atom-frame operating point is identical across caps; only the EOM depth β (∝1/√η_dp ≈ 0.31/0.25/0.22 rad) and the nW-scale launch power (∝1/η_dp) scale up. See `operating_point.md` §3.
 
 ## 5. The complete floor budget
 
@@ -108,6 +110,18 @@ The cooling pair is **first-order field-immune** (both g_F·m_F = +½). The resi
 - **D1 line:** does **not** help (dual-end D1 0.0052 ≈ D2 0.0048). The naive "D1 has no F′=3" advantage cancels because on D1 *both* legs acquire F′=1 admixture (F=1→F′1 allowed), whereas on D2 only the control does. [V]
 - **F′=1 as the EIT level:** F′=2 chosen (~12.5× less off-resonant scatter). [V]
 - **"F′=1 EIT" as a second window:** does not exist — there is one two-photon resonance (set by the ground hyperfine splitting), and both common levels (F′=1, F′=2) feed it. See §12. [V]
+
+---
+
+# PART I-B — SCOPE, APPLICATIONS, AND SIGNIFICANCE
+
+## 11. Applications and the OD-vs-cooling tension [I, this session]
+
+The ground-state field-insensitive source is an **enabling capability, not itself a breakthrough**; a breakthrough is a downstream application crossing a threshold, and cooling is necessary-but-not-sufficient for each. The binding, uncosted constraint is **optical depth vs cooling**: the guided-mode OD per atom is ~5×10⁻⁴, so a useful OD≈20 needs ~3.9×10⁴ atoms and OD≈100 needs ~2×10⁵ — *in the cooled mode*, where ground-state cooling assumes a dilute sample. High OD and ground-state purity pull against each other (collisions, reabsorption, light-assisted loss), and nothing in the program closes that gap. Other gates: load-in caps the cold number; the ~1.5 Hz reload (not the per-op rate — atoms persist ~s) limits device duty cycle; guided interferometry is geometry-capped on enclosed area. The one place cooling removes a *real* limiter is the **Rydberg trap-off window** (Rydberg anti-trapped in 1064 → trap off during excitation → atoms fly): 3D-ground-state vs gray-molasses extends the usable window ~12× (v_rms 1.2 vs 15 mm/s). The most credible single breakthrough path is therefore **Rydberg/EIT few-photon nonlinear optics** in the cold high-OD fibre — gated by solving OD-vs-cooling, not by any remaining cooling question.
+
+## 12. Out-of-chamber delivery — significance and the open question [I/O, this session]
+
+A 2 m HCPCF with one end in the chamber and the atoms conveyed outside is an **architecture fact, not a new regime**: the atoms never leave the fibre's own vacuum (the glass is the envelope), so the in-fibre physics is identical wherever along the core they sit. The 48 µm core conductance is ~7×10⁻⁹ L/s, so single-ended pumping is near-trivially safe (chamber rise ~10⁻⁷ Torr even with the far end at 1 atm). It is claim-worthy only conditionally: (i) as a **transport demonstration** if number and temperature survive the ~2–10 s trip (transport heating and lifetime are the real tests; good vacuum is what makes a multi-second trip survivable); (ii) as the enabling step for **delivering a cold source to an integrated device / sensing target outside the UHV** — the concrete fibre-node advantage. **[O]** The far-end termination sets the deliverable distance: sealed → whole core UHV; open → molecular flow only below ~1 Torr, so atoms survive only near the in-chamber tip. Novelty (first meter-scale out-of-chamber delivery?) needs a current literature check before any claim.
 
 ---
 
@@ -172,6 +186,6 @@ Both common levels feed the *same* δ₂=0 window. We call it "F′=2" only beca
 
 ## Status
 
-The internal physics budget is **closed**: scheme, operating point, both delivery architectures, the complete F′=0,1,2,3 contaminant budget, the optimized repumpers, the radial cloud treatment, the anti-trap, and field-insensitivity all agree and are mutually consistent; the two external cross-audits are reconciled. Headline: clock-EIT, Δ≈55, OmR≈0.10, repump Ω≈3/Δ_rep1≈15, dual-end carrier-suppressed delivery, **⟨n_z⟩ ≈ 0.005** (single-ended ~0.0075), cloud-robust to ~100 µK.
+The internal physics budget is **closed**: scheme, operating point, both delivery architectures, the complete F′=0,1,2,3 contaminant budget, the optimized repumpers, the radial cloud treatment, the anti-trap, and field-insensitivity all agree and are mutually consistent; the two external cross-audits are reconciled. Headline: clock-EIT, Δ≈45 (flat 40–55), OmR≈0.10–0.12, repump Ω≈3/Δ_rep1≈15, dual-end carrier-suppressed delivery, **⟨n_z⟩ ≈ 0.005** (single-ended tagged ~0.0072 at 2f_A=400, the 20–40 % retro cap non-binding), cloud-robust to ~100 µK.
 
-Remaining [O], all outside the cooling-physics core: re-running the cloud MC and the on-axis Δ-scan at the optimized repump for final brief numbers (the scaling is mechanical, ~−40%); the noise/parasitic budget (dephasing, polarization, intensity) as a separate consolidation; and the non-physics career thread.
+Remaining [O], all outside the cooling-physics core: re-running the cloud MC and the on-axis Δ-scan at the optimized repump for final brief numbers (the scaling is mechanical, ~−40%); the noise/parasitic budget (dephasing, polarization, intensity) as a separate consolidation; the OD-vs-cooling feasibility study (§11) as the make-or-break for any application claim; and the non-physics career thread.

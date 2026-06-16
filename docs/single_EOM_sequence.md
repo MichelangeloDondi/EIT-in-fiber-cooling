@@ -1,3 +1,5 @@
+> *Scope: the single-EOM delivery method in detail. Overall experimental sequence (MOT→molasses→in-fibre EIT→thermometry): `full_sequence_config.md`. Operating point: `operating_point.md`.*
+
 # One-EOM (1560 nm) architecture and the full experimental sequence
 **⁸⁷Rb clock-EIT cooling in a kagome HCPCF — MOT → bright molasses → gray molasses → conveyor-belt transport → in-fibre EIT cooling → thermometry**
 

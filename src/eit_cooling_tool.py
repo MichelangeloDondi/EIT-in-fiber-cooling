@@ -166,7 +166,7 @@ import qutip as qt                                            # engine (Section 
 from sympy.physics.wigner import clebsch_gordan, wigner_6j    # CG and 6j (Section 6)
 from sympy import S
 
-__version__ = "0.2.4"
+__version__ = "0.3.0"
 # CHANGELOG (bump on every physics/interface change; update README + report + regression too)
 #   0.2.4  Documentation correction: the two-photon detuning delta2 is trap-independent only to
 #          leading order. The 5S scalar shift common to both clock states cancels, but the small
@@ -346,6 +346,14 @@ def preset(name: str) -> Config:
     if name == "single_end_tagged":
         return Config(configuration="single_end_tagged", Delta=55.0, OmR=0.10,
                       beta="auto", tag_2fA=300.0, eta_dp=0.5, quarter_wave=True,
+                      repump_option="A", Omega_rep=3.0, Drep1=15.0, Drep2=5.0)
+    if name == "single_end_tagged_v14":
+        # v14 retro-capped point: a 2f_A = 400 MHz tag makes the 20-40% retro
+        # reflectivity (AOM double-pass x re-injection) non-binding -- the floor is
+        # flat in eta_dp; the atom-frame point is unchanged, only EOM depth/launch
+        # power scale. Delta=45 sits in the flat 40-55 optimum. See operating_point.md.
+        return Config(configuration="single_end_tagged", Delta=45.0, OmR=0.12,
+                      beta="auto", tag_2fA=400.0, eta_dp=0.30, quarter_wave=True,
                       repump_option="A", Omega_rep=3.0, Drep1=15.0, Drep2=5.0)
     if name == "clean_lambda":
         return Config(configuration="clean_lambda", Delta=55.0, OmR=0.10, delta2=0.0)
