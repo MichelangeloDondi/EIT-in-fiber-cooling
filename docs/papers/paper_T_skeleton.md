@@ -23,7 +23,7 @@ requires a Δm = 2 (rank-2) operator, and the rank-2 component of a two-photon o
 identically in a J = ½ ground manifold, since the reduced matrix element requires the forbidden
 triangle (½, 2, ½). The transition survives only through excited-state hyperfine mixing, with
 amplitude ∝ Δ_HFS/Δ², so the coherence per spontaneously scattered photon is pinned at a figure of
-merit of order Δ_HFS/Γ ≈ 4 — independent of detuning, and unimprovable. A Lamb-Dicke rate analysis
+merit of order Δ_HFS/Γ ≈ 5 — independent of detuning, and unimprovable. A Lamb-Dicke rate analysis
 gives a cooling floor n̄ ≈ 0.45, robust to a factor-3 change in the scattering prefactor.
 Electromagnetically-induced-transparency cooling on the same pair evades the obstruction by
 operating near-resonance, reaching n̄ ≈ 0.005. The result identifies a general constraint on direct
@@ -69,7 +69,11 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 - **Key scaling:** FoM ≡ (coherent Raman rate)/(scatter rate) ∝ (Δ_HFS/Δ²)/(Γ/Δ²) = **Δ_HFS/Γ**,
   *independent of detuning*. Contrast the allowed case (FoM ∝ Δ/Γ, improvable by detuning).
   ⇒ the obstruction's quantitative bite: **you cannot detune your way out.**
-- Numerically Δ_HFS/Γ → FoM ≈ 4 (A₂,∞ ≈ 16 MHz, Γ = 6.07 MHz; FoM = (3/2)·A₂,∞/Γ ≈ 3.95).
+- Numerically (computed in `src/paper_T_fom.py`, LaTeX-ready in `paper_T_core_derivation.md`):
+  the null is **exact** — g(F′=1) = −g(F′=2) = −1/(4√3); the survivor G₂ = 22.7 MHz ∝ the
+  F′=1,2 splitting; and **FoM ≈ 5.6** (radians of two-photon rotation per scattered photon),
+  **flat across Δ = 1–30 GHz**. An earlier independent estimate gave ≈4 (A₂,∞ ≈ 16 MHz); both are
+  O(few), differing only by the scatter-normalization convention. The ceiling = Δ_HFS/Γ.
 - **Geometry lemma:** in the mirror-ladder (guided + retro) configuration the dark-state coupling
   forces one Raman beam onto the dark state (scatter ∝ Ω₋²); the *rate* Ω_R = Ω₊Ω₋ is a free knob,
   but the **FoM** is what is bounded — cranking the rate cranks the depumping scatter in lockstep.
@@ -120,15 +124,15 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 ## What is [V] vs what must be ADDED for publication
 **Already computed [V]:**
 - Rank-2 electronic null + the I·J routing (`audit_C_rank2.py`) — §3.
-- FoM ≈ 4 value and the Δ-independence claim (`clock_RSC_resolution.md`, `scheme_comparison.md`) — §4.
+- **FoM derivation — DONE** (`src/paper_T_fom.py` + LaTeX-ready `paper_T_core_derivation.md`):
+  exact null, Δ_HFS/Δ² survivor, detuning-independent FoM ≈ 5.6 — §3–§4.
 - Floor ≈ 0.45 and its robustness; the 0.0137 obstruction-free idealization (`clock_RSC_resolution.md`, `raman_sbc.py`) — §5.
 - EIT contrast floor 0.0048/0.0072 (`tagged_solver.py`) — §6.
 - Fig. 2 — done.
 
 **Must add (the writing/derivation work):**
-1. **Clean analytic derivation of the FoM scaling** Ω₂ph ∝ Δ_HFS/Δ² ⇒ FoM ∝ Δ_HFS/Γ (§4). This is
-   the theoretical heart; a referee will want it explicit, not asserted. *(Half a day of algebra;
-   the Audit-C scripts already contain the pieces.)*
+1. ~~Clean analytic derivation of the FoM scaling~~ — **DONE** (`paper_T_core_derivation.md`); now
+   just transcribe into the manuscript and add the $|m_J,m_I\rangle$-basis appendix.
 2. **Transparent rate-equation** that reproduces n̄ ≈ 0.45 from FoM ≈ 4 (§5), so the floor does not
    rest on citing an engine-as-idealization. *(Small script + a few lines.)*
 3. **Fig. 1** (level scheme + geometry) and optionally **Fig. 3** (FoM vs detuning).
