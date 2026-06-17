@@ -14,6 +14,10 @@ the paper plan.
 
 See `docs/clock_EIT_consolidated.md` (v14) for the full technical state and the conceptual path.
 
+## New here?
+Start with **`docs/getting_started.md`** — a 15-minute onboarding (install, first run,
+reproduce the numbers, read a report, explore your own operating point).
+
 ## Layout
 - `docs/` — consolidated brief + per-topic findings + `papers/`
 - `src/` — validated solvers + the exploration tool
