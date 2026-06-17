@@ -117,7 +117,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 |---|---|---|---|
 | 1 | Level scheme: clock pair, Δm = 2 path, dark state, mirror-ladder geometry; inset = the rank-2 null | **make** (TikZ/matplotlib) | TODO |
 | 2 | Floor comparison — EIT 0.0048 vs clock-RSC 0.45 (DISQUALIFIED, rank-2, ×33 lift from the 0.0137 idealization) vs stretched 0.00196; field-insensitive vs field-sensitive | `figures/fig_rsc_vs_eit.py` | **DONE** |
-| 3 (opt.) | FoM vs detuning: flat for Δm = 2 (rank-2) vs ∝ Δ/Γ for an allowed Raman — the "can't detune out" point | **make** from the §4 scaling / Audit-C data | TODO |
+| 3 | FoM vs detuning: flat for Δm = 2 (rank-2) vs ∝ Δ/Γ for an allowed Raman — the "can't detune out" point | `figures/fig_fom_vs_detuning.py` | **DONE** |
 
 ---
 
@@ -136,7 +136,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 2. ~~Transparent rate-equation reproducing n̄ ≈ 0.45~~ — **DONE** (`src/rsc_floor_rate_eqn.py`,
    written into §5 of `paper_T_core_derivation.md`): n̄ = O(0.1–1) at FoM ≈ 5.6, FoM ≳ 170 to
    recover; brackets the 0.45 and the 0.0137 idealization.
-3. **Fig. 1** (level scheme + geometry) and optionally **Fig. 3** (FoM vs detuning).
+3. **Fig. 1** (level scheme + geometry). ~~Fig. 3 (FoM vs detuning)~~ — **DONE** (`figures/fig_fom_vs_detuning.py`).
 4. **Generality table** (§7) — FoM ≈ Δ_HFS/Γ for the common alkalis. *(Quick: plug excited-HFS
    splittings.)*
 5. **Literature positioning** — see below.
