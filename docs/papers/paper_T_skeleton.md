@@ -133,8 +133,9 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 **Must add (the writing/derivation work):**
 1. ~~Clean analytic derivation of the FoM scaling~~ — **DONE** (`paper_T_core_derivation.md`); now
    just transcribe into the manuscript and add the $|m_J,m_I\rangle$-basis appendix.
-2. **Transparent rate-equation** that reproduces n̄ ≈ 0.45 from FoM ≈ 4 (§5), so the floor does not
-   rest on citing an engine-as-idealization. *(Small script + a few lines.)*
+2. ~~Transparent rate-equation reproducing n̄ ≈ 0.45~~ — **DONE** (`src/rsc_floor_rate_eqn.py`,
+   written into §5 of `paper_T_core_derivation.md`): n̄ = O(0.1–1) at FoM ≈ 5.6, FoM ≳ 170 to
+   recover; brackets the 0.45 and the 0.0137 idealization.
 3. **Fig. 1** (level scheme + geometry) and optionally **Fig. 3** (FoM vs detuning).
 4. **Generality table** (§7) — FoM ≈ Δ_HFS/Γ for the common alkalis. *(Quick: plug excited-HFS
    splittings.)*

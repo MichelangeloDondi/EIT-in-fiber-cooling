@@ -62,11 +62,22 @@ $\Omega_{2\mathrm{ph}}\propto 1/\Delta$ and $\mathrm{FoM}\propto\Delta/\Gamma$ �
 bound by detuning (the standard far-detuned Raman strategy). The $\Delta m=2$ clock Raman **cannot
 be detuned out of trouble**: the ceiling is fixed at $\sim\Delta_{\mathrm{HFS}}/\Gamma\sim$ a few.
 
-## Consequence (feeds §5)
-With $\mathrm{FoM}\sim$ few, off-resonant scattering exceeds the Lamb-Dicke cooling rate, lifting
-the steady-state floor to $\bar n\approx 0.45$; recovering a useful floor would require
-$\mathrm{FoM}\gtrsim170$ — a factor $\sim30$ beyond what the obstruction permits. EIT evades this
-by operating near-resonance (§6).
+## §5 — the cooling floor (transparent rate equation)
+The bounded FoM feeds a standard Lamb-Dicke rate equation. Driving the red sideband with repump
+dissipation, the steady state is $\bar n_{\rm ss}=A_+/(A_--A_+)$, with cooling rate
+$A_-=\eta_{\rm sb}^2\,\Omega_2/\Gamma_{\rm eff}$ (red sideband, repump-broadened) and heating
+$A_+=R_{\rm sc}\,\eta_{\rm rec}^2$ from the off-resonant Raman-beam scatter (recoil
+$\eta_{\rm rec}^2=\eta_{780}^2+\eta_{\rm em}^2$ per scattered photon). Writing
+$r=\Gamma_{\rm eff}/\Omega_2$ (the repump-to-Raman ratio) and $R_{\rm sc}=\Omega_2/\mathrm{FoM}$,
+$$\bar n_{\rm ss}=\frac{\eta_{\rm rec}^2/\mathrm{FoM}}{\;\eta_{\rm sb}^2/r-\eta_{\rm rec}^2/\mathrm{FoM}\;}.$$
+At the obstruction-bounded $\mathrm{FoM}\approx5.6$ this is $O(0.1\text{–}1)$ — e.g. $\bar n=0.43$
+at $r=5$ ($T_z\approx19\,\mu$K, $70\%$ ground), bracketing the independent estimate $0.45$. The
+absolute value carries a $\pm$factor through $r$; what is robust is **(i)** $\bar n=O(0.1\text{–}1)$,
+far above the obstruction-free idealization $\bar n\to10^{-3}$ ($\mathrm{FoM}\to\infty$, the regime
+a standard-SBC engine returns, $\approx0.0137$), and **(ii)** reaching a useful floor
+$\bar n\approx0.01$ would require $\mathrm{FoM}\gtrsim170$ — a factor $\sim30$ beyond the
+$J=\tfrac12$, $\Delta m=2$ ceiling. The $\Delta m=2$ clock Raman is therefore **disqualified** for
+ground-state cooling; EIT (§6) reaches $\bar n\approx0.005$. **[V:** `src/rsc_floor_rate_eqn.py`**]**
 
 ---
 ### Notes for the writeup
