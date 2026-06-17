@@ -6,7 +6,7 @@
 %  Figure files needed alongside this .tex (or adjust \graphicspath):
 %     fig_rsc_vs_eit.png        (Fig. 2 -- floor comparison; in repo/figures)
 %     fig_fom_vs_detuning.png   (Fig. 3 -- FoM vs detuning;   in repo/figures)
-%     fig_level_scheme.pdf      (Fig. 1 -- level scheme; TO BE DRAWN, stubbed below)
+%     fig_level_scheme.pdf      (Fig. 1 -- level scheme; in repo/figures)
 %
 %  STATUS: quantitative sections (III, IV, V, VII), abstract, table, and the
 %  FoM box are the verified core (src/paper_T_fom.py, rsc_floor_rate_eqn.py,
@@ -154,13 +154,13 @@ and the cancelling pair of paths are shown in Fig.~\ref{fig:levels}.
 
 \begin{figure}[t]
 \centering
-\fbox{\parbox{0.92\columnwidth}{\centering\vspace{2.2cm}
-\textsf{[Fig.~1 placeholder] Level scheme: the field-insensitive clock pair
-$\ket{1,-1}/\ket{2,+1}$, the two $\Dm{=}2$ Raman legs through $\ket{F',0}$ of $5P_{3/2}$, the
-dark-state geometry, and the cancelling $F'{=}1,2$ contributions ($g_1=-g_2$).}
-\vspace{2.2cm}}}
-\caption{\label{fig:levels} Level scheme and geometry of the $\Dm=2$ clock-pair Raman, with the
-rank-2 null $g_1=-g_2$ indicated. \emph{(To be drawn.)}}
+\includegraphics[width=\columnwidth]{fig_level_scheme.pdf}
+\caption{\label{fig:levels} (a)~Level scheme of the $\Dm=2$ field-insensitive clock-pair Raman in
+$^{87}$Rb: $\ket{1,-1}\xrightarrow{\sigma^+}\ket{F',0}$ of $5P_{3/2}\xrightarrow{\sigma^-}\ket{2,+1}$,
+both legs through $m'=0$. The two contributing excited levels $F'=1,2$ carry opposite-sign
+amplitudes ($g_1=-g_2$), i.e. the rank-2 null $\sum_{F'}g_{F'}=0$. (b)~Mirror-ladder geometry: a
+guided $\sigma^-$ control and a retroreflected $\sigma^+$ probe along the trap axis deliver a single
+$\Dm=+2$ two-photon kick.}
 \end{figure}
 
 % ======================================================================

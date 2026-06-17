@@ -6,7 +6,7 @@
 3. *Why electromagnetically-induced-transparency cooling is the field-insensitive route for alkali clock qubits*
 
 **Target:** Physical Review A (full theory note), **arXiv-first**. Length ~5–7 pp, 2–3 figures.
-**MANUSCRIPT:** `docs/papers/paper_T.tex` (+ `paper_T.bib`) — assembles the verified core; **compiles clean to 4 pp** (PRA revtex4-2). §III–V, §VII, abstract, table, FoM box are the computed core; §I/II/VI/VIII are first drafts; Fig. 1 (level scheme) stubbed, to be drawn.
+**MANUSCRIPT:** `docs/papers/paper_T.tex` (+ `paper_T.bib`) — assembles the verified core; **compiles clean to 4 pp** (PRA revtex4-2). §III–V, §VII, abstract, table, FoM box are the computed core; §I/II/VI/VIII are first drafts; **all three figures done**; compiles to 5 pp.
 
 **Status:** all load-bearing results are **[V]** (see CLAIMS.md: B4 + F7 + F8 + the FoM). UNBLOCKED.
 **One-sentence thesis:** connecting a field-insensitive alkali clock pair with a single two-photon
@@ -117,7 +117,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 ## Figures
 | Fig | Content | Source | Status |
 |---|---|---|---|
-| 1 | Level scheme: clock pair, Δm = 2 path, dark state, mirror-ladder geometry; inset = the rank-2 null | **make** (TikZ/matplotlib) | TODO |
+| 1 | Level scheme: clock pair, Δm = 2 path, mirror-ladder geometry; F'=1,2 cancel (rank-2 null) | `figures/fig_level_scheme.py` | **DONE** |
 | 2 | Floor comparison — EIT 0.0048 vs clock-RSC 0.45 (DISQUALIFIED, rank-2, ×33 lift from the 0.0137 idealization) vs stretched 0.00196; field-insensitive vs field-sensitive | `figures/fig_rsc_vs_eit.py` | **DONE** |
 | 3 | FoM vs detuning: flat for Δm = 2 (rank-2) vs ∝ Δ/Γ for an allowed Raman — the "can't detune out" point | `figures/fig_fom_vs_detuning.py` | **DONE** |
 
@@ -138,7 +138,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 2. ~~Transparent rate-equation reproducing n̄ ≈ 0.45~~ — **DONE** (`src/rsc_floor_rate_eqn.py`,
    written into §5 of `paper_T_core_derivation.md`): n̄ = O(0.1–1) at FoM ≈ 5.6, FoM ≳ 170 to
    recover; brackets the 0.45 and the 0.0137 idealization.
-3. **Fig. 1** (level scheme + geometry). ~~Fig. 3 (FoM vs detuning)~~ — **DONE** (`figures/fig_fom_vs_detuning.py`).
+3. ~~Fig. 1 (level scheme + geometry)~~ — **DONE** (`figures/fig_level_scheme.py`). ~~Fig. 3~~ — **DONE**.
 4. ~~Generality table (§7)~~ — **DONE** (`src/paper_T_generality.py`): null universal (Σg=0 for
    I=3/2–7/2); FoM 0.2 (Li) → 9.3 (Cs), all ≪170, sub-unity for the light alkalis. *(orig: plug excited-HFS
    splittings.)*
