@@ -239,3 +239,6 @@ Icon?
 
 fig_*.png
 *_cache.npz
+
+# Archives (regenerate; never commit)
+*.zip

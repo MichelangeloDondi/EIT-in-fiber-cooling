@@ -67,8 +67,8 @@ F1→F′2 = +6834.7, F1→F′1 = +6677.7 MHz.
 - **Coherence:** both legs from the Eblana (carrier + EOM sideband) ⇒ **common-mode** ⇒ two-photon
   linewidth = synthesizer (sub-100 Hz). The floor doubles at 0.26 kHz two-photon linewidth, so this
   is the binding spec — **met without an OPLL.** **[V/V·an]**
-- **Operating point:** **Δ=55, OmR=0.10** (Pareto knee), **δ₂ servoed** to the dark resonance
-  (single-end set-point ≈ −0.25). 1560 EOM at **≈7.13 GHz** (probe + 300 MHz tag).
+- **Operating point:** **Δ=45, OmR=0.12** (Pareto knee), **δ₂ servoed** to the dark resonance
+  (single-end set-point ≈ +0.25). 1560 EOM at **≈7.13 GHz** (probe + 300 MHz tag).
 - **Repumpers (option A, leak-locked):** repump1 **F=1→F′1** via a 157 MHz step (AOM preferred for
   amplitude/polarization control); **repump2 F=2→F′1 from the MASTER** (incoherent, F=2 manifold,
   Rb-85-stable — clean offload). Helicities σ⁻/σ⁺ as required.
@@ -104,7 +104,7 @@ F1→F′2 = +6834.7, F1→F′1 = +6677.7 MHz.
 |---|---|---|---|---|
 | **1560 EOM** | 6.568 GHz (repump) | 6.835 GHz (Raman) | 7.13 GHz (probe) | 7.13 GHz (probe, pulsed) |
 | seed/offset-lock | cooler F′3 −2Γ | coupling F′2 +2Γ | control F′2 +Δ | = EIT |
-| control/coupling AOM | — | small (blue) | Δ=55 | — |
+| control/coupling AOM | — | small (blue) | Δ=45 | — |
 | 300 MHz tag AOM | — | — | retro tag (essential) | shared |
 | 157 MHz (AOM) | — | — | repump1 (F′1) | — |
 | 100 MHz AOM | MOT amplitude | — | — | — |
@@ -154,7 +154,7 @@ F1→F′2 = +6834.7, F1→F′1 = +6677.7 MHz.
 |---|---|---|---|
 | MOT | trapped sample | Eblana cooler + 6.568 GHz EOM repump | standard 87Rb MOT |
 | gray molasses | sub-Doppler T | Eblana Λ pair (common-mode, co-pol), δ≈−0.1Γ | ~3–10 µK |
-| in-fiber EIT | axial ⟨n_z⟩ | single_end_tagged, Δ=55, OmR=0.10 | **0.0073** (P₀≈99.3%), τ₁ₑ≈0.35 ms |
+| in-fiber EIT | axial ⟨n_z⟩ | single_end_tagged, Δ=45, OmR=0.12 | **0.0072** (P₀≈99.3%), τ₁ₑ≈0.35 ms |
 | thermometry | ⟨n_z⟩ readout | Blackman sideband-π, calibrated R, master detection | faithful; P₀ to ±5% (~2000 shots) |
 
 **Bottom line:** one Eblana + one 1560 EOM + AOMs + the Rb-85 master, **no OPLL**, covers the entire

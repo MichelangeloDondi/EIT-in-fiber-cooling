@@ -49,7 +49,7 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 | probe/control ratio Ω_p/Ω_c | **0.10–0.12** | rate/floor dial — the weaker-probe lever (§6) |
 | total Rabi Ω_tot | √(4Δ·ν_z) ≈ 8.8 MHz | pinned to the EIT condition |
 | → Ω_c, Ω_p | ≈ 8.74, 1.05 MHz | at Δ=45, OmR=0.12 (authoritative: `operating_point.md`) |
-| δ₂ servo set-point | ≈ −0.14 MHz (dual-end) / −0.25 (single-ended) | architecture-dependent |
+| δ₂ servo set-point | ≈ +0.14 MHz (dual-end) / +0.25 (single-ended) | positive = compensates the e3 Stark shift (solver/SSOT convention) |
 | repump Rabi Ω_rep | **≈ 3** (not 1.5) | audited/optimized this session |
 | repump detuning Δ_rep1 (F=1→F′1) | **≈ 15 MHz** (not 30) | closer = better |
 | repump detuning Δ_rep2 (F=2→F′1) | 5 MHz | default near-optimal |
@@ -59,13 +59,13 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 
 ## 4. Delivery architectures (both realize the same atomic operating point)
 
-**(a) Dual-end, carrier-suppressed EOM — PREFERRED.** Arm A carries the control (σ⁻, direct, clean tone). Arm B carries the probe via a plain phase EOM at the 6.835 GHz hyperfine splitting, depth **β = 2.405 (first J₀ zero)** → the carrier vanishes and the σ⁺ probe is the upper J₁ sideband (F=1 sits 6.835 GHz below the control's F=2); all other sidebands land ≥6.835 GHz off-resonance and are harmless. Opposite-end injection, **f_A = 0** (AOMs for intensity/pulsing only). Arm power split A:B ≈ **95:5** at OmR=0.10. No SSB modulator, slave laser, or filter cavity. **Floor ~0.005.**
+**(a) Dual-end, carrier-suppressed EOM — PREFERRED.** Arm A carries the control (σ⁻, direct, clean tone). Arm B carries the probe via a plain phase EOM at the 6.835 GHz hyperfine splitting, depth **β = 2.405 (first J₀ zero)** → the carrier vanishes and the σ⁺ probe is the upper J₁ sideband (F=1 sits 6.835 GHz below the control's F=2); all other sidebands land ≥6.835 GHz off-resonance and are harmless. Opposite-end injection, **f_A = 0** (AOMs for intensity/pulsing only). Arm power split A:B ≈ **95:5** at OmR=0.12. No SSB modulator, slave laser, or filter cavity. **Floor ~0.005.**
 
 **(b) Single-ended tagged retro — FALLBACK** (if two-ended vacuum access is impractical). One fibre end: control carrier + probe upper-sideband from a phase EOM, co-propagating; a double-passed tag AOM **2f_A = 400 MHz** (200 MHz AOM) down-shifts the return; a λ/4 in the retro arm flips helicity. The **down-shift** is essential — an up-shift would crash the rejected return-control into F′=3. **Floor ~0.0072** (OmR=0.12, 2f_A=400). **The retro reflectivity (AOM double-pass × re-injection) is non-binding over 20–40 %** [V, this session]: at a 400 MHz tag the floor is flat in η_dp (0.0073/0.0072/0.0072 at 0.20/0.30/0.40) because the tag pushes the amplified rejected-forward-probe scatter far off-resonance. The atom-frame operating point is identical across caps; only the EOM depth β (∝1/√η_dp ≈ 0.31/0.25/0.22 rad) and the nW-scale launch power (∝1/η_dp) scale up. See `operating_point.md` §3.
 
 ## 5. The complete floor budget
 
-Steady-state ⟨n_z⟩, dual-end, Δ=55, OmR=0.10, optimized repump. **Every 5P₃/₂ hyperfine level is now accounted for**, and the manifold is frame-consistent (max_conf = 0).
+Steady-state ⟨n_z⟩, dual-end, Δ=45, OmR=0.12, optimized repump. **Every 5P₃/₂ hyperfine level is now accounted for**, and the manifold is frame-consistent (max_conf = 0).
 
 | component | floor | increment | character |
 |---|---|---|---|
@@ -77,13 +77,13 @@ Steady-state ⟨n_z⟩, dual-end, Δ=55, OmR=0.10, optimized repump. **Every 5P�
 
 **Final floors (all of F′=0,1,2,3 in, repump optimized):**
 - dual-end: **~0.005** (flat in Δ across 45–80; ⟨n_z⟩ ≈ 0.005 → **>99% ground-state population**)
-- single-ended tagged (realized): **~0.0075** (OmR=0.10), ~0.0092 (OmR=0.12)
+- single-ended tagged (realized): **~0.0072** (2f_A=400, OmR=0.12)
 
 ## 6. Cooling dynamics
 
 - **The mechanism is engineered red/blue sideband asymmetry.** EIT cooling works by placing the Fano-narrowed bright resonance so the red (cooling) sideband is enhanced and the blue (heating) sideband suppressed. The Liouvillian gap *is* the net asymmetry rate.
 - **Weaker-probe lever [V]:** the cooling rate **saturates** with Ω_p/Ω_c (gap ≈ 0.0017/0.0024/0.0027 MHz at 0.11/0.18/0.25) while the floor keeps dropping. So the optimum is at **low probe** (0.10–0.12), bounded below only by the cooling-time/trap-lifetime budget. This is the single most important and least obvious optimization lever.
-- **Cooling time vs Δ [V]:** τ rises with detuning — Δ=45 → 0.14 ms, Δ=60 → 0.30 ms, Δ=80 → 0.69 ms (dual-end, OmR=0.10). Lower Δ cools faster (higher detuning = slower scattering = slower cooling), as physically expected.
+- **Cooling time vs Δ [V]:** τ rises with detuning — Δ=45 → 0.14 ms, Δ=60 → 0.30 ms, Δ=80 → 0.69 ms (dual-end, OmR=0.10 reference scan; ~1.2× slower at the operating OmR=0.12). Lower Δ cools faster (higher detuning = slower scattering = slower cooling), as physically expected.
 - **Axial-Doppler asymmetry channels [V]:** the radial-motion → axial-Doppler coupling is **null** (k·v_r = 0, ⊥ geometry; and ν_r ≪ ν_z by ~80× → adiabatic, n_z invariant; the parametric M5 channel needs ν_r ≈ 2ν_z = 860 kHz, off by 160×). This is *why* a quasi-static W(r)/A(r) treatment of the radial bath is rigorous. Beam non-axiality θ couples 2k·v_r·sinθ ~ 0.08 kHz/° — an alignment **tolerance**, not a floor term.
 
 ## 7. Excited-state Stark — no anti-trap [V]
@@ -96,7 +96,7 @@ The shallow degenerate radial trap means the cloud samples a range of trap param
 - ν_z(r) = ν_z0·√s, η(r) = η0·s^(−¼), Ω(r) = Ω0·√s
 - **Δ_eff(r) = Δ₀ + c·(1−s), c = 60.9 MHz** — the radial detuning shift (the "M3" term), which the early radial passes were **missing**. It follows from the +38.1 MHz scalar shift of |F′2,0⟩ and dominates radial degradation beyond ~50 µK.
 
-**Semiclassical Monte-Carlo (the definitive cloud metric):** for a 100 µK cloud, floor ≈ **0.0085 (Δ=45) vs 0.0097 (Δ=80)** at OmR=0.10 with all contaminants — Δ=45 is cloud-optimal (broader bright feature tolerates the ν_z(r) spread). [I] absolute cloud floor ±0.001 (coarse per-radius δ₂ grid); the ordering is robust.
+**Semiclassical Monte-Carlo (the definitive cloud metric):** for a 100 µK cloud, floor ≈ **0.0094 (Δ=45) vs 0.0102 (Δ=80)** at OmR=0.12 with all contaminants — Δ=45 is cloud-optimal (broader bright feature tolerates the ν_z(r) spread). [I] absolute cloud floor ±0.001 (coarse per-radius δ₂ grid); the ordering is robust.
 
 **Per-scheme verdict — clock-EIT decisively beats Raman SBC on the cloud.** Cloud coverage at 100 µK: EIT ~99% (feature width 150 kHz, r < 12.45 µm) vs RSC ~19% (sideband 16 kHz, r < 3.70 µm); cloud-averaged ⟨n_z⟩ ≈ 0.03 (EIT) vs ≈ 4 (RSC). Re-cooling to ≲50–100 µK is comfortable.
 

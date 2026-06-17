@@ -8,7 +8,7 @@ clock-EIT, field-insensitive pair |1,−1⟩ / |2,+1⟩ → |F′=2, m′=0⟩ (
 
 - Single-photon detuning **Δ = +45 MHz** blue (was +80). Flat floor optimum ≈40–50; degrades above ~80. Also the **radial-cloud optimum** (S4 MC: 0.0094 at Δ=45 vs 0.0102 at Δ=80), so no separate cloud correction is needed.
 - **Ω_p/Ω_c = 0.12** (was 0.25). Control σ−, Ω_c = 8.74 (2π MHz); probe σ+, Ω_p = 1.05. Ω pinned to the EIT condition Ω_tot=√(4Δ·ν_z); the *ratio* is the new lever (see §2).
-- Two-photon detuning **δ₂ servoed to the dark resonance**, set-point ≈ −0.1 MHz (dual-end) / ≈ −0.22 MHz (single-ended tagged). Parking at the bare hyperfine still costs the floor; the offset drifts with power/radius and must be servoed, not hardcoded.
+- Two-photon detuning **δ₂ servoed to the dark resonance**, set-point ≈ +0.1 MHz (dual-end) / ≈ +0.22 MHz (single-ended tagged) — **positive = the compensation of the ≈ −0.2 MHz e3 Stark shift** (solver/SSOT convention; §3 uses the same sign). Parking at the bare hyperfine still costs the floor; the offset drifts with power/radius and must be servoed, not hardcoded.
 - B flexible 1.0–1.5 G for cooling (the cooling pair is first-order field-insensitive at any field; the 3.229 G clock-magic field is only for interrogation). Two repumpers (|1,0⟩ and |2,−2⟩ leaks), Δ_rep = +20…+40 MHz.
 
 **Floors (clock_tagged_solve, B=3.229, N_f-stable, δ₂-optimized):** clean Λ **0.0032** / dual-end **0.0048** / single-ended tagged **0.0076**. Cooling time τ ≈ 0.55 ms (sub-ms; ~1.5× slower than the OmR=0.25 point — see §2). Powers at the atoms (19 µm waist): control 0.11 µW, probe 4.8 nW, repump 5.0 nW.

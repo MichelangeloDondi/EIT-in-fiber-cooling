@@ -120,8 +120,8 @@ The worry is that thermometry "needs different powers and detunings," and that s
 - The atom is **already in the right initial state**: EIT cooling parks it in the dark state |1,−1⟩ near n=0, which is exactly the state the sideband-π drives from. No extra state-prep step.
 
 **What actually changes — three RF moves, all µs or faster:**
-1. **EOM RF frequency hop:** from 6.835 + tag (+ δ₂ ≈ −0.25 MHz, the dark resonance) to **6.835 + tag ± ν_z** (± 0.43 MHz, the motional sidebands). That's a ~0.43 MHz step on a 7.13 GHz carrier — a **phase-continuous DDS hop in clock cycles (ns)**.
-2. **Probe AOM amplitude + envelope:** from the weak CW EIT probe (OmR = 0.10) to the thermometry π-pulse level (s ≈ 0.3–0.5), with a **Blackman amplitude envelope over 13–21 µs**, gated on/off. The AOM responds in the acoustic transit time (**ns–100s of ns**); the envelope is just the AWG waveform.
+1. **EOM RF frequency hop:** from 6.835 + tag (+ δ₂ ≈ +0.25 MHz, the dark resonance) to **6.835 + tag ± ν_z** (± 0.43 MHz, the motional sidebands). That's a ~0.43 MHz step on a 7.13 GHz carrier — a **phase-continuous DDS hop in clock cycles (ns)**.
+2. **Probe AOM amplitude + envelope:** from the weak CW EIT probe (OmR = 0.12) to the thermometry π-pulse level (s ≈ 0.3–0.5), with a **Blackman amplitude envelope over 13–21 µs**, gated on/off. The AOM responds in the acoustic transit time (**ns–100s of ns**); the envelope is just the AWG waveform.
 3. **Repumpers OFF, master ON for readout:** gate the repumpers off during the coherent π-pulse, then gate the master (F2→F′3) on for state-selective detection afterward — both simple AOM/shutter gates.
 
 **Why it is fast — the design reason.** Every optical frequency in the experiment is *parked-laser ± RF*. The single-photon detuning lives on an AOM; the two-photon detuning and the hyperfine partner live on the EOM RF. RF synthesizers (DDS/AWG) change frequency, amplitude, and phase in nanoseconds, and the modulators follow within their (ns–µs) response. **You never move a laser or re-lock anything between cooling and thermometry** — you reprogram RF. That is what makes the switch instantaneous on the scale of the sequence.
@@ -148,7 +148,7 @@ The cycle is **detection-limited (~ms), not switch-limited.** Repeat on red then
 |---|---|---|---|---|---|---|
 | **1560 EOM (RF)** | 6.568 GHz | 6.568 GHz | 6.835 GHz | off | **7.13 GHz** (δ₂) | **7.13 GHz ± ν_z** (pulsed) |
 | seed / offset-lock | cooler F′3 −2Γ | cooler red ramp | coupling F′2 +2–5Γ | (parked) | control F′2 +Δ | = EIT |
-| control / coupling AOM | — | — | small (blue) | — | Δ = 55 | — (Δ unchanged) |
+| control / coupling AOM | — | — | small (blue) | — | Δ = 45 | — (Δ unchanged) |
 | 300 MHz tag AOM | — | — | — | — | retro tag | shared |
 | 157 MHz AOM | — | — | — | — | repump-1 (F′1) | off (during π) |
 | MOT AOM (~100 MHz) | amplitude | amplitude ramp | — | — | — | — |

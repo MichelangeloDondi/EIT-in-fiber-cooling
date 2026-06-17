@@ -7,10 +7,10 @@ the validated solvers, a self-checking exploration tool, the consolidated techni
 the paper plan.
 
 ## Headline results
-- **⟨n_z⟩ ≈ 0.005** (dual-end carrier-suppressed EOM delivery) → >99 % axial ground-state population; field-insensitive at any B.
-- **⟨n_z⟩ ≈ 0.0072** (single-ended tagged retro), and the **retro reflectivity (20–40 %) is non-binding** at a 2f_A = 400 MHz tag — the atom-frame operating point is identical across caps; only EOM depth / launch power scale.
-- Operating point: **Δ ≈ 45 MHz (flat 40–55), Ω_p/Ω_c ≈ 0.10–0.12**; cloud-robust to ~100 µK (semiclassical MC).
-- A designed route to the **3D ground state** (radial compression + degenerate RSC + adiabatic transfer).
+- **Axial cooling-physics (solve) floor ⟨n_z⟩ ≈ 0.005** (dual-end) / **≈ 0.0072** (single-ended tagged retro; the 20–40 % retro reflectivity is **non-binding** at a 2f_A = 400 MHz tag) → >99 % *axial* ground-state population; field-insensitive at any B.
+- **All-in single-atom floor ⟨n_z⟩ ≈ 0.012–0.019** once the anti-trap/leak increment (+0.007–0.012) is folded into the solve floor; cloud-inhomogeneity floor ≈ 0.0094 at 100 µK. The ~0.005/0.0072 figures are the cooling-physics floor, **not** the all-in number, and all floors carry a ~2× recycler-model band.
+- Operating point: **Δ ≈ 45 MHz (flat 40–55), Ω_p/Ω_c = 0.12**; cloud-robust to ~100 µK (semiclassical MC).
+- This is a **1D (axial) cooler**: the radial mode is not cooled (n̄_r ≈ 380 at 100 µK, ≈ 10 at 2.5 µK), so the 3D ground-state fraction is set by the radial temperature, not the axial floor. A designed route to lower the radial (compression + degenerate RSC + adiabatic transfer) is planned but unproven.
 
 See `docs/clock_EIT_consolidated.md` (v14) for the full technical state and the conceptual path.
 

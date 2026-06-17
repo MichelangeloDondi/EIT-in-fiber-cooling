@@ -22,9 +22,9 @@ Tools: `eit_cooling_tool.py` (v0.2.4), `thermometry.py` (v0.2.0). Apparatus: Mar
 
 Clock-EIT, D2, dark pair **|1,−1⟩ (probe σ⁺) / |2,+1⟩ (control σ⁻) → |F′2,0⟩**; both
 g_F·m_F=+½ ⇒ field-insensitive at any B. Axial ν_z=2π×430 kHz (cooled), η_z=0.094,
-η_eff(2k)=0.187. **Operating point:** Δ=55, OmR=Ω_p/Ω_c=0.10, Ω_tot=√(4Δν_z)≈9.73,
-δ₂ servoed ≈ −0.13, repump option A (Ω_rep=3, Drep1=15, Drep2=5), B=1 G. **Ideal dual-end floor
-⟨n_z⟩=0.0047** (P₀=0.9955). **[V]**
+η_eff(2k)=0.187. **Operating point:** Δ=45, OmR=Ω_p/Ω_c=0.12, Ω_tot=√(4Δν_z)≈8.80,
+δ₂ servoed ≈ +0.13, repump option A (Ω_rep=3, Drep1=15, Drep2=5), B=1 G. **Ideal dual-end floor
+⟨n_z⟩=0.0048** (P₀=0.9952). **[V]**
 
 ---
 
@@ -42,7 +42,7 @@ beat-locks to one. **[I]**
 the **same spacing f_m** (not 2f_m) with the **index doubled** (β→2β); FFT of E² matches J_k(2β).
 Because pure phase modulation keeps |E|² constant, the transfer is **undistorted even in the 29%-
 depleted SHG**. Modest depth suffices: β₁₅₆₀≈0.30 for a 10%-power repump (keeps 83% carrier),
-≈0.10 for EIT OmR=0.10 (keeps 98% carrier).
+≈0.12 for EIT OmR=0.12 (keeps ~98% carrier).
 
 **Frequency plan (seed locked at F=2→F′2 = 0):**
 
@@ -134,7 +134,7 @@ larger s shortens the pulse since Blackman decouples the carrier-leak constraint
 | 0.16 | 0.0077 | 0.18 ms | 0.54 ms | 1.8× faster |
 | 0.24 | 0.0131 | 0.145 ms | 0.45 ms | 2.1× faster |
 
-Δ flat (0.005–0.0065) over 35–90; **Δ=130 collapses** (floor 0.116, τ₁ₑ 6.1 ms). OmR=0.10 sits at the
+Δ flat (~0.005–0.0065, scan at OmR=0.10) over 35–90; **Δ=130 collapses** (floor 0.116, τ₁ₑ 6.1 ms). OmR=0.12 sits at the
 Pareto knee; deep (0.06) and fast (0.16–0.24) configs are selectable by whether the run is floor- or
 cycle-limited.
 
@@ -159,16 +159,16 @@ is servo-limited, not stability-limited.**
 - **One Eblana** seed → EDFA → PPLN; one retunable 1560 nm EOM (≈6.5–7.1 GHz) + a 157 MHz tone +
   AOMs (<300 MHz). One beat-lock to the 780 reference. (Clean comb; no SFG clutter.)
 - **Free-space** MOT/bright/gray molasses + imaging/OP with per-beam waveplates (GM co-polarized).
-- **In-fiber EIT** via **single_end_tagged** (mirror + λ/4 + 300 MHz tag AOM): floor **0.0073**,
-  τ₁ₑ≈0.35 ms. Escalate to two doubling chains only if the 0.0073→0.0047 gain is needed.
-- **EIT operating point** Δ=55, OmR=0.10 (Pareto knee), δ₂ servoed to the dark resonance.
+- **In-fiber EIT** via **single_end_tagged** (mirror + λ/4 + 400 MHz tag AOM): floor **0.0072**,
+  τ₁ₑ≈0.35 ms. Escalate to two doubling chains only if the 0.0072→0.0048 gain is needed.
+- **EIT operating point** Δ=45, OmR=0.12 (Pareto knee), δ₂ servoed to the dark resonance.
 - **Thermometry** Blackman sideband-π, calibrated R; single laser; radial T ≲ 100 µK.
 
 ---
 
 ## 7. Open items & checkable questions **[O]**
 
-1. **δ₂ tolerance at the single-end set-point (δ₂≈−0.25, steeper red flank)** — does it need a tighter
+1. **δ₂ tolerance at the single-end set-point (≈ +0.25, steeper flank than dual-end)** — does it need a tighter
    servo than the dual-end ±20 kHz?
 2. **Realistic η_dp** for the HCPCF retro (end-face vs external mirror, λ/4 + double-pass AOM losses);
    where does the floor land at η_dp=0.3, and is a larger tag worth a lower floor?

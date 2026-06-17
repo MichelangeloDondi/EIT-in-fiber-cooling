@@ -340,12 +340,12 @@ class Config:
 def preset(name: str) -> Config:
     """Return a Config for a named, validated operating point."""
     if name == "dual_end_optimal":
-        return Config(configuration="dual_end", Delta=55.0, OmR=0.10,
+        return Config(configuration="dual_end", Delta=45.0, OmR=0.12,
                       beta="auto", probe_order=1, repump_option="A",
                       Omega_rep=3.0, Drep1=15.0, Drep2=5.0)
     if name == "single_end_tagged":
-        return Config(configuration="single_end_tagged", Delta=55.0, OmR=0.10,
-                      beta="auto", tag_2fA=300.0, eta_dp=0.5, quarter_wave=True,
+        return Config(configuration="single_end_tagged", Delta=45.0, OmR=0.12,
+                      beta="auto", tag_2fA=400.0, eta_dp=0.30, quarter_wave=True,
                       repump_option="A", Omega_rep=3.0, Drep1=15.0, Drep2=5.0)
     if name == "single_end_tagged_v14":
         # v14 retro-capped point: a 2f_A = 400 MHz tag makes the 20-40% retro
@@ -356,7 +356,7 @@ def preset(name: str) -> Config:
                       beta="auto", tag_2fA=400.0, eta_dp=0.30, quarter_wave=True,
                       repump_option="A", Omega_rep=3.0, Drep1=15.0, Drep2=5.0)
     if name == "clean_lambda":
-        return Config(configuration="clean_lambda", Delta=55.0, OmR=0.10, delta2=0.0)
+        return Config(configuration="clean_lambda", Delta=45.0, OmR=0.12, delta2=0.0)
     raise ValueError(f"unknown preset {name!r}")
 
 
