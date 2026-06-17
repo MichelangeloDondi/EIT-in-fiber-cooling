@@ -122,11 +122,16 @@ def p0_3d(nbar_z: float, T_radial_uK: float) -> float:
 # 5. RSC COMPARISON FLOORS  (for Paper T)
 # =====================================================================
 RSC_STRETCHED = 0.00196                 # field-SENSITIVE pair [V, engine self-test]
-# clock-pair RSC: UNRESOLVED.  scheme_comparison.md asserts ~0.45 (analytic rank-2 depumping);
-# raman_sbc.py engine returns 0.0137 (Nf=10, won't converge higher).  DO NOT headline either.
-RSC_CLOCK_DOC_ASSERTED = 0.45           # [ASSERTED, not reproduced]
-RSC_CLOCK_ENGINE_NF10  = 0.0137         # [V at Nf=10, lower bound]
-RSC_CLOCK_STATUS = "OPEN"               # gate Paper T on the high-Nf recompute
+# clock-pair RSC: DISQUALIFIED by the rank-2 obstruction (audit_C_rank2.py, verified 3 ways;
+# see docs/clock_RSC_resolution.md).  The Dm=+2 clock Raman has a bounded coherence-per-scatter
+# FoM (~4, detuning- & field-proof): the rank-2 electronic operator vanishes in J=1/2
+# [triangle(1/2,2,1/2) fails], the coupling runs only via excited I.J (prop Delta_HFS/Delta^2),
+# and the mirror-ladder geometry forces one beam onto the dark state -> off-resonant scatter
+# beats the slow LD cooling 11-23:1.  raman_sbc('clock')=0.0137 is the OBSTRUCTION-FREE
+# idealization (free OmR, ~0 scatter), NOT the physical floor.
+RSC_CLOCK_FLOOR     = 0.45              # physical floor [FoM; DISQUALIFIED, robust to x3 scatter]
+RSC_CLOCK_IDEALIZED = 0.0137            # raman_sbc('clock') Nf=10: idealized, NOT the floor
+RSC_CLOCK_STATUS    = "DISQUALIFIED (rank-2 obstruction)"   # Paper T rests on this -- UNBLOCKED
 
 # =====================================================================
 # 6. SCOPE  -- the model's domain; quantities outside it are tracked, never headlined
@@ -166,8 +171,9 @@ def print_summary():
     print("-"*70)
     print(" 2-photon coherence: floor doubles at %.2f kHz (sub-100 Hz => ~2.6x margin)"
           % TWO_PHOTON_DOUBLE_KHZ)
-    print(" RSC (Paper T):  stretched %.5f [V] | clock-RSC %s (doc %.2f / engine %.4f)"
-          % (RSC_STRETCHED, RSC_CLOCK_STATUS, RSC_CLOCK_DOC_ASSERTED, RSC_CLOCK_ENGINE_NF10))
+    print(" RSC (Paper T):  stretched %.5f [V] | clock-RSC %s" % (RSC_STRETCHED, RSC_CLOCK_STATUS))
+    print("                 floor ~%.2f (rank-2 obstruction); %.4f is the obstruction-free idealization, not the floor"
+          % (RSC_CLOCK_FLOOR, RSC_CLOCK_IDEALIZED))
     print(" SCOPE:  " + " | ".join("%s: %s" % (k, v) for k, v in SCOPE.items()))
     print("="*70)
 
