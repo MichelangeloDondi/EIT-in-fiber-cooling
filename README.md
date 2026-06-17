@@ -14,6 +14,10 @@ the paper plan.
 
 See `docs/clock_EIT_consolidated.md` (v14) for the full technical state and the conceptual path.
 
+**Audited ledger.** `CLAIMS.md` maps every headline number to its evidence tier ([V] computed /
+[I] estimate / [O] bench) and the script that establishes it, with a per-paper cross-reference;
+`SCOPE.md` states what the model covers and what it does not. Draft from these.
+
 ## Layout
 - `docs/` — consolidated brief + per-topic findings + `papers/`
 - `src/` — validated solvers + the exploration tool
