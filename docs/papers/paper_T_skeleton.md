@@ -97,7 +97,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 - One line on why you cannot simply pull the Raman near-resonant: the scatter then diverges (you
   lose the FoM); EIT is the structured near-resonant solution (dark-state interference).
 
-### 7. Generality and scope  *(NEEDS a small table; broadens impact)*
+### 7. Generality and scope  *(**DONE** — computed in `src/paper_T_generality.py`; table in `paper_T_core_derivation.md` §7)*
 - The obstruction is generic to **J = ½ ground manifolds** driving Δm = 2: applies to the
   field-insensitive clock pairs of the alkalis (Rb, Cs, Na, K, …). FoM ≈ Δ_HFS/Γ differs per
   species (different excited-state HFS) → tabulate FoM for Rb-87, Cs-133, K-39/41, Na-23.
@@ -137,7 +137,8 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
    written into §5 of `paper_T_core_derivation.md`): n̄ = O(0.1–1) at FoM ≈ 5.6, FoM ≳ 170 to
    recover; brackets the 0.45 and the 0.0137 idealization.
 3. **Fig. 1** (level scheme + geometry). ~~Fig. 3 (FoM vs detuning)~~ — **DONE** (`figures/fig_fom_vs_detuning.py`).
-4. **Generality table** (§7) — FoM ≈ Δ_HFS/Γ for the common alkalis. *(Quick: plug excited-HFS
+4. ~~Generality table (§7)~~ — **DONE** (`src/paper_T_generality.py`): null universal (Σg=0 for
+   I=3/2–7/2); FoM 0.2 (Li) → 9.3 (Cs), all ≪170, sub-unity for the light alkalis. *(orig: plug excited-HFS
    splittings.)*
 5. **Literature positioning** — see below.
 

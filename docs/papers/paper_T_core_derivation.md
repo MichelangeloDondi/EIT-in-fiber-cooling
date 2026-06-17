@@ -79,6 +79,38 @@ $\bar n\approx0.01$ would require $\mathrm{FoM}\gtrsim170$ — a factor $\sim30$
 $J=\tfrac12$, $\Delta m=2$ ceiling. The $\Delta m=2$ clock Raman is therefore **disqualified** for
 ground-state cooling; EIT (§6) reaches $\bar n\approx0.005$. **[V:** `src/rsc_floor_rate_eqn.py`**]**
 
+## §7 — generality: the whole alkali series
+The null is a property of the $J=\tfrac12$ ground manifold, so it holds for **every** alkali. The
+field-insensitive clock pair is universally $\lvert F{=}I-\tfrac12, m{=}{-}1\rangle/\lvert
+F{=}I+\tfrac12, m{=}{+}1\rangle$ (matched $g_F m_F$ at any field); only the two excited levels
+$F'=I\mp\tfrac12$ carry the surviving amplitude; and $\sum_{F'}g_{F'}=0$ identically (verified for
+$I=\tfrac32$ through $\tfrac72$). The asymptotic scatter line-strength is an angular constant
+$\Sigma_\infty=\tfrac43$ independent of $I$, and the coherent factor $|g_{\rm lo}|$ varies only
+weakly ($1/(4\sqrt3)=0.144$ at $I=\tfrac32$; $0.161$ at $I=\tfrac72$). Hence
+$$\mathrm{FoM}=\frac{2|g_{\rm lo}|\,\Delta_{F'}}{\Gamma\,\Sigma_\infty}\simeq\frac{|g_{\rm lo}|}{\Sigma_\infty}\,\frac{2\,\Delta_{F'}}{\Gamma},$$
+fixed per species only by the excited-state $F'{=}(I{-}\tfrac12)\!\leftrightarrow\!(I{+}\tfrac12)$
+hyperfine interval $\Delta_{F'}$ and the D2 linewidth $\Gamma$.
+
+| atom | excited $nP_{3/2}$ | $\Delta_{F'}$ (MHz) | $\Gamma/2\pi$ (MHz) | FoM | scatter per $\pi$ |
+|---|---|---|---|---|---|
+| $^{87}$Rb | $5P_{3/2}$ | 156.9 | 6.07 | **5.6** | 0.56 |
+| $^{133}$Cs | $6P_{3/2}$ | 201.3 | 5.22 | **9.3** | 0.34 |
+| $^{23}$Na | $3P_{3/2}$ | 34.3 | 9.79 | **0.76** | 4.1 |
+| $^{39}$K | $4P_{3/2}$ | 9.4 | 6.04 | **0.34** | 9.3 |
+| $^{7}$Li | $2P_{3/2}$ | 5.9 | 5.87 | **0.22** | 14.5 |
+
+The ceiling spans $\mathrm{FoM}\approx0.2$ (Li) to $\approx9$ (Cs) — none within a factor $\sim20$
+of the $\gtrsim170$ needed for ground-state cooling, and for the light alkalis (Na, K, Li) it is
+**below unity**: more than one photon is scattered per radian of two-photon rotation. Because
+$\Delta_{F'}$ shrinks down the series while $\Gamma$ does not, the obstruction bites hardest for
+the lightest alkalis. EIT cooling — near-resonant, where the excited hyperfine structure is
+resolved — is the field-insensitive route for all of them. **[V** null + angular factors; **I**
+tabulated excited-state constants; `src/paper_T_generality.py`**]**
+
+*(Alkaline-earth and alkaline-earth-like clock species — Sr, Yb, Ca$^+$, … — are a different
+regime: the $J=0$ ground state has no rank-2 issue and sideband cooling proceeds on a resolved
+narrow line. The present obstruction is specific to the $J=\tfrac12$ ground manifold of the alkalis.)*
+
 ---
 ### Notes for the writeup
 - The closed form $g_1=-g_2=-1/(4\sqrt3)$ is worth stating — it makes the null manifestly exact.
