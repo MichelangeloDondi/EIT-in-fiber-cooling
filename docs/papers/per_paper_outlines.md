@@ -4,7 +4,16 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 ---
 
-## Paper T — Rank-2 obstruction to clock-qubit Raman cooling  ·  **WRITE NOW**
+## Paper T — Rank-2 obstruction to clock-qubit Raman cooling  ·  **DEMOTED → P1 motivation (not standalone)**
+
+> **Status update 2026-06-17 — see `novelty_findings.md`.** The central result is **prior art**
+> (Naber–Spreeuw, PRA 94, 013427 (2016)): same magic pair, same Δm=2 σ⁺/σ⁻ geometry, same
+> destructive-interference null, same "cannot detune away spontaneous emission" conclusion. The
+> rank-2 *framing*, cooling floor, and alkali generalization are re-packaging/corollary. Scope is
+> also narrower than claimed: the m=0 clock transition is a Δm=0 vector Raman that **is** coolable
+> (FoM rises with detuning), so "EIT is *the* route" overclaims — the obstruction is specific to the
+> **Δm=2 matched pairs (m≠0)**. **Do not submit standalone.** Retained below as P1's design rationale,
+> cited to Naber–Spreeuw.
 
 **Working title:** *Why EIT — not Raman — sideband cooling reaches the ground state of a field-insensitive clock qubit.* (alt: *A rank-2 selection-rule obstruction to Raman sideband cooling on field-insensitive clock transitions.*)
 
@@ -12,7 +21,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Type / venue:** short theory paper / Letter — PRA, or PRL if framed as a clock-qubit-cooling selection rule. Atom-general (alkali hyperfine and, by extension, alkaline-earth(-like) clock qubits).
 
-**Status:** **write-now, no experiment.** The strongest first-author preprint to have on arXiv before the Lan outreach.
+**Status:** **DEMOTED to P1 motivation (cited).** Not a standalone preprint — central result published (Naber–Spreeuw 2016). The verified core (null, FoM-pinning, floor) is reused as P1's design-rationale section.
 
 **Authorship (suggested):** Dondi (first), Minardi; consider Prevedelli.
 
@@ -25,9 +34,9 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **In hand [V]:** complete, verified 3 ways. **Needs bench:** nothing.
 
-**Novelty/framing:** clean, falsifiable negative result; clears the narrative for "clock-EIT, not clock-RSC."
+**Novelty/framing:** the physics is correct and verified, but **not novel** — the core (destructive-interference suppression of the Δm=2 magic-pair Raman, detuning-independent) is Naber–Spreeuw, PRA 94, 013427 (2016). Value is as P1's *why-EIT* motivation, cited; not a discovery.
 
-**Positioning (Lan/Yb):** apparatus-independent and atom-general → relevant to anyone cooling clock qubits, incl. Sr/Yb; ideal as the demonstration-of-depth preprint.
+**Positioning (Lan/Yb):** the *content* (cited) supports the why-EIT narrative; it is **not** a standalone demonstration-of-depth preprint (prior art). The demonstration of depth is P1.
 
 **Backing:** `src/tagged_solver.py`; `rank2_verify.py`, `audit_C_rank2.py` (archive).
 
@@ -85,13 +94,21 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 ---
 
-## Paper P3 — Cooling physics: the cloud floor and the EIT-tolerant / RSC-fragile regime
+## Paper P3 — Cooling physics: the cloud floor and the EIT-tolerant / RSC-fragile regime  ·  **P1 BACKBONE (not standalone)**
+
+> **Status update 2026-06-17 — see `novelty_findings.md`.** All three pillars are established
+> physics: the EIT-tolerant/RSC-fragile contrast is the well-known **EIT bandwidth advantage**; the
+> inhomogeneous-light-shift cloud floor is named in the HCPCF literature (arXiv:1812.02887;
+> magic-wavelength HCPCF; fibre-interferometer DLS dephasing); outside-Lamb-Dicke recoil-limited
+> cooling is a developed subfield (Yu–Ni, PRA 97, 063423 (2018)); and the prospective host group
+> already does in-fibre sideband cooling (Wang, PRR 4, L022058 (2022)). The geometry-specific floor
+> is a useful computation but **not a novel-discovery standalone** — keep it as P1's floor budget.
 
 **Working title:** *Radial-temperature limits of sideband cooling in a soft-confinement guided trap: the inhomogeneous-light-shift cloud floor and the EIT-tolerant, Raman-fragile regime.*
 
 **Thesis:** In a guided trap with a soft radial mode the cooling floor is set by the radial cloud sampling the inhomogeneous 1064 light shift (the M3 effect); the floor rises with radial temperature (tail-dominated, **n̄_z ≈ 0.0095 at 100 µK**); and **EIT cooling tolerates the radial spread** (its ~150 kHz bright feature covers the ν_z(r) swing) while **RSC is fragile** (its ~16 kHz sideband does not). Addresses the inhomogeneous-broadening limiter the HCPCF field cites.
 
-**Type / venue:** cooling-physics — PRA / PR Applied. Stand-alone or P1's backbone (PI call; default backbone).
+**Type / venue:** cooling-physics — PRA / PR Applied. **P1's backbone** (the stand-alone option is withdrawn — mechanism is established; see status note).
 
 **Status:** mostly modeling [V]; optionally bench-validated by P1's floor-vs-radial-T scan.
 
@@ -103,7 +120,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **In hand [V]:** v13 M1–M5, the differential-light-shift cloud floor, the semiclassical MC, the regime map. **Needs bench (optional):** floor-vs-radial-T scan; cloud-floor/coverage; direct EIT-vs-RSC comparison.
 
-**Novelty/framing:** genuine cooling-physics; addresses a limiter the field actively cites; pairs with Paper T.
+**Novelty/framing:** correct, useful **geometry-specific** floor budget — but the mechanism and qualitative conclusions are established (incl. by the prospective host group, Wang 2022). Not a discovery; serves as P1's quantitative floor analysis, cited.
 
 **Positioning (Lan/Yb):** **the strongest Sr-relevant piece** — "the soft radial mode is recoil-limited regardless of line narrowness, so you still need compression" is exactly the point for Lan's Sr radial ground-state cooling; the regime map is platform-general.
 
@@ -113,8 +130,8 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 ## Cross-paper notes
 
-- **Order** (from the memo): **T now** → **P1** (after the two-photon-linewidth go/no-go) → **P2 / P3** (spun from P1's apparatus/data) → P4 → applications.
-- **T and P3 share the "why EIT, not RSC" spine** (rank-2 obstruction + radial fragility) — cross-cite; T is the clean theory, P3 the in-trap/cloud realization.
+- **Order (revised 2026-06-17):** **P1 is the first-author anchor** (after the two-photon-linewidth go/no-go); **T and P3 fold into P1** as cited motivation/backbone (neither is a standalone — see `novelty_findings.md`); **P2** is a short standalone methods note; then P4 → applications.
+- **T and P3 share the "why EIT, not RSC" spine** (rank-2 suppression + radial fragility) — both become **P1 sections**: T the design rationale (cited to Naber–Spreeuw 2016), P3 the floor budget (cited to the HCPCF / EIT-bandwidth literature).
 - **P2 shares P1's critical measurement** (the two-photon linewidth); merge-vs-standalone is a PI call.
-- **First preprint for the Lan application: Paper T** (write-now, atom-general, apparatus-independent).
+- **First-author paper for the Lan application: P1** (the experiment). The "write-now preprint before outreach" plan is **withdrawn** — T and P3 are not novel standalones. Lead the outreach with the **direct platform fit** (Wang 2022 — the host group's own in-fibre cooling) + the thesis-in-progress, not a manufactured-novelty note.
 - **Universal honesty flags:** novelty lit-check before *any* abstract; never "first cooling in a fibre"; pitch the program as the **enabling cold field-insensitive source**, with "breakthrough" reserved for the downstream OD-vs-cooling / Rydberg-NLO path (consolidated doc §11).

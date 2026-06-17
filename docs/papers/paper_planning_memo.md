@@ -9,18 +9,18 @@ The modelling program is essentially complete; remaining uncertainty is **bench-
 
 | # | paper — target result | in hand (modelling [V]) | still needs (experiment) |
 |---|---|---|---|
-| **T** | **Rank-2 limit** (theory note). The Δm=2 clock Raman is HFS-enabled → coherence-per-scatter pinned → clock-RSC floor lifts to ~0.45; EIT (near-detuned) is immune. | **complete**, verified 3 ways incl. two-manifold diagonalisation | **nothing** — publishable now |
+| **T** | **Rank-2 limit → P1 motivation, not standalone.** Physics correct & verified, but **prior art** (Naber–Spreeuw, PRA 94, 013427 (2016)); scope also narrower (the m=0 clock transition is Δm=0 and **coolable**). See `novelty_findings.md`. | **complete**, verified 3 ways | **n/a** — folds into P1, cited |
 | **1** | **Flagship.** Field-insensitive EIT sideband cooling of ⁸⁷Rb to **n̄_z ≈ 0.007 (P₀ ≈ 99%)** on the clock pair \|1,−1⟩/\|2,+1⟩ in an HCPCF, confirmed by sideband thermometry. *First EIT-SC in HCPCF + field-insensitive clock-pair cooling in a guided geometry (novelty check needed).* | operating point (Δ, OmR, δ₂, B), floor 0.0073, single-1560-EOM common-mode drive, thermometry method, full scheme survey | EOM coherence **(gating)**; gray molasses → n_r ≈ 9; in-fibre EIT n̄_z; calibrated sideband-asymmetry R; tagged-retro delivery (η_dp) |
 | **2** | **Methods/apparatus.** One seed + one 1560-EOM drives the whole sequence common-mode (passive sub-100 Hz, **no OPLL**); fast **RF-only** phase switching incl. EIT→thermometry. | architecture, spurious-comb audit (intermod 2.4×10⁻⁷), EIT→thermometry switch analysis | measured two-photon linewidth; demonstrated phase switching + comb cleanliness on the apparatus |
-| **3** | **Cooling physics.** Axial floor **vs radial T**; the inhomogeneous-light-shift **cloud floor** (tail-dominated, n̄_z ≈ 0.0095 at 100 µK); the **EIT-tolerant / RSC-fragile** regime map. *Addresses the inhomogeneous-broadening limiter the HCPCF field cites.* | v13 M1–M5, differential-light-shift cloud floor, semiclassical MC, regime map | floor-vs-radial-T scan; cloud-floor / coverage; direct EIT-vs-RSC comparison |
+| **3** | **Cooling physics → P1 backbone, not standalone.** Geometry-specific floor vs radial T (cloud floor n̄_z ≈ 0.0095 at 100 µK) + regime map. Mechanism is **established** (EIT bandwidth advantage; HCPCF DLS-floor literature; Wang PRR 4 L022058 (2022) — the host group). See `novelty_findings.md`. | v13 M1–M5, cloud floor, MC, regime map | floor-vs-radial-T scan; cloud-floor / coverage; direct EIT-vs-RSC |
 | **4** | **3D ground state.** **~88% 3D ground** (n_z ≈ 0.007, n_r ≈ 0.06/mode) via axial EIT-SC + radial **degenerate RSC** in a 2nd-1064 tight focus above the tip + adiabatic transfer. *The eye-catching extension: the cold, field-insensitive in-fibre source.* | radial dRSC scheme (within-F=1 Δm=−1, rank-1), 2nd-1064 trap design (8 µm, η_r 0.35, B 44 mG), transfer, 3D fraction | 2nd 1064 RSC beam + transverse 780 Raman/pump; radial dRSC demo; load-in/transfer efficiency; 3D thermometry |
 | **5+** | **Applications** (future). Cold-source-enabled in-fibre quantum memory / interferometry / few-photon NLO / collective 1D effects. | qualitative case + field demand (storage, interferometry want cold m=0) | the cold source (P1/P4) **plus** the application-specific capability |
 
 ## Suggested order and rationale
 
-1. **T — write now** (or fold into Paper 1's supplement). No experiment; clean negative result; clears the narrative for why clock-EIT, not clock-RSC.
+1. **T — fold into Paper 1** (cited motivation; **not a standalone** — prior art Naber–Spreeuw 2016). The verified core supports the why-clock-EIT-not-RSC narrative.
 2. **Paper 1 — the thesis core.** Do the **two-photon-linewidth measurement first** (go/no-go); if it passes, gray molasses → EIT cooling → sideband thermometry produce the headline. Everything downstream depends on this apparatus working.
-3. **Papers 2 & 3 — spun from Paper 1's apparatus/data**, in parallel with finishing P1. **Decide with the PI** whether Paper 3 (radial physics) is strong enough to stand alone or is better as Paper 1's backbone, and whether Paper 2 merges into Paper 1 or is a separate methods note. Default: P3 as P1's backbone, P2 as a short standalone methods paper.
+3. **Papers 2 & 3 — spun from Paper 1's apparatus/data**, in parallel with finishing P1. **P3 is P1's backbone** (the standalone option is withdrawn — mechanism is established; see `novelty_findings.md`); whether Paper 2 merges into Paper 1 or is a separate methods note is a PI call (default: P2 standalone).
 4. **Paper 4 — the big extension.** Needs new hardware (2nd 1064 beam + transverse Raman) and the load-in measurement; start the **load-in efficiency** study early since it gates the result and is independent of the cooling.
 5. **Applications — post-thesis.** Build on the cold source once P1/P4 deliver it.
 
@@ -28,6 +28,7 @@ The modelling program is essentially complete; remaining uncertainty is **bench-
 two-photon coherence ✓ → **Paper 1** (EIT cooling + thermometry) → **Papers 2/3** (architecture + radial physics) → **Paper 4** (radial dRSC + load-in → 3D ground state) → applications.
 
 ## Honesty flags for the framing [I/O]
+- **Novelty checked (2026-06-17):** Paper T and P3 are **not novel standalones** — both assemble established physics (T: Naber–Spreeuw, PRA 94, 013427 (2016); P3: EIT-bandwidth + HCPCF DLS-floor literature, incl. the host group's Wang, PRR 4, L022058 (2022)). They fold into **P1** as cited motivation/backbone. The first-author anchor is **P1**. See `novelty_findings.md`.
 - Novelty of "first EIT-SC in HCPCF" / "field-insensitive clock-pair cooling in a guided geometry" needs a **current literature check** before the abstract — populated, fast-moving area.
 - Don't claim "first cooling in a fibre" (that's RSC, Leong 2020). The defensible firsts are the two above.
 - Pitch the program as the **enabling cold, field-insensitive source** for the temperature-limited in-fibre ecosystem, not as cooling for its own sake.

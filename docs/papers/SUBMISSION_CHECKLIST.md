@@ -1,5 +1,11 @@
 # Paper T — pre-submission checklist
 
+> ⛔ **HOLD — DO NOT SUBMIT AS STANDALONE (2026-06-17).** The central result is **prior art**
+> (Naber–Spreeuw, Phys. Rev. A 94, 013427 (2016)); the scope is also narrower than the manuscript
+> claims (the m=0 clock transition is coolable). Paper T is **demoted to P1 motivation**. See
+> `novelty_findings.md`. This checklist applies **only if/when** the verified core is repackaged as
+> part of another paper.
+
 **Status:** complete draft; compiles clean to 5 pp (Phys. Rev. A, revtex4-2). The science is
 computed and verified (see `code/`). Everything below is editorial or administrative.
 

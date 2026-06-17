@@ -253,3 +253,4 @@ fig_*.png
 *.out
 *.synctex.gz
 docs/papers/*.pdf
+*Notes.bib

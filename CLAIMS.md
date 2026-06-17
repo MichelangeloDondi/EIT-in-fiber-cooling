@@ -83,10 +83,10 @@ README mutually consistent; this ledger is the human-readable face of that.
 | O3 | Polarization purity (low-bi kagome beat-length condition) | [I]/[O] | fibre spec / bench |
 
 ## Per-paper cross-reference (which claims each paper rests on)
-- **Paper T** — rank-2-obstruction note. Rests on **B4 + F7 + F8** (+ the FoM). All **[V]**. **UNBLOCKED.**
+- **Paper T** — rank-2-obstruction note. Physics rests on **B4 + F7 + F8** (+ the FoM), all **[V] and correct**. But **NOT NOVEL** (prior art: Naber–Spreeuw, PRA 94, 013427 (2016)) and scope is narrower (the m=0 clock transition is Δm=0 and coolable). **DEMOTED → P1 motivation, cited; not standalone.** See `docs/papers/novelty_findings.md`.
 - **P1** — flagship EIT-SC to the *axial* ground state + thermometry. Rests on **OP1–5, F1, F3, D1–5, S1–5**; bench-gated on **O1** (the two-photon linewidth).
 - **P2** — single-EOM common-mode methods (no OPLL). Rests on **A1–A2**; bench-gated on **O1**.
-- **P3** — inhomogeneous-light-shift / radial-recoil floor. Rests on **F4, R1–R3, S5**; atom-independent ⇒ **transferable** (the strongest Sr-relevant result).
+- **P3** — inhomogeneous-light-shift / radial-recoil floor. Rests on **F4, R1–R3, S5**; atom-independent ⇒ transferable. Mechanism **established** (EIT bandwidth advantage; HCPCF DLS-floor literature; host group Wang 2022) ⇒ **P1 backbone, not a novel standalone**. See `docs/papers/novelty_findings.md`.
 
 **Honesty rails.** NEVER "first cooling in a fibre". NEVER headline a 3D ground state (it is ~1 %).
 Defensible firsts: **EIT-SC in an HCPCF**, **field-insensitive clock-pair cooling**, **single-EOM
