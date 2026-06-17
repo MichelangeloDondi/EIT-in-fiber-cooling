@@ -6,6 +6,8 @@
 3. *Why electromagnetically-induced-transparency cooling is the field-insensitive route for alkali clock qubits*
 
 **Target:** Physical Review A (full theory note), **arXiv-first**. Length ~5–7 pp, 2–3 figures.
+**MANUSCRIPT:** `docs/papers/paper_T.tex` (+ `paper_T.bib`) — assembles the verified core; **compiles clean to 4 pp** (PRA revtex4-2). §III–V, §VII, abstract, table, FoM box are the computed core; §I/II/VI/VIII are first drafts; Fig. 1 (level scheme) stubbed, to be drawn.
+
 **Status:** all load-bearing results are **[V]** (see CLAIMS.md: B4 + F7 + F8 + the FoM). UNBLOCKED.
 **One-sentence thesis:** connecting a field-insensitive alkali clock pair with a single two-photon
 momentum kick requires a rank-2 (Δm = 2) operator, which vanishes in a J = ½ ground manifold, so

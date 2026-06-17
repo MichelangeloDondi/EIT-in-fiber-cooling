@@ -242,3 +242,14 @@ fig_*.png
 
 # Archives (regenerate; never commit)
 *.zip
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.synctex.gz
+docs/papers/*.pdf
