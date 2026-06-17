@@ -140,7 +140,7 @@ SCOPE = {
     "dimensionality": "1D (axial only); radial mode is NOT cooled",
     "atom_picture":   "single-atom / column-averaged; ensemble OD + collisions are separate",
     "trap":           "nu_z inferred from radial freq, NOT directly measured [O]",
-    "detection":      "in-fibre F2->F'3 cycling assumed; SNR budget not closed [O]",
+    "detection":      "ensemble ABSORPTION/OD (OD~1 @N~3900, not photon-limited); guided fluor. <1 ph/atom + forward swamped by readout -- see detection_snr.py [N_atoms, backscatter = O]",
 }
 
 def print_summary():
