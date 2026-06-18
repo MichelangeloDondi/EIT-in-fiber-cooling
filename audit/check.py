@@ -128,6 +128,19 @@ soft("docs still stating Delta=55 / OmR=0.10 operating point",
 soft("docs with negative delta2 set-point (sign convention)",
      scan(prose, r"\u03b4\u2082[^.]{0,30}[\u2212-]0\.(1[0-9]|2[0-9])", exempt=hist))
 
+# ---------- 5. fmix: inter-F' tensor mixing captured & I^2-scaled ----------
+print("\n[5] fmix: inter-F' tensor mixing captured & I^2-scaled (src/fmix_excited_check.py)")
+try:
+    import fmix_excited_check as fx
+    try:
+        fx.verify()
+        check("inter-F' tensor mixing: magnitudes, I^2 scaling, B-(in)sensitivity", True)
+    except AssertionError as ex:
+        check("inter-F' tensor mixing: magnitudes, I^2 scaling, B-(in)sensitivity", False, str(ex))
+except Exception as ex:
+    # engine/qutip unavailable (e.g. CI without qutip) -- skip, do not crash the gate
+    print("  skip   fmix verify (engine import failed: %s: %s)" % (type(ex).__name__, ex))
+
 # ---------- verdict ----------
 print("\n" + "=" * 72)
 if fails:

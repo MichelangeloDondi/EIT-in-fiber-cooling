@@ -272,14 +272,16 @@ class Config:
     #   "clean_lambda"      -- ideal 3-field reference (no EOM/parasitics)
 
     # ---- (b) detunings (2pi MHz) --------------------------------------------
-    Delta: float = 55.0          # single-photon detuning of control/probe, BLUE of |F'=2>
+    Delta: float = 45.0          # single-photon detuning of control/probe, BLUE of |F'=2>;
+                                 #   v14 operating point (flat 40-55); matches preset()/SSOT
     delta2: float = 0.0          # PRIMARY two-photon (Raman) detuning. f_mod is derived
                                  #   from this per configuration (see Section 3).
     Drep1: float = 15.0          # repump-1 detuning, BLUE of |F=1>->|F'=1>
     Drep2: float = 5.0           # repump-2 detuning, BLUE of its line (see repump_option)
 
     # ---- (c) intensities / Rabi (2pi MHz) -----------------------------------
-    OmR: float = 0.10            # probe/control Rabi ratio  Omega_p / Omega_c (key lever)
+    OmR: float = 0.12            # probe/control Rabi ratio  Omega_p / Omega_c (key lever);
+                                 #   v14 operating point; matches preset()/SSOT
     Omega_rep: float = 3.0       # repump Rabi (each repumper)
     Omega_tot_abs: Optional[float] = None   # override the pinned Omega_tot if set
     #   Total Rabi pinned to EIT: Omega_tot = sqrt(4*Delta*nu_z);
@@ -642,10 +644,12 @@ def _selftests():
     check("single-end auto-beta realizes requested OmR", abs(OmR_eff - cfg2.OmR) < 1e-6)
 
     # (7) the table surfaces a parasitic near-resonance: down-shifted retro carrier sits
-    #     ~88 MHz from F=2->F'1 (a channel the linearized solver only partly carried)
+    #     ~198 MHz from F=2->F'1 (a channel the linearized solver only partly carried).
+    #     Value tracks the v14 single_end_tagged preset (Delta=45, 2fA=400): the retro
+    #     carrier at Delta-2fA=-355 is nearest the dipole-allowed F'=1 line at -156.94.
     d_to_F1 = dict(near_resonances(g2["retro_carrier_rejected"].freq)).get("F2->F'1")
-    check("retro carrier flagged ~88 MHz from F=2->F'1",
-          d_to_F1 is not None and abs(abs(d_to_F1) - 88.06) < 1.0)
+    check("retro carrier flagged ~198 MHz from F=2->F'1",
+          d_to_F1 is not None and abs(abs(d_to_F1) - 198.06) < 1.0)
 
     print(f"\n  {n_ok}/{n_ok} checks passed.")
 
@@ -693,9 +697,27 @@ def Eg(F, m, B):
     x = (gJ - gI)*uB*B/A_HFS; sgn = +1 if F == 2 else -1
     return -A_HFS/(2*(2*II+1)) + gI*uB*m*B + sgn*(A_HFS/2)*np.sqrt(1+4*m*x/(2*II+1)+x**2)
 
-def excited_energies(B):
-    Ex = [(0, 0)] + [(1, m) for m in (-1, 0, 1)] + [(2, m) for m in range(-2, 3)] \
-         + [(3, m) for m in range(-3, 4)]
+# 16-sublevel ordering of the diagonalized 5P3/2 manifold (|F', m'>, F'=0..3).
+# Exposed at module scope so it is importable (the F'-mixing check uses it) and
+# shared by excited_hamiltonian / excited_energies.
+Ex = [(0, 0)] + [(1, m) for m in (-1, 0, 1)] + [(2, m) for m in range(-2, 3)] \
+     + [(3, m) for m in range(-3, 4)]
+
+# 1064 nm tensor light-shift coefficient (2*pi MHz): scales the bare rank-2
+# operator T0 in the excited-manifold Hamiltonian.  A single module constant so
+# the F'-mixing check (src/fmix_excited_check.py) and the radial layer (which
+# passes the local intensity fraction s(r) via tensor_scale) share one source of
+# truth -- no duplicated literal that could drift.
+C_TENSOR = 6.233
+
+def excited_hamiltonian(B):
+    """5P3/2 excited-manifold pieces at field B (G), in the |F', m'> basis `Ex`:
+       H0 = diag(EHF centroids + linear Zeeman);
+       T0 = the bare, UNSCALED rank-2 tensor operator (3*Jx^2 - 3.75*I over the
+            16 sublevels).  Its inter-F' (off-diagonal-in-F') blocks carry the
+            second-order F'-mixing tensor shift; the intra-F' blocks are the
+            ordinary within-manifold tensor shift.
+       The in-trap energies are eigh(H0 - C_TENSOR*tensor_scale*T0)."""
     prod = [(1.5-a, 1.5-b) for a in range(4) for b in range(4)]
     U = np.zeros((16, 16))
     for ci, (Fp, mp) in enumerate(Ex):
@@ -707,7 +729,16 @@ def excited_energies(B):
     Jx = U @ np.kron(Jx32, np.eye(4)) @ U.T
     def gF(Fp): return gJ*(Fp*(Fp+1))/(2*Fp*(Fp+1)) if Fp > 0 else 0.0
     H0 = np.diag([EHF[Fp] + gF(Fp)*uB*B*mp for (Fp, mp) in Ex]).astype(float)
-    w, v = np.linalg.eigh(H0 - 6.233*(3*Jx@Jx - 3.75*np.eye(16)))
+    T0 = 3*Jx@Jx - 3.75*np.eye(16)
+    return H0, T0, Ex
+
+def excited_energies(B, tensor_scale=1.0):
+    """In-trap 5P3/2 sublevel energies, max-overlap-assigned back to |F', m'>.
+       tensor_scale multiplies C_TENSOR (1.0 on-axis; the radial layer passes the
+       local intensity fraction s(r)).  With the default, this is bit-identical to
+       the pre-refactor function -- C_TENSOR*1.0 reproduces the former literal."""
+    H0, T0, _ = excited_hamiltonian(B)
+    w, v = np.linalg.eigh(H0 - C_TENSOR*tensor_scale*T0)
     out = {}
     for (Fp, mp) in Ex:
         if Fp in (0, 1, 2, 3):

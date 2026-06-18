@@ -8,7 +8,7 @@ Scope: 87Rb clock-EIT axial sideband cooling + asymmetric-sideband thermometry, 
 
 Cooling and thermometry share the *same* Λ pair, beams, microwave EOM, and field-insensitive
 states — they differ only in **operation** (CW near-resonant vs pulsed far-detuned). The single
-real conflict is the **single-photon detuning** (cooling ~55 MHz, thermometry far-detuned). The
+real conflict is the **single-photon detuning** (cooling ~45 MHz, thermometry far-detuned). The
 thermometry simulation now resolves this: with **Blackman-shaped sideband-π pulses and a
 calibration curve, the ratio R = RSB/BSB reads ⟨n⟩ faithfully and the result is independent of Δ**
 (coherent carrier leak is shaped away; the incoherent scatter re-entry is a near-constant offset
@@ -75,7 +75,7 @@ double-pass) or by re-locking the master between cooling and thermometry.
 
 ## Config 2 — Two lasers (A = EIT/near-resonant family, B = thermometry)
 
-Laser A locked at Δ≈55 (control + probe + repumps + readout). Laser B locked far-detuned (~4 GHz),
+Laser A locked at Δ≈45 (control + probe + repumps + readout). Laser B locked far-detuned (~4 GHz),
 with its **own** 6.835 GHz EOM for the pulsed Raman pair + the ±ν_z scan. A and B run sequentially
 (cool with A, measure with B), time-multiplexed into the shared delivery via a switch.
 
