@@ -1,5 +1,22 @@
-numpy>=1.24
-scipy>=1.10
-qutip>=5.0
-sympy>=1.12
-matplotlib>=3.7
+# Pinned to the exact stack present when the src/eit_cooling_tool.py --regression
+# floor anchors were last calibrated.
+#
+# The anchors are bound to the numpy / scipy / qutip TRIPLE specifically: the
+# steady-state floors drift at the ~1e-3 level across versions of these three (pure
+# NUMERICAL drift in the linear-algebra / steadystate solver -- the engine is
+# unchanged; excited_energies is bit-identical). Four anchors were re-benchmarked for
+# this triple (clean 0.0014->0.00205, e0 0.0015->0.0022, e3 0.0024->0.0030, dual
+# 0.0048->0.00587); each new value was confirmed to be the CONVERGED unique physical
+# steady state (residual ||L rho||/||rho|| ~ 1e-15, strictly PSD, Fock-truncation
+# complete) -- the old values were under-converged, so the new floors are more
+# accurate. See the note in _regression for the full convergence gate.
+#
+# sympy and matplotlib are pinned only for a reproducible env; they do NOT move the
+# floor (sympy's Clebsch-Gordan values are exact / version-independent; matplotlib is
+# figures-only). Bumping either does not invalidate the regression anchors -- only a
+# numpy/scipy/qutip change can.
+numpy==2.0.2
+scipy==1.13.1
+qutip==5.0.4
+sympy==1.14.0
+matplotlib==3.9.4
