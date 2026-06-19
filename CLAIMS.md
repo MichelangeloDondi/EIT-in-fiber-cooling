@@ -32,6 +32,12 @@ README mutually consistent; this ledger is the human-readable face of that.
 | F7 | Clock-RSC floor ~0.45 — **DISQUALIFIED** (rank-2 obstruction) | [V] | `audit_C_rank2.py` + FoM; `docs/clock_RSC_resolution.md` |
 | F8 | clock-RSC 0.0137 = obstruction-free **idealization**, NOT the floor | [V] (not physical) | `raman_sbc.py`; see resolution |
 
+## Clock-scheme leg assignment (control↔probe) — `src/clock_branching_check.py`, `docs/D1_hybrid_findings.md`
+| # | Claim | Tier | Source |
+|---|---|---|---|
+| LS1 | \|F′2,0⟩ dark-leg branching is **reversed** vs \|F′2,2⟩: clock probe leg \|1,−1⟩ collects 1/4 (stretched \|1,+1⟩ 3/4) ⇒ 3/4 of dark-leg decay diffuses onto the \|2,+1⟩ control leg | [V] | `clock_branching_check.py` (exact CG/6j; validated vs the stretched 0.75/0.25 anchor) |
+| LS2 | Control↔probe **swap UNDECIDED**: diffusion favors it (clean-Λ 0.0072→0.0022, 3.29×) but the naive swap is 3.3× **worse** (0.0061→0.0204; current repumps mis-clear the F=2-dark load). Decision needs repumps re-pointed for F=2-dark + the deciding run | [O] | external `clock_combined_solve.py` (in-repo-unverified); `docs/D1_hybrid_findings.md` |
+
 ## Field insensitivity — Audit-C (`audit_C_rank2.py`, `audit_C_breitrabi.py`, …)
 | # | Claim | Tier | Source |
 |---|---|---|---|
