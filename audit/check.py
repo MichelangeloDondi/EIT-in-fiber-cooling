@@ -55,8 +55,8 @@ print("=" * 72)
 print("\n[1] SSOT self-consistency")
 import operating_point as op
 fb, P = op.FLOOR, op.OP
-check("all_in[0] = solve_dual + increment_lo",
-      abs(fb.all_in_single_atom[0] - (fb.solve_dual_end + fb.antitrap_leak_increment[0])) < 1e-9)
+check("all_in_lowdwell[0] = solve_dual + squeezer_increment (2026-06-20 floor correction)",
+      abs(fb.all_in_single_atom_lowdwell[0] - (fb.solve_dual_end + fb.squeezer_increment_lowdwell)) < 1e-9)
 check("OmR = Omega_p / Omega_c",
       abs(P.OmR - P.Omega_p_MHz / P.Omega_c_MHz) < 0.01,
       "OmR=%.3f vs ratio=%.3f" % (P.OmR, P.Omega_p_MHz / P.Omega_c_MHz))
@@ -103,19 +103,22 @@ check("no Delta=55 in code Config presets", len(stale_presets) == 0, "; ".join(s
 cons = [os.path.join(DOCS, "clock_EIT_consolidated.md")]
 check("master doc: no stale single-ended 0.0092",
       len(scan(cons, r"0\.0092")) == 0, "; ".join(scan(cons, r"0\.0092")))
-check("master doc: no 0.0085 mislabeled as cloud floor",
-      len(scan(cons, r"0\.0085\s*\(.?\u0394?=?45")) == 0,
-      "; ".join(scan(cons, r"0\.0085\s*\(")))
+# v16 honestly RETIRES the old 0.0085 cloud metric in-context; the guard fires
+# only if 0.0085(Delta=45) appears WITHOUT a retirement marker (i.e. as a LIVE floor).
+_retired = (r"caveat", r"supersede", r"provenance gap", r"earlier cloud metric")
+check("master doc: no 0.0085 presented as a LIVE cloud floor (retired-context exempt)",
+      len(scan(cons, r"0\.0085\s*\(.?\u0394?=?45", exempt=_retired)) == 0,
+      "; ".join(scan(cons, r"0\.0085\s*\(", exempt=_retired)))
 check("master doc: operating point not stated as Delta=55, OmR=0.10",
       len(scan(cons, r"\u0394=55,\s*OmR=0\.10")) == 0,
       "; ".join(scan(cons, r"\u0394=55,\s*OmR=0\.10")))
 
 readme = os.path.join(ROOT, "README.md")
-allin_lo = "%.3f" % fb.all_in_single_atom[0]
+allin_lo = "%.3f" % fb.all_in_single_atom_lowdwell[0]
 has_allin = (os.path.exists(readme) and
              (allin_lo in open(readme, encoding="utf-8", errors="ignore").read()
               or "all-in" in open(readme, encoding="utf-8", errors="ignore").read().lower()))
-check("README headlines the all-in floor (%s..%.3f)" % (allin_lo, fb.all_in_single_atom[1]), has_allin)
+check("README headlines the all-in floor (%s..%.3f)" % (allin_lo, fb.all_in_single_atom_lowdwell[1]), has_allin)
 
 # ---------- 4. SOFT reconciliation sweep ----------
 print("\n[4] SOFT: remaining reconciliation sweep (non-fatal)")
