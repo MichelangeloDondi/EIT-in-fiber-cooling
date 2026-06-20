@@ -127,17 +127,21 @@ class FloorBudget:
     cloud_mc_100uK:       float = 0.0094   # legacy unverified semiclassical (driver absent); see cloud_qs_clk2
     cloud_frozen_ceiling: float = 0.0126   # S2 frozen bound @100uK -- SUPERSEDED as a realized ceiling
                                            #   (dynamic MC: realized cooling floor sits BELOW quasi-static)
-    # CLOUD ALL-IN = NO single value. = cooling(r) + squeezer integral, with OPPOSITE radial weighting:
+    # CLOUD ALL-IN = cooling(r) + squeezer integral. BOTH halves now favor the cold center:
     #   * cooling half CHARACTERIZED (dynamic MC, 2026-06-20): W(r) peaks at the cold center,
     #     anti-correlated with n_ss(r), so the limit cycle is cooling-rate-weighted -> realized sits
     #     BELOW quasi-static (frozen 0.0126 superseded; dynamics benign). 3-LEVEL ENGINE => RATIO
     #     result (suppression ~1.2x/3.0x/7.4x at 25/100/400uK in its own bracket), NOT the clock floor;
     #     clock magnitude = clk2 per-radius re-run [O].
-    #   * squeezer half [O]: rate ~ P_e(Delta_eff(r)) RISES off-axis (opposite weighting); kernel
-    #     ~ nu_z(r)^2 falls -- sign-uncertain. Fold squeezer into the MC per-radius pass (one-term add).
+    #   * squeezer half DE-RISKED (radial_pe.py, 2026-06-20): P_e(F'2) FALLS off-axis (1.53->0.88e-5
+    #     over r=0-10um) because the M3 shift is COMMON to both legs (delta2 unchanged, dark state
+    #     PRESERVED) and the field weakens -> heat rate R_sq = P_e*kernel FALLS to 0.32x at r=10. The
+    #     off-axis RATE-RISE is DISPROVEN (was the feared adverse half); only the 1/W tail amplification
+    #     remains, which the dwell-weighting defeats (as it did for cooling). Magnitude confirm = MC
+    #     dwell-weighted integral [O, not sign-deciding].
     #   (provenance: the 0.0085 semiclassical-MC driver asserted [V] in clock_EIT_consolidated.md:99
-    #    was NOT in the file set; cloud_mc_100uK below is that unverified clock-engine quasi-static.)
-    cloud_all_in: str = "[O] cooling(r) [MC: benign, below quasi-static, 3-level ratio result] + squeezer integral [O, off-axis-rising]; do NOT enter flat 0.012/0.016"
+    #    was NOT in the file set; cloud_qs_clk2 above is the verified clock-engine quasi-static ceiling.)
+    cloud_all_in: str = "[I, cross-engine] cooling(r) [MC: benign, below quasi-static] + squeezer ~0.003 [de-risked: P_e falls off-axis, rate-rise disproven] => ~0.007/0.012/0.022 at T_r=25/100/400uK, STRONGLY T_r-gated. Cloud ~= single-atom if radial-cooled to ~100uK. Do NOT enter a flat 0.012/0.016."
 
     # repump dwell status -- MEASURED 2026-06-20 (was [O])
     repump_dwell_status: str = "[I, MEASURED] clk2 config-A F'=1 dwell P_e(F'1)=8.4e-6 -- 5x BELOW the low-dwell ref 4e-5 => firmly LOW-dwell; high-dwell branch RETIRED. Proxy: clk2 pe_F1 ~ grid P_e_rep [I, auditor to vet]; F'2 residual 1.8e-5 cross-checks dark-state ~4e-5. Squeezer increment 0.003 (at the 4e-5 ref) is thus CONSERVATIVE."
