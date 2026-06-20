@@ -103,9 +103,12 @@ check("no Delta=55 in code Config presets", len(stale_presets) == 0, "; ".join(s
 cons = [os.path.join(DOCS, "clock_EIT_consolidated.md")]
 check("master doc: no stale single-ended 0.0092",
       len(scan(cons, r"0\.0092")) == 0, "; ".join(scan(cons, r"0\.0092")))
-check("master doc: no 0.0085 mislabeled as cloud floor",
-      len(scan(cons, r"0\.0085\s*\(.?\u0394?=?45")) == 0,
-      "; ".join(scan(cons, r"0\.0085\s*\(")))
+# v16 honestly RETIRES the old 0.0085 cloud metric in-context; the guard fires
+# only if 0.0085(Delta=45) appears WITHOUT a retirement marker (i.e. as a LIVE floor).
+_retired = (r"caveat", r"supersede", r"provenance gap", r"earlier cloud metric")
+check("master doc: no 0.0085 presented as a LIVE cloud floor (retired-context exempt)",
+      len(scan(cons, r"0\.0085\s*\(.?\u0394?=?45", exempt=_retired)) == 0,
+      "; ".join(scan(cons, r"0\.0085\s*\(", exempt=_retired)))
 check("master doc: operating point not stated as Delta=55, OmR=0.10",
       len(scan(cons, r"\u0394=55,\s*OmR=0\.10")) == 0,
       "; ".join(scan(cons, r"\u0394=55,\s*OmR=0\.10")))

@@ -203,8 +203,8 @@ SCOPE = {
     "dimensionality": "1D (axial only); radial mode is NOT cooled",
     "atom_picture":   "single-atom / column-averaged; ensemble OD + collisions are separate",
     "trap":           "nu_z inferred from radial freq, NOT directly measured [O]",
-    "detection":      "ensemble ABSORPTION/OD (OD~1 @N~3900, not photon-limited); guided fluor. <1 ph/atom + forward swamped by readout -- see detection_snr.py [N_atoms, backscatter = O]",
-    "survival":       "~100% through cooling: radial recoil heating ~7-30 uK << 1094 uK depth; anti-trap benign (rho_ee~0.01); depth-limited ~16500 ph bounds READOUT -- see radial_survival.py",
+    "detection":      "in-fibre F2->F'3 cycling; SNR/readout tier per CLAIMS D-series (NOT re-assessed in this floor model -- do not infer a tier here)",
+    "survival":       "trap lifetime / loss tier per CLAIMS S-series (NOT re-assessed in this floor model)",
 }
 
 def print_summary():
