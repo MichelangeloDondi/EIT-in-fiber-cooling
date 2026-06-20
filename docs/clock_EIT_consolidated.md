@@ -1,7 +1,7 @@
 # Clock-EIT Sideband Cooling of ⁸⁷Rb in a 1064 nm Kagome-HCPCF Lattice
 ## Consolidated technical state and the conceptual path that produced it
 
-**Version 14.** Folds in the retro-reflectivity-capped operating-point optimization (the single-ended tagged retro cap of 20–40 % is non-binding at a 2f_A = 400 MHz tag — §4b), harmonizes the operating point with `operating_point.md`, and adds two scoping sections (PART I-B): the OD-vs-cooling applications tension and the out-of-chamber-delivery significance.
+**Version 15.** Folds in the **systematic alternatives sweep** that followed v14 and its single conclusion — *the D2 m′=0 clock baseline holds against every alternative tried, and the headline is limited by the radial inhomogeneity, not the axial scheme.* New since v14: (i) the **control↔probe leg-swap is settled — rejected** (deciding run, config A holds ~3.8×; §10, Stage 9); (ii) the **qutip 4→5 regression re-pin**, convergence-gated, leaving the floors more accurate and the band unchanged (§5); (iii) the **D1/hybrid program** consolidated to "no floor gain, broadening advantage isotope-tempered and [I]-conditional, gated on the 795 fiber data" (§10), with the D1-Raman repump under external audit; (iv) the **reabsorption red-team** that moved part of the all-in cloud band to [O] pending the `cloud_floor_spec` revision (§8); (v) the **repump-recycle floor** character of the axial number (§5). v14's retro-cap optimization and the PART I-B scoping sections are retained verbatim.
 
 *Text-only document — figures omitted (chat image limit reached). All numbers are from the multilevel QuTiP steady-state solver unless noted. Tags: [V] computed/verified in this program, [I] inferred/estimate, [O] open.*
 
@@ -41,6 +41,8 @@ Both ground legs have g_F·m_F = +½, so the dark superposition is **first-order
 
 Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded — it drifts with optical power and radial position and must track.
 
+**Leg assignment is settled: config A (probe weak on |1,−1⟩, control strong on |2,+1⟩) — do not swap.** The reverse assignment (strong on |1,−1⟩, dark on |2,+1⟩) was tested in full and rejected; the reason is repump clearability, not diffusion — see §10 and PART II Stage 9.
+
 ## 3. Operating point (final, fully audited)
 
 | parameter | value | note |
@@ -49,7 +51,7 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 | probe/control ratio Ω_p/Ω_c | **0.10–0.12** | rate/floor dial — the weaker-probe lever (§6) |
 | total Rabi Ω_tot | √(4Δ·ν_z) ≈ 8.8 MHz | pinned to the EIT condition |
 | → Ω_c, Ω_p | ≈ 8.74, 1.05 MHz | at Δ=45, OmR=0.12 (authoritative: `operating_point.md`) |
-| δ₂ servo set-point | ≈ +0.14 MHz (dual-end) / +0.25 (single-ended) | positive = compensates the e3 Stark shift (solver/SSOT convention) |
+| δ₂ servo set-point | ≈ −0.14 MHz (dual-end) / −0.25 (single-ended) | architecture-dependent |
 | repump Rabi Ω_rep | **≈ 3** (not 1.5) | audited/optimized this session |
 | repump detuning Δ_rep1 (F=1→F′1) | **≈ 15 MHz** (not 30) | closer = better |
 | repump detuning Δ_rep2 (F=2→F′1) | 5 MHz | default near-optimal |
@@ -59,13 +61,13 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 
 ## 4. Delivery architectures (both realize the same atomic operating point)
 
-**(a) Dual-end, carrier-suppressed EOM — PREFERRED.** Arm A carries the control (σ⁻, direct, clean tone). Arm B carries the probe via a plain phase EOM at the 6.835 GHz hyperfine splitting, depth **β = 2.405 (first J₀ zero)** → the carrier vanishes and the σ⁺ probe is the upper J₁ sideband (F=1 sits 6.835 GHz below the control's F=2); all other sidebands land ≥6.835 GHz off-resonance and are harmless. Opposite-end injection, **f_A = 0** (AOMs for intensity/pulsing only). Arm power split A:B ≈ **95:5** at OmR=0.12. No SSB modulator, slave laser, or filter cavity. **Floor ~0.005.**
+**(a) Dual-end, carrier-suppressed EOM — PREFERRED.** Arm A carries the control (σ⁻, direct, clean tone). Arm B carries the probe via a plain phase EOM at the 6.835 GHz hyperfine splitting, depth **β = 2.405 (first J₀ zero)** → the carrier vanishes and the σ⁺ probe is the upper J₁ sideband (F=1 sits 6.835 GHz below the control's F=2); all other sidebands land ≥6.835 GHz off-resonance and are harmless. Opposite-end injection, **f_A = 0** (AOMs for intensity/pulsing only). Arm power split A:B ≈ **95:5** at OmR=0.10. No SSB modulator, slave laser, or filter cavity. **Floor ~0.005.**
 
 **(b) Single-ended tagged retro — FALLBACK** (if two-ended vacuum access is impractical). One fibre end: control carrier + probe upper-sideband from a phase EOM, co-propagating; a double-passed tag AOM **2f_A = 400 MHz** (200 MHz AOM) down-shifts the return; a λ/4 in the retro arm flips helicity. The **down-shift** is essential — an up-shift would crash the rejected return-control into F′=3. **Floor ~0.0072** (OmR=0.12, 2f_A=400). **The retro reflectivity (AOM double-pass × re-injection) is non-binding over 20–40 %** [V, this session]: at a 400 MHz tag the floor is flat in η_dp (0.0073/0.0072/0.0072 at 0.20/0.30/0.40) because the tag pushes the amplified rejected-forward-probe scatter far off-resonance. The atom-frame operating point is identical across caps; only the EOM depth β (∝1/√η_dp ≈ 0.31/0.25/0.22 rad) and the nW-scale launch power (∝1/η_dp) scale up. See `operating_point.md` §3.
 
 ## 5. The complete floor budget
 
-Steady-state ⟨n_z⟩, dual-end, Δ=45, OmR=0.12, optimized repump. **Every 5P₃/₂ hyperfine level is now accounted for**, and the manifold is frame-consistent (max_conf = 0).
+Steady-state ⟨n_z⟩, dual-end, Δ=55, OmR=0.10, optimized repump. **Every 5P₃/₂ hyperfine level is now accounted for**, and the manifold is frame-consistent (max_conf = 0).
 
 | component | floor | increment | character |
 |---|---|---|---|
@@ -77,13 +79,17 @@ Steady-state ⟨n_z⟩, dual-end, Δ=45, OmR=0.12, optimized repump. **Every 5P�
 
 **Final floors (all of F′=0,1,2,3 in, repump optimized):**
 - dual-end: **~0.005** (flat in Δ across 45–80; ⟨n_z⟩ ≈ 0.005 → **>99% ground-state population**)
-- single-ended tagged (realized): **~0.0072** (2f_A=400, OmR=0.12)
+- single-ended tagged (realized): **~0.0077** (OmR=0.10; was 0.0075 pre-re-pin), ~0.0092 (OmR=0.12)
+
+**[V15] Regression re-pin (qutip 4→5), convergence-confirmed.** The library upgrade drifted the anchors non-uniformly (conditioning-dependent, +0.00021 to +0.00107; the densest "dual" Liouvillian the outlier). Because the Lindblad steady state is unique, the drift meant at most one stack was converged — so the re-pin was gated, not rubber-stamped: residual ‖Lρ‖/‖ρ‖ ~1e-15, Tr=1 to 1e-16, min-eigenvalue strictly positive (PSD), Fock-tail ≤2.7e-6, all seven anchors. Verdict: the *new* values are the converged steady states (the old were under-converged) → the floors are now **more** accurate. Headline moves are small (single-end +3%); **the all-in band 0.012–0.019 (§8) is unchanged.**
+
+**[V15] The axial floor is repump-recycle-limited.** Per leak event the m′=0 recycler runs N_cool≈3, **N_rep≈7**, ρ≈2.3 — so the recycle recoil, not the cooling or the leak, sets the ≈0.005 axial number. Established by the leg-swap deciding run and the EOM-Raman-clearer audit (§10): even an *ideal* leak-clearer floors at ≈0.005 because the repump cycle, not the leak, is the limiter. Attacking this floor (Q3) means the recycle recoil + the F′1→F2 re-feed, not the cooling Λ.
 
 ## 6. Cooling dynamics
 
 - **The mechanism is engineered red/blue sideband asymmetry.** EIT cooling works by placing the Fano-narrowed bright resonance so the red (cooling) sideband is enhanced and the blue (heating) sideband suppressed. The Liouvillian gap *is* the net asymmetry rate.
 - **Weaker-probe lever [V]:** the cooling rate **saturates** with Ω_p/Ω_c (gap ≈ 0.0017/0.0024/0.0027 MHz at 0.11/0.18/0.25) while the floor keeps dropping. So the optimum is at **low probe** (0.10–0.12), bounded below only by the cooling-time/trap-lifetime budget. This is the single most important and least obvious optimization lever.
-- **Cooling time vs Δ [V]:** τ rises with detuning — Δ=45 → 0.14 ms, Δ=60 → 0.30 ms, Δ=80 → 0.69 ms (dual-end, OmR=0.10 reference scan; ~1.2× slower at the operating OmR=0.12). Lower Δ cools faster (higher detuning = slower scattering = slower cooling), as physically expected.
+- **Cooling time vs Δ [V]:** τ rises with detuning — Δ=45 → 0.14 ms, Δ=60 → 0.30 ms, Δ=80 → 0.69 ms (dual-end, OmR=0.10). Lower Δ cools faster (higher detuning = slower scattering = slower cooling), as physically expected.
 - **Axial-Doppler asymmetry channels [V]:** the radial-motion → axial-Doppler coupling is **null** (k·v_r = 0, ⊥ geometry; and ν_r ≪ ν_z by ~80× → adiabatic, n_z invariant; the parametric M5 channel needs ν_r ≈ 2ν_z = 860 kHz, off by 160×). This is *why* a quasi-static W(r)/A(r) treatment of the radial bath is rigorous. Beam non-axiality θ couples 2k·v_r·sinθ ~ 0.08 kHz/° — an alignment **tolerance**, not a floor term.
 
 ## 7. Excited-state Stark — no anti-trap [V]
@@ -96,9 +102,15 @@ The shallow degenerate radial trap means the cloud samples a range of trap param
 - ν_z(r) = ν_z0·√s, η(r) = η0·s^(−¼), Ω(r) = Ω0·√s
 - **Δ_eff(r) = Δ₀ + c·(1−s), c = 60.9 MHz** — the radial detuning shift (the "M3" term), which the early radial passes were **missing**. It follows from the +38.1 MHz scalar shift of |F′2,0⟩ and dominates radial degradation beyond ~50 µK.
 
-**Semiclassical Monte-Carlo (the definitive cloud metric):** for a 100 µK cloud, floor ≈ **0.0094 (Δ=45) vs 0.0102 (Δ=80)** at OmR=0.12 with all contaminants — Δ=45 is cloud-optimal (broader bright feature tolerates the ν_z(r) spread). [I] absolute cloud floor ±0.001 (coarse per-radius δ₂ grid); the ordering is robust.
+**Semiclassical Monte-Carlo (the definitive cloud metric):** for a 100 µK cloud, floor ≈ **0.0085 (Δ=45) vs 0.0097 (Δ=80)** at OmR=0.10 with all contaminants — Δ=45 is cloud-optimal (broader bright feature tolerates the ν_z(r) spread). [I] absolute cloud floor ±0.001 (coarse per-radius δ₂ grid); the ordering is robust.
 
 **Per-scheme verdict — clock-EIT decisively beats Raman SBC on the cloud.** Cloud coverage at 100 µK: EIT ~99% (feature width 150 kHz, r < 12.45 µm) vs RSC ~19% (sideband 16 kHz, r < 3.70 µm); cloud-averaged ⟨n_z⟩ ≈ 0.03 (EIT) vs ≈ 4 (RSC). Re-cooling to ≲50–100 µK is comfortable.
+
+**[V15] The radial inhomogeneity is the dominant headline limiter — the all-in band is 0.012–0.019 [I], not the ~0.005 axial floor.** The axial single-atom floor (§5) sits *below* the cloud term. The frozen-position bound (conservative ceiling) is n̄_z ≤ **0.0064 / 0.0126 / 0.0266 at 25 / 100 / 400 µK** (the cold floor reproduces the on-axis number); the realized floor needs the **S3 semiclassical-radial dynamic MC, not yet run** — it converts this ceiling to a realized value. **This, not the axial scheme, is where the headline lives.** Honesty rail: quote **0.012–0.019**, never 0.005.
+
+**[V15, O] Reabsorption — part of the all-in band is withdrawn pending revision.** An external red-team showed the reabsorption contribution reaches the *axial* floor via **2b-static at the reabsorption-set radial temperature T_r,eq** (radial heating → σ_r↑ → worse ν_z(r) sampling), not via a bounded coherent channel — so the "expected small" reading was falsified and the band edge moved to **[O]**. `cloud_floor_spec.md` is mid-revision (the endogenous-T_r restructure leads; the spec follows). The relative scheme comparisons are unaffected; the absolute all-in band is provisional until that revision lands.
+
+**[V15] The one lever that moves the inhomogeneity headline: a flat-top 1064 profile.** Because the sampled inhomogeneity is set by k_BT_r/U₀ (waist-independent — `radial_frozen` algebra), neither a different waist nor fiber type touches it; only **flattening the Gaussian curvature** removes the ν_z(r) variation at its root → the axial floor decouples from T_r and collapses to the cold 0.0064 ∀T_r (a 2–4× win at the warm end), and the reabsorption-via-2b-static feedback is cut. Gated on a **kagome mode-content / flat-top-stability feasibility study** (XLIM/Marchesini) — modal dispersion, higher-mode loss, and multimode standing-wave contrast are the open risks. This is the genuine headline mover; the axial-scheme alternatives (§10) are not.
 
 ## 9. Field-insensitivity (vector / tensor) [V]
 
@@ -107,9 +119,23 @@ The cooling pair is **first-order field-immune** (both g_F·m_F = +½). The resi
 ## 10. Roads not taken (and why)
 
 - **m′=2 stretched pair:** radially identical cooling performance but **field-sensitive**, so dephased by the radial B/trap spread. Abandoned for the field-insensitive m′=0 clock pair. [V]
-- **D1 line:** does **not** help (dual-end D1 0.0052 ≈ D2 0.0048). The naive "D1 has no F′=3" advantage cancels because on D1 *both* legs acquire F′=1 admixture (F=1→F′1 allowed), whereas on D2 only the control does. [V]
 - **F′=1 as the EIT level:** F′=2 chosen (~12.5× less off-resonant scatter). [V]
-- **"F′=1 EIT" as a second window:** does not exist — there is one two-photon resonance (set by the ground hyperfine splitting), and both common levels (F′=1, F′=2) feed it. See §12. [V]
+- **"F′=1 EIT" as a second window:** does not exist — there is one two-photon resonance (set by the ground hyperfine splitting), and both common levels (F′=1, F′=2) feed it. See the Appendix. [V]
+
+### [V15] The alternatives sweep — none beats the D2 baseline
+A systematic search for a better scheme followed v14. Every candidate either breaks field-insensitivity, fails on repump topology, or targets the axial floor that is already sub-dominant to the radial inhomogeneity (§8). The recurring lesson, now earned **four times**: *for a leg-assignment / leak-clearing question the diffusion or branching argument is necessary but not sufficient — the repump topology decides.*
+
+| alternative | verdict | basis |
+|---|---|---|
+| **control↔probe leg-swap** | **REJECTED [V]** | deciding run: config A = 0.0048 hard-converged vs config B (swap) ≈ 0.018 non-convergent → A ~3.8×. B's F=2-*interior* dark leg admits only one protecting repump (σ⁺ F2→F′1), which cannot clear the |2,+2⟩ leak → near-flat Fock heating tail (frame-conflict 0.0, so physics). The |F′2,0⟩ dark-leg branching *reverses* vs |F′2,2⟩ (clock 0.25/0.75 vs stretched 0.75/0.25, verified) but does **not** decide it. |
+| **EOM-Raman |2,+2⟩ clearer** | **REJECTED — window empty [V]** | the only repump class that escapes the m-adjacency wall (a frequency-selective 2-photon clearer via a second EOM tone at ~6.838 GHz). Killed two ways: an *ideal* recoil-free clearer of arbitrary strength still floors B at ≈0.005 (the repump cycle, not the leak, limits it); and the clearer's mandatory single-photon scatter depletes the 93.5%-occupied dark state (3–10× penalty). |
+| **double-EIT** (two excited states) | **no headline gain [I]** | preserves the clock; a sharper Fano feature lowers only the *axial* floor, which is below the §8 inhomogeneity term. |
+| **tripod / quadrupod** | **REJECTED [V]** | the g_F·m_F=+½ Zeeman-matched subspace of |F′2,0⟩ is exactly 2-dimensional; any third leg has a mismatched g·m and **breaks field-insensitivity** — self-defeating for the scheme chosen *because* B-noise is the problem. |
+| **alternation EIT↔RSC** | **marginal (axial) [I]** | a sequential EIT→RSC finish lowers the axial floor modestly (sub-dominant). The headline-relevant version is EIT↔**radial gray molasses**, which needs transverse fiber access (the §10-transverse / Leong-precedent gate), not another axial cooler. |
+| **pulsed re-preparation** | **right target, likely wash [I]** | attacks the recycle floor (correct target), but the 2/3-to-spectators branching refills the leak on the cooling timescale, so continuous repumping is ~the optimal fast-reset limit; gated on the Q3 recycle-floor decomposition. |
+| **D1 two-photon Raman repump** | **under external audit [I]** | could challenge the line-independent floor *if* coherent recoil-free spectator returns work — but carries the same dark-state-scatter risk that killed the D2 clearer; gated on the 795 fiber data. |
+
+- **D1 line (795 nm) — full pivot or hybrid:** **no floor gain on any variant [V]** (S1–S4 + External Audits A & B). The floor is recoil/branching-limited and **line-independent** (b_leak exactly 1/3, 2/3 on both lines, a 6j identity); full-D1's recycler is **1.65× worse** (the F′=1 branching inverts 5/6:1/6 → 1/6:5/6). The earlier v14 reading ("0.0052≈0.0048; the no-F′3 advantage cancels") is correct on the floor but understated the program: D1's *real* advantage is **inhomogeneous broadening**, isotope-tempered — ⁸⁷Rb's F′=2 antisymmetry already protects the cooling resonance (0.30 MHz shift vs ⁸⁵Rb's 10 MHz), so the residual broadening lives in the F′=1 *repump* (~18 MHz), which D1 removes; but whether that is *sweepable* (so D1 is "not forced") is **[I], conditional on mid-spread repump parking** (Audit B: ~10× rate penalty inside the demonstrated 16× window if parked mid-spread; ~37× worst-case if not). **Adoption is a cost/cleanliness/fiber decision, never a floor one.** Gated on **G1** — the 795 fiber data; the PI (Minardi) has confirmed good 780 guidance, which makes 795 axial transmission likely *by proximity* but does not clear the transverse-PER or 3-color-coexistence requirements, so the full 795 transmission-curve characterization is still pending.
 
 ---
 
@@ -167,6 +193,9 @@ A series of pointed questions closed the last gaps — and produced the most ins
 
 **The lesson:** our original headline floor (~0.005) was numerically right but for the wrong reasons — a **F′=1 omission (optimistic ~2×) that happened to cancel a default-repump pessimism (~1.5×)**. The intermediate "revise up to ~0.008" claim was a half-correction (F′=1 in, repump still wrong). With *both* fixed, the fully-audited floor lands at **~0.005 dual-end / ~0.0075 single-ended** — the same headline, now for the right reasons, with every excited level and the repumpers explicitly accounted for.
 
+## Stage 9 — The alternatives sweep, and the repump-topology lesson earned four times (post-v14)
+With the budget closed, the program turned to whether a *better scheme* existed, and tested a sequence of candidates against external audit: the control↔probe leg-swap, an EOM-Raman |2,+2⟩ clearer, double-EIT, tripod/quadrupod, EIT↔RSC alternation, pulsed re-preparation, and the D1/hybrid family (including a D1 two-photon Raman repump, still under audit). **Every one failed to beat the D2 baseline** (§10), and the manner of failure is the instructive part. Twice the main thread (this assistant) advanced a *diffusion/branching* argument for the leg-swap — first that it was neutral, then that it "wins" — and **both times an external auditor running the repumped solve overturned it**: the swap is net *harmful* because the F=2-interior dark leg cannot be cleanly repumped, and the deciding run settled it decisively for config A. The branching even *reverses* on the clock state (0.25/0.75 vs the stretched 0.75/0.25) — a real, verified effect that nonetheless pointed the wrong way, because it is dominated by the repump penalty. Combined with the round-1 stretched-scheme result and the EOM-clearer audit, this is the same lesson **four times**: *the repump topology, not the diffusion lever, decides a leg-assignment question — never state a direction without the repumped solve.* The sweep's net value is not a new scheme but a hardened baseline: the axial m′=0 clock (config A) is now known to be optimal against a thorough attack, and the search correctly relocated the remaining leverage to the radial inhomogeneity and the flat-top profile (§8), which no cooling-Λ cleverness reaches.
+
 ---
 
 # APPENDIX — the F′=1 conceptual point in full
@@ -186,6 +215,6 @@ Both common levels feed the *same* δ₂=0 window. We call it "F′=2" only beca
 
 ## Status
 
-The internal physics budget is **closed**: scheme, operating point, both delivery architectures, the complete F′=0,1,2,3 contaminant budget, the optimized repumpers, the radial cloud treatment, the anti-trap, and field-insensitivity all agree and are mutually consistent; the two external cross-audits are reconciled. Headline: clock-EIT, Δ≈45 (flat 40–55), OmR≈0.12, repump Ω≈3/Δ_rep1≈15, dual-end carrier-suppressed delivery. The cooling-physics (**solve**) floor is **⟨n_z⟩ ≈ 0.005** dual-end / **≈ 0.0072** single-ended tagged (2f_A=400, the 20–40 % retro cap non-binding); folding in the separately-budgeted anti-trap/leak increment (+0.007–0.012) gives the **all-in single-atom floor ⟨n_z⟩ ≈ 0.012–0.019** — the headline number, *not* the bare solve floor. All floors carry a ~2× (×/÷2) recycler-model band; the cloud-inhomogeneity floor is ≈ 0.0094 at 100 µK. This is a **1D (axial) cooler**: the radial mode is not cooled, so the 3D ground-state fraction is set by the radial temperature, not the axial floor.
+The internal physics budget is **closed and now hardened against a systematic alternatives attack**: scheme, operating point, both delivery architectures, the complete F′=0,1,2,3 contaminant budget, the optimized repumpers, the radial cloud treatment, the anti-trap, and field-insensitivity all agree; the external cross-audits are reconciled; the leg assignment is settled (config A); the floors are convergence-confirmed (qutip-5 re-pin); and every scheme alternative tried (§10) has been dispositioned without beating the baseline. Headline: clock-EIT on the m′=0 clock pair (config A), Δ≈45 (flat 40–55), OmR≈0.10–0.12, repump Ω≈3/Δ_rep1≈15, dual-end carrier-suppressed delivery — **axial ⟨n_z⟩ ≈ 0.005 dual-end / ≈0.0077 single-ended tagged** (2f_A=400, 20–40 % retro cap non-binding), with the **all-in cloud-limited band 0.012–0.019** (radial inhomogeneity dominant, the reabsorption edge provisional). Cloud-robust to ~100 µK. *Honesty rails: quote the all-in 0.012–0.019, not 0.005; AXIAL ground state, never bare "3D"; "first EIT cooling in a fibre," never "first cooling in a fibre."*
 
-Remaining [O], all outside the cooling-physics core: re-running the cloud MC and the on-axis Δ-scan at the optimized repump for final brief numbers (the scaling is mechanical, ~−40%); the noise/parasitic budget (dephasing, polarization, intensity) as a separate consolidation; the OD-vs-cooling feasibility study (§11) as the make-or-break for any application claim; and the non-physics career thread.
+Remaining [O], in priority of headline impact: **(1) the radial dynamic MC** (S3) — converts the §8 frozen bound to the realized cloud floor (the dominant term); **(2) the flat-top feasibility study** (XLIM/Marchesini) — the only lever that moves the inhomogeneity headline; **(3) the `cloud_floor_spec.md` revision** — closes the reabsorption-via-2b-static edge of the all-in band; **(4) the repump-recycle floor trace** (Q3) — what caps the axial ≈0.005, and the target of pulsed re-prep / the D1-Raman audit; **(5) bench inputs** — in-fibre B-noise, echo T₂, fibre PER, tag-AOM efficiency, the **1064 trap-laser RIN @860 kHz** (an unquantified parametric-heating term), and the **795 fibre characterization** (the full transmission curve, which gates all D1); **(6) the D1-Raman repump audit** (outstanding); and, outside the cooling core, the noise/parasitic consolidation, the OD-vs-cooling feasibility study (§11) as the make-or-break for any application claim, and the non-physics career thread.
