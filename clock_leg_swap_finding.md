@@ -78,7 +78,7 @@ the floor regardless, so this gate no longer needs asking for the leg-assignment
 - **Absolute floors provisional** pending `cloud_floor_spec.md` revision; the **relative**
   A-vs-B comparison is robust (same solver, point, η). The deciding-run absolutes are on the
   **η=0.094 symmetric** convention, **not** the headline retro **η=0.187 + tag** — so
-  **A=0.0048 here is NOT a new single-end floor**; the pinned headline ~0.0077 stands. The
+  **A=0.0048 here is NOT a new single-end floor**; the single-tagged headline ~0.0072 stands. The
   verdict is the convention-robust **relative 3.8×**.
 - A larger η worsens B's heating tail, so the symmetric-η reading is **conservative toward A**.
 - Solver omits F′=3 (RWA) — see above.
