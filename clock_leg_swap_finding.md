@@ -1,39 +1,120 @@
-# Clock-scheme leg assignment: the |F′2,0⟩ branching reverses the diffusion lever — but NOT the verdict
+# Clock-scheme leg assignment: DECIDING RUN — the swap is rejected; A holds
 
-**Status:** [O] OPEN. The branching reversal and the isolated diffusion lever are **verified**
-(independently reproduced by an external auditor); the earlier headline "the verdict inverts,
-swap favored, high-confidence direction" is **FALSIFIED** — the naive swap (current repumps)
-is 3.3× *worse* in the realizable system. The decision turns on a repump re-pointing rebuild
-and is unresolved. Pending the **deciding run** (below). 2026-06-19, rev. after auditor round 2.
+**Status:** [V] resolved — solver-verified. The full repumped + re-pointed two-leg
+optimization has been run. **It reverses this note's own earlier "swap is favored" call.**
+2026-06-19.
 
-> **Calibration note.** This finding's headline was overturned the same way round 1 was: a
-> clean diffusion/branching argument that ignored the repump topology, which is the actual
-> deciding factor. The diffusion argument is *necessary, not sufficient.* No leg-assignment
-> direction should be stated without the repumped solve.
+> ⚠️ This note previously concluded (from a diffusion + branching argument) that the
+> leg-swap was favored — "possibly ~1.5× diluted, the solver decides." **The solver decided
+> against it.** The earlier argument under-weighted repump topology — exactly the failure
+> mode flagged as having mis-called this question before. The branching numbers below remain
+> [V]; the *consequence* drawn from them ("swap favored") was wrong. Verdict: **do not swap.**
 
-**Origin.** Audit of the control↔probe leg-swap brief. The brief cited *stretched*-scheme
-solvers while describing the *clock* scheme; an external auditor flagged a state-label
-mismatch (|1,−1⟩ vs |1,+1⟩) which, on investigation, is a full scheme-conflation. This
-note records the corrected finding and supersedes the brief's "A holds, don't swap."
+## System & operating point [V]
+Rb-87 D2, m′=0 magic-clock Λ, single-ended retro. Dark resonance = clock pair
+|1,−1⟩↔|2,+1⟩ in **both** configs. Solver `clock_combined_solve.py`
+(:5 *"cooling Lambda : |2,+1> sigma- / |1,-1> sigma+ -> |F'2,0>"*). Point: B=1.5 G,
+Dc=80, Om_r=1.5, axial ν_z=0.430, Γ=6.07 (:44 *"GAMMA,NU,ETA=6.07,0.430,0.094"*),
+η=0.094 symmetric (no standing-wave enhancement).
+- **Config A (current):** control = forward σ− strong on |2,+1⟩; probe = retro σ+ weak on
+  |1,−1⟩. Dark on |1,−1⟩ (F=1, **edge** sublevel).
+- **Config B (swap):** control = forward σ+ strong on |1,−1⟩; probe = retro σ− weak on
+  |2,+1⟩. Dark on |2,+1⟩ (F=2, **interior** sublevel). Forward stays strong/+k, retro
+  weak/−k; only launched helicity flips.
 
-## Config we run (confirmed)
-m′=0 magic-clock Λ, **single-ended**: |1,−1⟩ σ+ (probe, retro) / |2,+1⟩ σ− (control,
-forward) → |F′2,0⟩; freq-tagged retro+λ/4. Solver: `clock_combined_solve.py`
-(:5 *"cooling Lambda : |2,+1> sigma- / |1,-1> sigma+ -> |F'2,0>"*).
+## DECIDING-RUN RESULT [V]
+Steady-state Lindblad floor (axial), each config at its **own** repump optimum:
 
-## Scheme split — provenance (do not repeat the conflation)
-- **m′=2 STRETCHED** (|1,+1⟩/|2,+1⟩→|F′2,2⟩): `verify_tagged_solve.py`
-  (:7 *"g1=|1,+1>, g2=|2,+1>, e2=|F'2,2>, e3=|F'3,2>"*), `dm2_coherent_solve.py`,
-  `tagged_operating_point.py`, `combined_solve.py`. Floors **0.0034** (swapped) /
-  **0.0085** (unswapped), 2.51× — **STRETCHED-ONLY; do not apply to the clock scheme.**
-  `verify`'s *"THE ADOPTED SCHEME"* comment is **stale** (v9-era, `[brief Sec. 9A.6]`).
-- **m′=0 CLOCK** (|1,−1⟩/|2,+1⟩→|F′2,0⟩): `clock_combined_solve.py`,
-  `clock_combined_H2.py`, `clock_lowB_S3.py`, `clock_parasitic_solve.py`. The adopted
-  (v14) scheme.
+| config | dark leg | best ⟨n⟩ | convergence | optimum |
+|---|---|---|---|---|
+| **A** | \|1,−1⟩ (F=1 edge) | **0.0048** | hard-converged Nf=6→16 (flat) | Drep1=20, Drep2=5, δ₂=0, OmR=0.25 |
+| **B** | \|2,+1⟩ (F=2 interior) | **≈0.018** (best *bounded*) | only bounded for OmR≳0.4; **diverges with Nf** at matched OmR=0.25 | rep2=A forced, Drep2≈20, δ₂=0 |
 
-## The finding [V computation / I consequence]
-The |F′2,0⟩ dark-leg branching is **reversed** vs |F′2,2⟩ (exact CG, `clock_branching_check.py`;
-validated — |F′2,2⟩ reproduces `verify`:32's 0.75/0.25):
+**Net: A is ~3.8× better, and B has a convergence pathology A does not.** [V]
+
+### Why B loses — repump clearability [V]
+The F=2-interior dark leg |2,+1⟩ admits **exactly one** protecting F=2 repump topology
+(rep2=A, σ+ F2→F′1). Sanitized topology scan (config B, Nf=6, valid ⟨n⟩ only): rep2=A
+(σ+ F2→F′1) **0.018 — only survivor**; C (π F2→F′2) 0.19; spF2 (σ+ F2→F′2) 0.51; smF1
+(σ− F2→F′1) 2.29 (heats); piF1 and smF2 → ∞ (population traps). σ+ F2→F′1 spans only m≤0,
+so it protects |2,+1⟩ **and cannot reach |2,+2⟩**. Every topology that *can* reach |2,+2⟩
+is m-adjacent to the dark leg and drives |2,+1⟩→|F′,0/±1⟩ — heating or trapping. The
+unclearable |2,+2⟩ (+|2,0⟩,|2,−1⟩) leak injects axial heating EIT cannot remove: the
+steady-state Fock tail is **near-flat** (P(n+1)/P(n) → 0.97 at Nf=16) → ⟨n⟩ grows
+~linearly with truncation. Config A's tail is heavily damped (ratios 0.08–0.19; P(n) falls
+6 decades by n=8) → robust floor. **frame-conflict = 0.00 for both** ⇒ B's divergence is
+physics, not a rotating-frame artifact (re-verification of the overturning result).
+
+A frequency-resolved |2,+2⟩ drain (σ− F2→F′2 on |2,+2⟩→|F′2,+1⟩, scanned over detuning and
+Rabi) made B **worse** (0.027 > 0.018): at B=1.5 G the ~1 MHz Zeeman gap is unresolved
+against Γ=6 MHz, so the drain spills onto the dark leg. **No re-pointing recovers the
+clean-Λ floor.**
+
+### Fair comparison [V]
+At matched OmR=0.25 (each own repump optimum): A=0.0048, B=0.0173 → 3.6×. Across OmR
+0.15–0.35 A dominates B at every point. A keeps dropping toward low OmR (0.0021 at 0.15)
+but that is the degenerate weak-probe / vanishing-cooling-rate limit; at physical OmR the
+gap holds. B's *bounded* optimum (OmR≈0.4) ≈ 0.0187 → A better ~3.9×.
+
+### F′=3 increment [I/O] (solver omits F′=3; analytic)
+F′=3 couples to F=2 only. Config A's strong control sits on F=2 → off-resonant F′=3 scatter
+R₃ ≈ (Γ/2)(Ω_c/2)²/Δ₃² with Ω_c≈11.4, Δ₃≈Dc+267≈347 ⇒ **≈1.6 kHz**. Config B's strong
+control sits on F=1 → immune; only its weak probe sees F′=3, ≈0.1 kHz. So F′=3, if modeled,
+**marginally favors the swap** (~1.5 kHz relief on A) — but to flip the verdict it would have
+to raise A's floor ~3.8× (0.0048→~0.018), implausible for a ~kHz parasitic. **Sub-dominant;
+does not overturn A.** Exact size needs the F′=3 build (separate).
+
+### magic-B survives the swap [V]
+Clock pair |1,−1⟩↔|2,+1⟩ is identical in both configs (swap changes only which leg is
+strong/weak). Solver Breit-Rabi energies give df/dB=0 at **B=3.2288 G**, config-independent.
+Operating B=1.5 G has df/dB≈−1.49 kHz/G in both. **Preserved.**
+
+### GATE 1 — σ+-forward polarization (apparatus) [I] — MOOT
+Whether launching σ+ forward keeps circular purity through the fibre is an apparatus
+question the ideal-polarization solver cannot answer. **Moot for the decision:** B loses on
+the floor regardless, so this gate no longer needs asking for the leg-assignment choice.
+
+## Caveats
+- **Absolute floors provisional** pending `cloud_floor_spec.md` revision; the **relative**
+  A-vs-B comparison is robust (same solver, point, η). The deciding-run absolutes are on the
+  **η=0.094 symmetric** convention, **not** the headline retro **η=0.187 + tag** — so
+  **A=0.0048 here is NOT a new single-end floor**; the pinned headline ~0.0077 stands. The
+  verdict is the convention-robust **relative 3.8×**.
+- A larger η worsens B's heating tail, so the symmetric-η reading is **conservative toward A**.
+- Solver omits F′=3 (RWA) — see above.
+
+## Disposition
+- This note's earlier "swap favored" conclusion is **withdrawn.** Verdict: **A holds — do
+  not swap.** Reason is solver-verified (repump clearability + Fock convergence), distinct
+  from the original stretched-scheme reasoning.
+- **The EOM-Raman |2,+2⟩ clearer rescue was also tested and rejected** (separate audit,
+  same engine): an ideal recoil-free clearer of arbitrary strength still floors B at ≈0.005
+  (the repump cycle, not the leak, is the limiter), and the clearer's mandatory single-photon
+  scatter depletes the 93.5%-occupied dark state (0.0065→0.062, ~10×, via population
+  redistribution not recoil). Window empty — A holds against the Raman clearer too.
+- Branching numbers (below) stand, reproduced by `clock_branching_check.py` (gate-checked
+  against `verify_tagged_solve.py`:32 → 0.75/0.25 stretched). The resolution overturns the
+  *verdict*, not the branching reversal.
+- Reproduction: `clk2.py` = `clock_combined_solve.py` with surgical `swap` / `rep2mode` /
+  `rep2_extra` / `want_fock` / clearer hooks only (audited physics byte-identical; gate
+  swap=False → 0.0064/0.0072 exactly).
+
+---
+
+### CLAIMS.md entry
+> **LS2 → resolved [V] — Clock m′=0 leg-swap rejected.** Axial EIT-cooling floor,
+> single-ended retro, B=1.5 G, OmR=0.25, η=0.094: **config A (dark |1,−1⟩) = 0.0048,
+> hard-converged**; **config B (swap, dark |2,+1⟩) ≈ 0.018 best-bounded, non-convergent at
+> matched OmR.** A favored ~3.8×. Cause: F=2-interior dark leg forces rep2=A (unique
+> protecting repump), which cannot clear the |2,+2⟩ leak → near-flat Fock heating tail.
+> Magic-B and F′=3 sub-dominant; GATE 1 moot. Engine `clock_combined_solve.py` / `clk2.py`;
+> frame-conflict 0.0. Also holds against the EOM-Raman clearer (window empty). Supersedes the
+> open "swap favored" finding.
+
+---
+
+## Branching record [V] (unchanged — reproduced by `clock_branching_check.py`)
+The |F′2,0⟩ dark-leg branching is **reversed** vs |F′2,2⟩ (exact CG):
 
 | excited state | → F=1 dark leg | → \|2,+1⟩ | raw spectator/leak |
 |---|---|---|---|
@@ -43,77 +124,12 @@ validated — |F′2,2⟩ reproduces `verify`:32's 0.75/0.25):
 (renormalized over the two dark legs; raw clock: |1,−1⟩ 0.083, |2,+1⟩ 0.25, |1,0⟩ 0.333,
 |2,−1⟩ 0.25, |1,+1⟩ 0.083.)
 
-The dark state sits on the **probe** leg (|D⟩ ∝ Ω_c|g_probe⟩, ~94%), so decays landing on
-the probe leg recycle (good) and decays on the control/bright leg diffuse (floor-raising).
-- **Stretched:** probe on F=1 (0.75 decay) → recycles → optimal (the adopted choice is correct *there*).
-- **Clock (current):** the *same* physical assignment was inherited (control |2,+1⟩, dark on
-  F=1), **but the branching flipped** — |1,−1⟩ collects only 0.25; **3/4 of dark-leg decays
-  land on |2,+1⟩ = bright/control → diffuse out.** The current clock leg assignment is
-  **diffusion-SUBOPTIMAL.**
-
-## Consequence: the DIFFUSION LEVER flips (verified, large) — but the verdict does NOT invert
-The isolated diffusion lever favors the swap, **more strongly than first claimed** — but the
-realizable swap is net harmful, and the decision is open. Auditor-run numbers (independent):
-
-| configuration | floor | vs current |
-|---|---|---|
-| current (control \|2,+1⟩, dark \|1,−1⟩), full option-A repumps, δ₂-opt | **0.0061** | — |
-| swapped, **clean closed-Λ** (repumps off, decays recycled, GATE A) | **0.0022** | 3.29× better |
-| swapped, **full** option-A repumps **unchanged**, δ₂-opt | **0.0204** | **3.3× worse** |
-
-- **Diffusion lever (verified, isolated):** clean closed-Λ 0.0072 → 0.0022 = **3.29×** — bigger
-  than the stretched 2.5×. (The earlier "~1.5× diluted" reasoning was wrong: the 2/3 spectators
-  *recycle* onto the two legs in steady state, so the lever acts on the whole population, not
-  just the 1/3 that lands directly.)
-- **But the naive swap is net harmful (verified):** full system 0.0061 → 0.0204 = **3.3× worse**,
-  at every δ₂ (both optimal at δ₂=0 — not a servo artifact). **Cause:** the dark state forms fine
-  (swapped dark |2,+1⟩ 91.9%), but the swap parks ~92% of population in F=2, and the existing F=2
-  repump (rep2-A σ+ F=2→F′1) mis-clears the F=2-dark spectator load → ~2.3% leaks into
-  |2,+2⟩/|2,0⟩/|2,−1⟩ (vs ~0.1% current) → extra scatter triples the floor.
-
-**So the verdict does NOT invert.** The diffusion gain is real and large, but it is *necessary,
-not sufficient* — the repump topology decides, exactly as in round 1, now biting in the opposite
-direction. Neither "A holds" nor "swap wins" is established.
-
-**Reframe.** Two competing levers: **diffusion** (favors F=2-dark = swap, 3.29× isolated) vs
-**repump clearability** (favors F=1-dark = status quo). Structural hypothesis (for the deciding
-run to test, *not* asserted): F=1 has 3 sublevels with the dark leg at the *edge*; F=2 has 5 with
-the dark leg in the *interior*, so clearing F=2 spectators without disturbing |2,+1⟩ may be
-intrinsically harder — which could make the current config correct for a *clearability* reason
-the branding never named.
-
-## Open [O] — the real state of the question
-- **Decision bracketed, unresolved.** True swapped floor ∈ [0.0022 (clean, optimistic
-  instant-recycle, zero repump cost), 0.0204 (full, current repumps untuned)] vs 0.0061 current.
-  Only the swapped solve **with repumps re-pointed and re-optimized for the F=2-dark topology**
-  resolves it.
-- **F′=3 (the "second mechanism") is unquantified** at the clock detuning Dc=80; round-1 found
-  it sub-dominant in the stretched case. Measure before treating it as co-equal with diffusion.
-- **Single-ended feasibility** (launch σ+ forward; check leak/polarization with Prevedelli)
-  remains, but is now secondary to the repump-re-pointing question above.
-
-## ACTION — the deciding run (queued behind regression discovery + reabsorption-brief)
-**The single number that settles swap-vs-stay:** swapped legs **+ repumps re-chosen for
-F=2-dark** (lines/polarizations and D_rep1/D_rep2/Ω_rep re-optimized) **+ δ₂ re-servoed**, in
-`clock_combined_solve` (m′=0, single-ended). Does it recover the clean-Λ 3.29× (→ ~0.002–0.003)
-or stay near 0.0204?
-1. The deciding floor (above) vs the current 0.0061.
-2. Which channel must re-pointing fix? The |2,+2⟩/|2,0⟩ F=2-leak is the verified culprit at
-   0.0204 — does a re-pointed rep2 (different line/detuning) clear it without touching the
-   |2,+1⟩ dark leg?
-3. F′=3 increment at Dc=80 for the current config (toggle its coupling) — material or
-   sub-dominant as in stretched?
-4. Confirm magic-B field-insensitivity survives the swap *in the solver* (dark pair unchanged,
-   so expected — but verify, don't infer from g·m alone).
-
-The repump re-pointing is the risky part (edge-rule re-assignment is where an error hides) — do
-not hack the existing repump flags; rebuild deliberately. Per R2: the deciding floor becomes a
-tracked `CLAIMS` entry; the branching numbers are reproduced by `clock_branching_check.py`.
-
-## Disposition
-- Branching reversal + diffusion-lever-flips: **verified** (auditor reproduced both).
-- Headline "verdict inverts / swap wins": **falsified** — naive swap 3.3× worse; decision open.
-- Earlier auditor reply (config + concessions + scheme correction) stands; its "swap favored,
-  high confidence" claim is **superseded by this revision**.
-- Leg-swap brief: retire its stretched numbers and *both* directional claims ("A holds" and
-  "swap wins"). This note is the clock-scheme record; the deciding run is the only resolver.
+**Why the branching did NOT decide it (the lesson).** The earlier note reasoned: the dark
+state sits ~94% on the probe leg, so seating it on the higher-decay leg (0.75, i.e. swap)
+maximizes recycling → swap favored. That diffusion lever is real and isolated-clean it is
+~3.3× (config-B clean-Λ 0.0022 vs config-A 0.0072). **But it is dominated by the repump
+penalty:** moving the dark to |2,+1⟩ moves it to the F=2 *interior*, where the edge rule that
+protects an F=1-edge dark leg no longer isolates it, the protecting repump cannot clear
+|2,+2⟩, and the leak heats faster than the recycling gain saves. Branching/diffusion in
+isolation pointed the wrong way; only the repumped solve is decisive. (The question turned on
+repump topology, not diffusion — the lesson now earned four times across this thread.)
