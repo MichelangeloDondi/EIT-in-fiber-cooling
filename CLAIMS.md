@@ -24,9 +24,9 @@ README mutually consistent; this ledger is the human-readable face of that.
 | # | Claim | Tier | Source |
 |---|---|---|---|
 | F1 | Clock-EIT **solve** floor ⟨n_z⟩ = 0.0048 (dual) / 0.0072 (single-tagged) | [V] | `tagged_solver.py`; model band ×/÷2 = 0.002–0.0076 |
-| F2 | Anti-trap/leak increment +0.007–0.012 | [I] | leak/anti-trap estimate |
-| F3 | **All-in single-atom floor ⟨n_z⟩ = 0.012–0.019** (the honest headline) | [V]+[I] | SSOT `FloorBudget.all_in_single_atom` |
-| F4 | Cloud-inhomogeneity floor 0.0094 @ 100 µK, Δ45 | [I] | `radial_inhomogeneity.py` (semiclassical MC) |
+| F2 | Anti-trap **squeezer** increment +0.003 (= faithful − no-squeezer, counted **once**); supersedes the withdrawn +0.007–0.012 lumped increment (double-counted the solve bulk + bare recoil) | [I] | grid→clk2 transfer; `ANTITRAP_RESOLUTION.md` (2026-06-20 floor correction) |
+| F3 | **Certified low-dwell all-in single-atom floor ⟨n_z⟩ = 0.008–0.010** (the honest headline); old 0.012–0.019 **withdrawn** | [V]+[I] | SSOT `FloorBudget.all_in_single_atom_lowdwell` |
+| F4 | **Cloud floor T_r-gated, [O]**: clk2 clock-unit quasi-static 0.0056 / 0.0169 / 0.130 at T_r = 25 / 100 / 400 µK (conservative ceiling; realized < quasi-static per dynamic MC) → cloud all-in ~0.007 / 0.012 / 0.022. Old flat 0.0094 semiclassical = legacy unverified | [I]/[O] | SSOT `FloorBudget.cloud_qs_clk2`; dynamic-MC brief (pending) |
 | F5 | Axial recoil bound η_em² ≈ 0.003 | [V] | recoil |
 | F6 | Stretched-RSC floor 0.00196 (**field-SENSITIVE** pair) | [V] | `raman_sbc.py` self-test |
 | F7 | Clock-RSC floor ~0.45 — **DISQUALIFIED** (rank-2 obstruction) | [V] | `audit_C_rank2.py` + FoM; `docs/clock_RSC_resolution.md` |

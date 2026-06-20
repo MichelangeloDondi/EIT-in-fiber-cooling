@@ -76,26 +76,85 @@ TWO_PHOTON_DOUBLE_KHZ = 0.26
 # =====================================================================
 @dataclass(frozen=True)
 class FloorBudget:
-    # (a) axial cooling-physics floor from the multilevel tagged solver
-    #     (delta2-optimized, N_f-stable, tagged-extra-inclusive)  [V]
-    solve_clean_lambda: float = 0.0032
-    solve_dual_end:     float = 0.0048
-    solve_single_tagged: float = 0.0072      # at 2fA=400, OmR=0.12
-    solve_model_band:   tuple = (0.002, 0.0076)  # recycler-model spread (~2x): 3-level/multilevel/full
-    # (b) separately-budgeted increment added for the ALL-IN system floor [I]
-    antitrap_leak_increment: tuple = (0.007, 0.012)
-    # (c) radial-inhomogeneity cloud floor @100 uK, Delta=45 (semiclassical MC) [I]
-    cloud_floor_100uK: float = 0.0094
-    # (d) fundamental axial single-photon-recoil bound
-    axial_recoil_bound: float = round(ETA_EM**2, 4)   # ~0.003
+    # ==================================================================
+    # CONVENTION (certified 2026-06-20, two-instance audit). The headline
+    # all-in is NOT "solve + a lumped increment" -- that double-counted the
+    # clean floor (lower edge 0.007) AND the bare recoil (upper edge 0.012).
+    # The fix:
+    #   solve = clk2 steady state = TRAFFIC-IN / POTENTIAL-OUT (clk2.py:234
+    #     puts ONE ground frequency NU on all 16 internal states; excited
+    #     manifolds get NO inverted potential) = the "no-squeezer" quantity
+    #     AT clk2's (low) repump dwell.
+    #   The ONLY honest addition is the anti-trap SQUEEZER HEAT
+    #     = faithful_bulk - no_squeezer_bulk, counted ONCE.
+    #   NEVER add 0.012 (= eta^2 + eta_em^2 bare recoil, ALREADY in solve via
+    #     the Lamb-Dicke displacement + 1/6,2/3,1/6 emission distribution) nor
+    #     0.007 (= no-squeezer bulk ~= solve itself). Both double-count.
+    # ==================================================================
+
+    # (a) solve floor [V, traffic-in / potential-out, AT LOW DWELL]
+    solve_clean_lambda:  float = 0.0032
+    solve_dual_end:      float = 0.0048
+    solve_single_tagged: float = 0.0072      # ~= low-dwell no-squeezer bulk 0.0069 -> clean subtraction
+    solve_model_band:    tuple = (0.002, 0.0076)   # recycler-model spread (~2x)
+
+    # (b) anti-trap SQUEEZER increment = faithful - no_squeezer, ONCE
+    #     [I, low-dwell, grid->clk2 transfer]. Grid (ANTITRAP_RESOLUTION.md):
+    #     faithful 0.0095 - no_squeezer 0.0069 = 0.0026 ~ 0.003. Transferred onto
+    #     clk2 solve because no_squeezer_grid 0.0069 ~= clk2_clean 0.0072 -- a MODEL
+    #     TRANSFER, not an identity. (eta_em^2 ~ 0.003 is an INDEPENDENT cross-check,
+    #     DIFFERENT physics -- do NOT tie the increment to axial_recoil_bound.)
+    squeezer_increment_lowdwell: float = 0.003
+
+    # (c) HIGH-DWELL all-in = an explicitly UNCONVERGED BRACKET, NOT a bulk. [O]
+    #     Grid: no_squeezer 0.026 <= faithful <= contaminated 0.053, where the 0.053
+    #     upper IS the same Fock/grid truncation artifact discarded at low dwell ->
+    #     the true faithful sits BELOW it. And the grid is a REDUCED anti-trap model
+    #     (no clk2 tagged-extra / multilevel structure) with no low-dwell-style
+    #     cross-check at high dwell. So the honest high-dwell all-in is the clk2
+    #     RE-SOLVE at the physical F'=1 dwell; this bracket is a placeholder only.
+    highdwell_grid_bracket: tuple = (0.026, 0.053)  # (no-squeezer lower ; contaminated-Fock upper = ARTIFACT)
+    highdwell_all_in: str = "[RETIRED, scheme is low-dwell: clk2 config-A P_e(F'1)=8.4e-6 << 4e-5 ref] grid bracket 0.026-0.053 does NOT apply; certified low-dwell floor stands. [workstation re-solve only if the dwell proxy is contested]"
+
+    # (d) per-radius cooling floor over the radial cloud [I, traffic-in/potential-out]
+    #     clk2 CLOCK-UNIT QUASI-STATIC = Boltzmann avg of nbar(r) (2026-06-20, grid_avg2.py):
+    cloud_qs_clk2: tuple = (0.0056, 0.0169, 0.130)   # T_r=25/100/400uK (conservative CEILING)
+    #     -> SUPERSEDES the unverified semiclassical 0.0094 as the clock-unit quasi-static @100uK
+    #        (which sits below it, consistent with the MC: realized < quasi-static).
+    #        MC (3-level) suppression ~0.77/0.53/0.14 => clk2 REALIZED cooling cloud ~0.004/0.009/0.019
+    #        [I, cross-engine suppression]; + squeezer ~0.003 (de-risked) => cloud all-in ~0.007/0.012/0.022.
+    #        STRONGLY T_r-dependent (400uK only ~53% trapped) -> the in-fiber radial T gates the cloud.
+    cloud_mc_100uK:       float = 0.0094   # legacy unverified semiclassical (driver absent); see cloud_qs_clk2
+    cloud_frozen_ceiling: float = 0.0126   # S2 frozen bound @100uK -- SUPERSEDED as a realized ceiling
+                                           #   (dynamic MC: realized cooling floor sits BELOW quasi-static)
+    # CLOUD ALL-IN = NO single value. = cooling(r) + squeezer integral, with OPPOSITE radial weighting:
+    #   * cooling half CHARACTERIZED (dynamic MC, 2026-06-20): W(r) peaks at the cold center,
+    #     anti-correlated with n_ss(r), so the limit cycle is cooling-rate-weighted -> realized sits
+    #     BELOW quasi-static (frozen 0.0126 superseded; dynamics benign). 3-LEVEL ENGINE => RATIO
+    #     result (suppression ~1.2x/3.0x/7.4x at 25/100/400uK in its own bracket), NOT the clock floor;
+    #     clock magnitude = clk2 per-radius re-run [O].
+    #   * squeezer half [O]: rate ~ P_e(Delta_eff(r)) RISES off-axis (opposite weighting); kernel
+    #     ~ nu_z(r)^2 falls -- sign-uncertain. Fold squeezer into the MC per-radius pass (one-term add).
+    #   (provenance: the 0.0085 semiclassical-MC driver asserted [V] in clock_EIT_consolidated.md:99
+    #    was NOT in the file set; cloud_mc_100uK below is that unverified clock-engine quasi-static.)
+    cloud_all_in: str = "[O] cooling(r) [MC: benign, below quasi-static, 3-level ratio result] + squeezer integral [O, off-axis-rising]; do NOT enter flat 0.012/0.016"
+
+    # repump dwell status -- MEASURED 2026-06-20 (was [O])
+    repump_dwell_status: str = "[I, MEASURED] clk2 config-A F'=1 dwell P_e(F'1)=8.4e-6 -- 5x BELOW the low-dwell ref 4e-5 => firmly LOW-dwell; high-dwell branch RETIRED. Proxy: clk2 pe_F1 ~ grid P_e_rep [I, auditor to vet]; F'2 residual 1.8e-5 cross-checks dark-state ~4e-5. Squeezer increment 0.003 (at the 4e-5 ref) is thus CONSERVATIVE."
+
+    # legacy single-photon-recoil bound (kept for CROSS-CHECK only; NOT the increment)
+    axial_recoil_bound: float = round(ETA_EM**2, 4)   # ~0.003 -- numerically near squeezer, different physics
 
     @property
-    def all_in_single_atom(self) -> tuple:
-        """ALL-IN single-atom floor = solve (dual..single) + anti-trap/leak increment.
-        This is the number that should be headlined, NOT the bare solve floor."""
-        lo = self.solve_dual_end + self.antitrap_leak_increment[0]
-        hi = self.solve_single_tagged + self.antitrap_leak_increment[1]
-        return (round(lo, 4), round(hi, 4))      # ~ (0.012, 0.019)
+    def all_in_single_atom_lowdwell(self) -> tuple:
+        """CERTIFIED low-dwell single-atom floor = solve + squeezer heat, ONCE.
+        [I, low-dwell, grid->clk2 squeezer transfer]. ~ (0.008, 0.010).
+        This is the ONLY certified all-in number. High-dwell and cloud are [O]
+        (see highdwell_all_in / cloud_all_in). Do NOT headline a Gaussian-cloud
+        band until the radial squeezer integral lands."""
+        lo = self.solve_dual_end + self.squeezer_increment_lowdwell
+        hi = self.solve_single_tagged + self.squeezer_increment_lowdwell
+        return (round(lo, 4), round(hi, 4))      # ~ (0.008, 0.010)
 
 FLOOR = FloorBudget()
 
@@ -147,7 +206,7 @@ SCOPE = {
 def print_summary():
     fb = FLOOR
     print("="*70)
-    print(" SSOT  --  clock-EIT cooling of %s (%s), v14 operating point" % (SPECIES, LINE))
+    print(" SSOT  --  clock-EIT cooling of %s (%s), v15 floor convention (2026-06-20 correction)" % (SPECIES, LINE))
     print("="*70)
     print(" OPERATING POINT:  Delta=%.0f  OmR=%.2f  (Om_c=%.2f, Om_p=%.2f)  delta2=%+.2f"
           % (OP.Delta_MHz, OP.OmR, OP.Omega_c_MHz, OP.Omega_p_MHz, OP.delta2_setpoint_MHz))
@@ -156,19 +215,23 @@ def print_summary():
     print(" TRAP:  nu_z=%.3f (2pi MHz)  nu_r=%.5f  U0=%.1f MHz=%.0f uK  eta_780=%.3f  eta_2k=%.3f"
           % (NU_Z_MHZ, NU_R_MHZ, U0_MHZ, U0_UK, ETA_780, ETA_RETRO_2K))
     print("-"*70)
-    print(" FLOOR BUDGET (axial <n_z>):")
-    print("   solve (cooling physics):  clean %.4f | dual %.4f | single-tagged %.4f"
+    print(" FLOOR BUDGET (axial <n_z>) -- convention: solve [traffic-in/potential-out] + squeezer ONCE")
+    print("   solve (cooling, low-dwell):  clean %.4f | dual %.4f | single-tagged %.4f"
           % (fb.solve_clean_lambda, fb.solve_dual_end, fb.solve_single_tagged))
-    print("   + anti-trap/leak increment:  +%.3f..%.3f" % fb.antitrap_leak_increment)
-    print("   => ALL-IN single-atom floor (HEADLINE):  %.3f .. %.3f" % fb.all_in_single_atom)
-    print("   cloud inhomogeneity @100uK (Delta=45):   %.4f" % fb.cloud_floor_100uK)
-    print("   axial recoil bound (eta_em^2):           %.4f" % fb.axial_recoil_bound)
-    print("   model band on solve floor (~2x):         %s" % (fb.solve_model_band,))
+    print("   + anti-trap SQUEEZER (faithful-no_squeezer, low-dwell):  +%.3f  [I, grid->clk2 transfer]"
+          % fb.squeezer_increment_lowdwell)
+    print("   => CERTIFIED low-dwell single-atom floor:  %.3f .. %.3f  [I, low-dwell]"
+          % fb.all_in_single_atom_lowdwell)
+    print("   high-dwell all-in:  %s" % fb.highdwell_all_in)
+    print("   cloud all-in:       %s" % fb.cloud_all_in)
+    print("   repump dwell:       %s" % fb.repump_dwell_status)
+    print("   model band on solve (~2x):  %s" % (fb.solve_model_band,))
+    print("   [NEVER add 0.012=eta^2+eta_em^2 (already in solve) nor 0.007=no-squeezer bulk (=solve)]")
     print("-"*70)
     print(" RADIAL STATE (NOT cooled):")
     for T in (100.0, 25.0, 2.5):
         print("   T_r=%6.1f uK -> n_radial=%6.1f  | 3D ground fraction(n_z=%.3f) = %.2e"
-              % (T, n_radial(T), fb.all_in_single_atom[0], p0_3d(fb.all_in_single_atom[0], T)))
+              % (T, n_radial(T), fb.all_in_single_atom_lowdwell[0], p0_3d(fb.all_in_single_atom_lowdwell[0], T)))
     print("-"*70)
     print(" 2-photon coherence: floor doubles at %.2f kHz (sub-100 Hz => ~2.6x margin)"
           % TWO_PHOTON_DOUBLE_KHZ)

@@ -8,7 +8,7 @@ the paper plan.
 
 ## Headline results
 - **Axial cooling-physics (solve) floor ⟨n_z⟩ ≈ 0.005** (dual-end) / **≈ 0.0072** (single-ended tagged retro; the 20–40 % retro reflectivity is **non-binding** at a 2f_A = 400 MHz tag) → >99 % *axial* ground-state population; field-insensitive at any B.
-- **All-in single-atom floor ⟨n_z⟩ ≈ 0.012–0.019** once the anti-trap/leak increment (+0.007–0.012) is folded into the solve floor; cloud-inhomogeneity floor ≈ 0.0094 at 100 µK. The ~0.005/0.0072 figures are the cooling-physics floor, **not** the all-in number, and all floors carry a ~2× recycler-model band.
+- **Certified low-dwell all-in single-atom floor ⟨n_z⟩ ≈ 0.008–0.010** = the solve floor + the anti-trap **squeezer heat** (≈ +0.003), counted **once**. (The earlier +0.007–0.012 "increment" double-counted the solve bulk and the bare recoil — both already in the solve — and is **withdrawn**; 2026-06-20 floor correction.) The ~0.005/0.0072 figures are the cooling-physics floor, **not** the all-in number; all floors carry a ~2× recycler-model band. The **cloud** all-in is **T_r-gated and [O]** (radial squeezer integral pending), not a flat band.
 - Operating point: **Δ ≈ 45 MHz (flat 40–55), Ω_p/Ω_c = 0.12**; cloud-robust to ~100 µK (semiclassical MC).
 - This is a **1D (axial) cooler**: the radial mode is not cooled (n̄_r ≈ 380 at 100 µK, ≈ 10 at 2.5 µK), so the 3D ground-state fraction is set by the radial temperature, not the axial floor. A designed route to lower the radial (compression + degenerate RSC + adiabatic transfer) is planned but unproven.
 
