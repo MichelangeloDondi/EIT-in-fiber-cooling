@@ -1,7 +1,7 @@
 # Audit / kickoff — S3 radial dynamic Monte-Carlo: the realized cloud floor
 
 **This is the headline computation.** The axial scheme is closed (every Λ/recycle lever swept); the
-all-in band **0.012–0.019** is radial-inhomogeneity-dominated, and its *realized* value — as opposed to
+cloud floor (T_r-gated, ≈0.007/0.012/0.022 at 25/100/400 µK) is radial-inhomogeneity-dominated — the single-atom floor is 0.008–0.010 and the v15 all-in 0.012–0.019 was a withdrawn double-count — and its *realized* value — as opposed to
 the frozen-position ceiling — has **never been computed dynamically**. This brief specifies that run.
 House style: concise, [V]/[I]/[O], cite source+line, attack [I]. Compute, don't assert.
 
@@ -81,7 +81,7 @@ frozen].**
 
 ## Stakes and scope
 - **This moves the thesis number.** Unlike the axial-scheme sweep (all sub-dominant), S3 sets where in
-  0.012–0.019 the realized floor sits — or revises the band. If the dynamics average favorably, the
+  the T_r-gated cloud band (≈0.007/0.012/0.022) the realized floor sits — or revises the band. If the dynamics average favorably, the
   headline drops toward ~0.009–0.012; if cooling lags or orbital heating fires, it sits at the upper end
   or worse.
 - **Scope:** S3 quantifies the inhomogeneity *with the Gaussian profile*. The **flat-top lever** (separate
@@ -94,4 +94,4 @@ frozen].**
 The realized cloud ⟨n_z⟩ at 25/100/400 µK, fixed-δ₂ (physical) and per-radius (optimism bound), with the
 orbital-heating sign reported, Nf/closure convergence shown, and the result placed in the
 [quasi-static, frozen] bracket. That number — fed into the reabsorption and survival terms — is the
-honest all-in headline, replacing the current 0.012–0.019 [I] estimate with a computed value.
+honest cloud headline, replacing the withdrawn 0.012–0.019 [I] all-in estimate (now: single-atom 0.008–0.010; cloud T_r-gated ≈0.007/0.012/0.022) with a computed value.

@@ -6,7 +6,7 @@ Replaces the Δ=80 / Ω_p/Ω_c=0.25 block. The scheme, the F′=3-in-Hamiltonian
 
 clock-EIT, field-insensitive pair |1,−1⟩ / |2,+1⟩ → |F′=2, m′=0⟩ (both g_F m_F=+½):
 
-- Single-photon detuning **Δ = +45 MHz** blue (was +80). Flat floor optimum ≈40–50; degrades above ~80. Also the **radial-cloud optimum** (S4 MC: 0.0094 at Δ=45 vs 0.0102 at Δ=80), so no separate cloud correction is needed.
+- Single-photon detuning **Δ = +45 MHz** blue (was +80). Flat floor optimum ≈40–50; degrades above ~80. Also the **radial-cloud optimum** (the earlier S4 semiclassical figure 0.0094 at Δ=45 vs 0.0102 at Δ=80 is superseded by the clk2 quasi-static 0.0169 and the T_r-gated cloud framing, but the Δ=45 optimum holds), so no separate cloud correction is needed.
 - **Ω_p/Ω_c = 0.12** (was 0.25). Control σ−, Ω_c = 8.74 (2π MHz); probe σ+, Ω_p = 1.05. Ω pinned to the EIT condition Ω_tot=√(4Δ·ν_z); the *ratio* is the new lever (see §2).
 - Two-photon detuning **δ₂ servoed to the dark resonance**, set-point ≈ +0.1 MHz (dual-end) / ≈ +0.22 MHz (single-ended tagged) — **positive = the compensation of the ≈ −0.2 MHz e3 Stark shift** (solver/SSOT convention; §3 uses the same sign). Parking at the bare hyperfine still costs the floor; the offset drifts with power/radius and must be servoed, not hardcoded.
 - B flexible 1.0–1.5 G for cooling (the cooling pair is first-order field-insensitive at any field; the 3.229 G clock-magic field is only for interrogation). Two repumpers (|1,0⟩ and |2,−2⟩ leaks), Δ_rep = +20…+40 MHz.

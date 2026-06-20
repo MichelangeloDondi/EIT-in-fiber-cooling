@@ -106,7 +106,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Working title:** *Radial-temperature limits of sideband cooling in a soft-confinement guided trap: the inhomogeneous-light-shift cloud floor and the EIT-tolerant, Raman-fragile regime.*
 
-**Thesis:** In a guided trap with a soft radial mode the cooling floor is set by the radial cloud sampling the inhomogeneous 1064 light shift (the M3 effect); the floor rises with radial temperature (tail-dominated, **n̄_z ≈ 0.0095 at 100 µK**); and **EIT cooling tolerates the radial spread** (its ~150 kHz bright feature covers the ν_z(r) swing) while **RSC is fragile** (its ~16 kHz sideband does not). Addresses the inhomogeneous-broadening limiter the HCPCF field cites.
+**Thesis:** In a guided trap with a soft radial mode the cooling floor is set by the radial cloud sampling the inhomogeneous 1064 light shift (the M3 effect); the floor rises with radial temperature (tail-dominated; the clk2 T_r-gated cloud all-in is **≈0.012 at 100 µK**, superseding the earlier semiclassical ≈0.0095); and **EIT cooling tolerates the radial spread** (its ~150 kHz bright feature covers the ν_z(r) swing) while **RSC is fragile** (its ~16 kHz sideband does not). Addresses the inhomogeneous-broadening limiter the HCPCF field cites.
 
 **Type / venue:** cooling-physics — PRA / PR Applied. **P1's backbone** (the stand-alone option is withdrawn — mechanism is established; see status note).
 
