@@ -9,13 +9,13 @@ House style: concise, [V]/[I]/[O], cite source+line, attack [I]. Compute, don't 
 the recycler/scatter context of the D1-Raman auditor — cleanest in a fresh chat. Self-contained below.
 
 ## What is settled — do not re-derive
-- **Radial scaling laws [V]** (`radial_frozen.py`; v15 §8), s(r)=exp(−2r²/w²), w=w₀≈19 µm:
+- **Radial scaling laws [V]** (`radial_frozen.py`; v16 §8), s(r)=exp(−2r²/w²), w=w₀≈19 µm:
   ν_z(r)=ν_z0·√s, η(r)=η0·s^(−¼), Ω(r)=Ω0·√s, and the **radial detuning shift
   Δ_eff(r)=Δ₀+c·(1−s), c=60.9 MHz** (the "M3" term, from the +38.1 MHz scalar shift of |F′2,0⟩;
   dominates radial degradation beyond ~50 µK).
 - **S2 frozen bound (turning-point ceiling) [V]:** n̄_z ≤ **0.0064 / 0.0126 / 0.0266 at 25 / 100 / 400 µK**
   — atom pinned at r_max, no re-cooling. Conservative; over-weights the tail.
-- **Quasi-static per-radius MC (v15 §8) [V/I]:** ≈ **0.0085 at 100 µK** (Δ=45, OmR=0.10) — each atom
+- **Quasi-static per-radius MC (semiclassical, v16 §8) [I, provenance-gap]:** ≈ **0.0085 at 100 µK** (Δ=45, OmR=0.10) — *driver code absent; superseded as the quasi-static reference by the clk2 grid_avg_cloud ceiling 0.0169 at 100 µK; the dynamic-MC suppression RATIO below is what transfers* — each atom
   assumed to reach the *local* frozen floor at its instantaneous radius, then averaged over the radial
   distribution. This is the **W≫ν_r limit** (cooling instantaneous vs radial motion). Coverage ~99%
   (feature 150 kHz, r<12.45 µm). Absolute ±0.001 (coarse per-radius δ₂ grid).
@@ -31,7 +31,7 @@ Semiclassical radial trajectories with quantum axial cooling:
    thermal (Boltzmann) distribution at T_r; r(t) from the resulting orbit (phase/eccentricity randomized).
 2. **Per-radius cooling data [from the engine]:** at a grid of r, solve the steady-state EIT for the
    instantaneous {ν_z(r), Δ_eff(r), Ω(r), η(r)} → the **local cooling rate W(r)** (Liouvillian gap) and
-   the **local frozen floor n̄_ss(r)**. (Reuse the multilevel solver; this is the v15 §8 per-radius pass,
+   the **local frozen floor n̄_ss(r)**. (Reuse the multilevel solver; this is the v16 §8 per-radius pass,
    now also returning W(r).)
 3. **Axial evolution along the trajectory:** integrate the rate equation
    **d⟨n⟩/dt = −W(r(t))·(⟨n⟩ − n̄_ss(r(t)))** with r(t) from step 1, W and n̄_ss interpolated from step 2.
@@ -56,7 +56,7 @@ frozen].**
    between "dynamic lands in the bracket" and "dynamic is worse than both limits."
 2. **δ₂ servo strategy [load-bearing, and optimistic in the quasi-static MC].** Is δ₂ servoed to the
    *on-axis* dark resonance (one fixed set-point — physical; off-axis atoms are then detuned by the
-   Δ_eff(r) shift) or re-servoed *per radius* (the v15 §8 "coarse per-radius δ₂ grid" — optimistic, not
+   Δ_eff(r) shift) or re-servoed *per radius* (the v16 §8 "coarse per-radius δ₂ grid" — optimistic, not
    physically realizable since one laser serves the whole cloud)? The realized floor depends strongly on
    this. **Run the physical fixed-δ₂ case** as the headline; the per-radius case is the upper-optimism
    bound. State which produced which number.

@@ -195,7 +195,7 @@ which the apparatus cannot resolve.
 ### A. The axial floor budget
 
 With every $5P_{3/2}$ contaminant and the optimized repumpers included, the model gives an axial
-single-atom floor of $\bar n_z \approx 0.005$ (dual-end) and $\approx 0.0077$ (single-end tagged).
+single-atom floor of $\bar n_z \approx 0.005$ (dual-end) and $\approx 0.0072$ (single-end tagged).
 The contaminant budget is closed and ranked: the common, $\Lambda$-closing $F'{=}1$ level dominates
 ($+0.0034$, a residual dark-state coupling of $-0.31$ suppressed only by the $\sim 212$ MHz
 detuning), $F'{=}3$ is secondary ($+0.0010$, control-only), and $F'{=}0$ is negligible ($+0.0001$).

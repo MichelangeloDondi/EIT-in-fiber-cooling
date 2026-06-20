@@ -2,8 +2,9 @@
 
 *The single authoritative file per settled question, with its verdict. Read the named file before
 acting; do **not** reconstruct an answer from intermediate or superseded files — that is the failure
-this index exists to prevent. Last reconciled: 2026-06-20 (post anti-trap-resolution + floor-budget
-increment-convention correction). In-flux items are flagged §OPEN; do not cite those as final.*
+this index exists to prevent. Last reconciled: 2026-06-20 (post floor-correction consolidation: **v16** master; SSOT double-count
+fix + SCOPE→CLAIMS deferral committed to PR #4; squeezer off-axis rate-rise **disproven**; full
+stale-number pass on v16). In-flux items are flagged §OPEN; do not cite those as final.*
 
 ---
 
@@ -11,12 +12,12 @@ increment-convention correction). In-flux items are flagged §OPEN; do not cite 
 
 | question | authority file | verdict (one line) |
 |---|---|---|
-| **Cooling scheme + operating point** | `clock_EIT_consolidated.md` (**v15**) | D2 clock-EIT, m′=0 pair \|1,−1⟩/\|2,+1⟩ → \|F′2,0⟩, **config A** (dark on \|1,−1⟩); Δ≈45 MHz (flat 40–55), Ω_p/Ω_c≈0.10–0.12, δ₂ servoed; ν_z=2π·430 kHz, U₀=1094 µK, η_z=0.094, η_eff(retro)=0.187; magic B=3.2288 G (interrogation), cooling 1–1.5 G. |
+| **Cooling scheme + operating point** | `clock_EIT_consolidated.md` (**v16**) | D2 clock-EIT, m′=0 pair \|1,−1⟩/\|2,+1⟩ → \|F′2,0⟩, **config A** (dark on \|1,−1⟩); Δ≈45 MHz (flat 40–55), Ω_p/Ω_c≈0.10–0.12, δ₂ servoed; ν_z=2π·430 kHz, U₀=1094 µK, η_z=0.094, η_eff(retro)=0.187; magic B=3.2288 G (interrogation), cooling 1–1.5 G. |
 | **Leg assignment (config A vs B)** | `clock_leg_swap_finding.md` (**RESOLVED**) | The swap is **rejected; A holds** (3.8× advantage; B's F=2-interior dark leg can't clear \|2,+2⟩). |
 | **Why EIT, not RSC** | `clock_EIT_consolidated.md` §I/§II (+ `EIT_brief_v12.md`) | On the Δm=2 field-insensitive pair, RSC hits a **rank-2 destructive-interference obstruction** (Σg=0 → floor ~0.45); EIT escapes it. Cited as established (Naber 2016), not new. |
 | **Excited state at 1064 (anti-trap potential)** | `Rb-87_5P3_2_Scalar_Polarizability_…md` | 5P₃/₂ **anti-trapped** at 1064 (α₀≈−1149 a₀³); **\|F′2,0⟩ pure scalar +38.1 MHz** (F′=2 tensor term vanishes → geometry-independent). |
 | **Anti-trap FLOOR (m′=0)** | **`ANTITRAP_RESOLUTION.md`** | Repump-**dwell**-gated **~0.01–0.05, pinned not runaway**. Low-dwell (P_e_rep~4e-5) → faithful bulk **~0.01**; high-dwell (~3.5e-4) → ~0.03–0.05. The grid 0.03→0.10 growth is a **boundary artifact**, not a floor. Point-number for a chosen repump = workstation/sparse-iterative job. |
-| **Floor budget / all-in** *(corrected + SSOT-patched 2026-06-20 — see §3)* | `operating_point.py` (SSOT, patched) **+ the §3 convention** | **single-atom on-resonance ≈ 0.008–0.010** (low-dwell, **CERTIFIED**). **High-dwell** = **RETIRED** (measured low-dwell: clk2 config-A P_e(F′1)=8.4×10⁻⁶, 5× below the 4×10⁻⁵ low-dwell ref → the 0.03–0.05 branch does not apply; certified floor stands). **Cloud-limited = [O]** = cooling(r) + squeezer integral. **Cooling half CHARACTERIZED** (dynamic MC: realized sits *below* quasi-static — W(r) peaks at the cold center, anti-correlated with n_ss(r) → frozen 0.0126 superseded, dynamics benign; **3-level engine ⇒ ratio result**, clock magnitude pending). **Squeezer half [O] but DE-RISKED** (clk2: P_e(F′2)(r) measured *falls* off-axis — M3 is a common shift, δ₂ preserved, dark state stays dark → heat rate R_sq falls to 0.32× at r=10; the "rate-rise" driver is **disproven**. Only the 1/W tail amplification remains, which the cooling dwell-weighting defeats → likely **cloud ≈ single-atom ≈ 0.008–0.010**; computation #2 confirms magnitude). Old **0.012–0.019** / **0.012–0.017** withdrawn (§3, §4). |
+| **Floor budget / all-in** *(corrected; SSOT committed to PR #4 — see §3)* | `operating_point.py` (SSOT) **+ the §3 convention** | **single-atom on-resonance ≈ 0.008–0.010** (low-dwell, **CERTIFIED**). **High-dwell** = **RETIRED** (measured low-dwell: clk2 config-A P_e(F′1)=8.4×10⁻⁶, 5× below the 4×10⁻⁵ low-dwell ref → the 0.03–0.05 branch does not apply; certified floor stands). **Cloud-limited = [O]** = cooling(r) + squeezer integral. **Cooling half CHARACTERIZED** (dynamic MC: realized sits *below* quasi-static — W(r) peaks at the cold center, anti-correlated with n_ss(r) → frozen 0.0126 superseded, dynamics benign; **3-level engine ⇒ ratio result**, clock magnitude pending). **Squeezer half [O] but DE-RISKED** (clk2: P_e(F′2)(r) measured *falls* off-axis — M3 is a common shift, δ₂ preserved, dark state stays dark → heat rate R_sq falls to 0.32× at r=10; the "rate-rise" driver is **disproven**. Only the 1/W tail amplification remains, which the cooling dwell-weighting defeats → likely **cloud ≈ single-atom ≈ 0.008–0.010**; magnitude confirm = MC dwell-weighted integral, **not sign-deciding**). **Cloud all-in ≈ 0.007/0.012/0.022 at T_r=25/100/400 µK** [I, cross-engine], **T_r-gated** → cloud ≈ single-atom (~0.012) if radial-cooled to ~100 µK. Old **0.012–0.019** / **0.012–0.017** withdrawn (§3, §4). Single-atom edges = the two delivery configs (dual-end 0.0048 / single-tagged **0.0072**), each + 0.003 squeezer once. |
 | **Realized floor < GATE A (0.003 vs 0.0072)** | `floor_gap_resolution.md` | GATE A (`clean_lambda=True`) and the realized floor are the **same solver in two modes**; the gap is recoiler-closure, not a reduced engine. |
 | **D1 vs D2** | `D1_hybrid_consolidated_findings.md` | **D1 ruled out** — no floor gain, line-independent binding, F′1 inversion 1.65× worse; α₀(5P₁/₂,1064)≈−1254 a.u. (every-leg r=−1.78, worse than D2). Do not model D1. |
 | **Retro geometry** | `retro_EIT_section.md` | Retro EIT **viable**; m′=2 + bare mirror favorable; dual-end vs retro is an **engineering trade**, not a physics result. Reflection rule is **optic-dependent** (name the optic before quoting Δm). |
@@ -30,11 +31,11 @@ increment-convention correction). In-flux items are flagged §OPEN; do not cite 
 
 - **`recycle_dwell_S3.py`** — a D1/hybrid recycle-**traffic** tool (N_cool/N_rep per leak). **NOT the anti-trap floor authority.** Its `n_floor=0.077…` Markov estimate is superseded by `ANTITRAP_RESOLUTION.md`. *(This exact mistake was made and caught 2026-06-20.)*
 - **`antitrap_kernel_grid.py` grid steady-state runaway (0.03→0.10)** — a truncation/boundary **artifact** (`ANTITRAP_RESOLUTION.md:22–23`), not a physical floor. The closed-form **kernel** (0.031 m′=0, 0.018 F′1) IS valid; the grid *steady state* runaway is not.
-- **`operating_point.py` `all_in_single_atom = (0.012, 0.019)`** — **double-counted** (`antitrap_leak_increment=0.007` is the *no-squeezer bulk* ≈ the solve floor; adding it to solve counts the traffic clean floor twice). Use §3. **Fix pending** (§OPEN).
-- **`EIT_brief_v11.md` / `v12.md`** — **frozen and correct**, carried *by reference*; the **current master is `clock_EIT_consolidated.md` v15**. Read v11/v12 for D1 (§12) and the five-column comparison, not for the current floor.
-- **`clock_EIT_consolidated.md` v14 (project-knowledge copy)** — superseded by **v15** (in /outputs, pending repo). Re-sync project knowledge after the PRs land.
+- **`operating_point.py` `all_in_single_atom = (0.012, 0.019)`** [the OLD field] — was **double-counted** (`antitrap_leak_increment=0.007` is the *no-squeezer bulk* ≈ the solve floor). **FIXED 2026-06-20** (committed PR #4): the field is now `squeezer_increment_lowdwell = 0.003` (scalar) and `all_in_single_atom_lowdwell` = solve + squeezer ≈ **0.008–0.010**. **Any copy still showing (0.012, 0.019) or `antitrap_leak_increment` is pre-correction — discard.**
+- **`EIT_brief_v11.md` / `v12.md`** — **frozen and correct**, carried *by reference*; the **current master is `clock_EIT_consolidated.md` v16**. Read v11/v12 for D1 (§12) and the five-column comparison, not for the current floor.
+- **`clock_EIT_consolidated.md` v14 / v15** — superseded by **v16** (committed PR #4). Re-sync project knowledge after the PRs land (use `docs/INDEX.md` as the authority map).
 - **Any `clock_leg_swap_finding.md` headed "[O] swap favored"** — the **RESOLVED** version ("swap rejected; A holds") supersedes it.
-- **`v12_plan.md` / `D1_hybrid_plan.md` / `v12_decision.md`** — process scaffolding; conclusions are in v15 / the findings docs.
+- **`v12_plan.md` / `D1_hybrid_plan.md` / `v12_decision.md`** — process scaffolding; conclusions are in v16 / the findings docs.
 
 ---
 
@@ -49,19 +50,29 @@ single-atom on-resonance floor **IS the faithful bulk ~0.01**, *not* solve + bul
 all-in as a tagged sum: `solve [traffic-in/potential-out] + squeezer [+~0.003, increment] →
 on-resonance ~0.008–0.010 (low-dwell)`. **High-dwell** breaks the decomposition (clk2 must be
 re-solved; the grid 0.026–0.053 upper is the contaminated-Fock *artifact*, not a value). **Cloud**
-is **not** on-resonance + flat increment: the squeezer is radius-dependent (kernel ∝ ν_z(r)² falls
-off-axis; rate ∝ P_e(Δ_eff(r)) rises on the same Δ_eff the MC books) → it needs the radial integral
-`⟨cooling(r) + squeezer(ν_z(r), P_e(Δ_eff(r)))⟩`, **[O] pending**.
+is **not** on-resonance + flat increment — it needs the radial integral `⟨cooling(r) + squeezer(r)⟩`,
+and **both halves now favor the cold center**: cooling realized sits *below* quasi-static (W(r)
+W-weighted, peaks cold), and the squeezer is **DE-RISKED** — P_e(F′2)(r) *falls* off-axis (the M3
+shift is **common** to both legs, δ₂ unchanged, dark state preserved) so R_sq=P_e·kernel falls to
+**0.32× at r=10 µm**; the off-axis **rate-rise is DISPROVEN**, not sign-uncertain. Result: cloud
+all-in ≈ **0.007/0.012/0.022** at T_r=25/100/400 µK [I, cross-engine], **T_r-gated**. Only the
+dwell-weighted magnitude confirm remains (**[O], not sign-deciding**).
 
 **The repump-dwell caveat.** The anti-trap floor is **dwell-gated ~0.01–0.05**. Low-dwell (~0.01) is
 **design intent, not a result** — the adopted F′=1 EIT repump (`clk2.py:135`) sits on the exact leg
 `ANTITRAP_RESOLUTION.md` flags as the dwell bottleneck. Only **RSC-to-\|F=2,m=0⟩** forces low dwell
-*structurally*. **Carry the bracket ~0.01–0.05** until the F′=1 dwell is computed.
+*structurally*. The F′=1 dwell is now **MEASURED** (clk2 config-A P_e(F′1)=8.4×10⁻⁶, 5× below the 4×10⁻⁵ low-dwell ref) → **firmly low-dwell; the 0.03–0.05 high-dwell branch is RETIRED**, the certified ~0.008–0.010 stands, and the 0.003 squeezer increment is conservative.
 
 **The η convention.** η_z=0.094 is **symmetric**; the 3.8× config-A advantage is **relative**. Don't
-misread the dual-end 0.0048 against the pinned single-tagged 0.0077.
+misread the dual-end 0.0048 against the single-tagged **0.0072**.
 
-**The solve-vs-all-in label.** "single-atom 0.005/0.0077" (clk2) = **solve only** (potential-out);
+**The OmR convention.** Operating nominal is Ω_p/Ω_c=**0.12** (SSOT `OP.OmR`); the dual-end floor and
+the cooling-time/semiclassical scans are characterized at the low-probe edge **0.10** (the §6
+optimum). The dual floor is F′1-dominated and ~OmR-robust at ~0.005 across 0.10–0.12, so the label is
+harmless — but **don't read 0.10 as the operating point** (0.10 was also the OmR of the superseded
+v12 Δ=55/OmR=0.10 point; the §5 floor table is at Δ=45 now).
+
+**The solve-vs-all-in label.** "single-atom 0.005/0.0072" (clk2) = **solve only** (potential-out);
 "all-in" = solve + anti-trap + cloud. The word "single-atom" is **overloaded** between files — always
 state which quantity.
 
@@ -72,7 +83,7 @@ state which quantity.
 
 ## 4. OPEN / in-flux — NOT settled, do not cite as final
 
-- **✅ DONE `operating_point.py` double-count fix** (2026-06-20) — `antitrap_leak_increment=(0.007,0.012)` replaced by the squeezer increment (~0.003, once); `all_in_single_atom_lowdwell` = solve + squeezer ≈ 0.008–0.010 [I, low-dwell]; high-dwell + cloud carried as [O]. Corrected file in /outputs → apply to repo SSOT.
+- **✅ DONE `operating_point.py` double-count fix** (2026-06-20) — `antitrap_leak_increment=(0.007,0.012)` replaced by the squeezer increment (~0.003, once); `all_in_single_atom_lowdwell` = solve + squeezer ≈ 0.008–0.010 [I, low-dwell]; high-dwell + cloud carried as [O]. **Committed to PR #4** (claude/floor-correction, gate-green); the SSOT `SCOPE` now **defers detection/survival to CLAIMS D-/S-series** (no independent tier — an unintentional `[O]` metadata downgrade was reverted).
 - **✅ DONE (2026-06-20) repump-dwell measurement** — clk2 config-A F′=1 dwell **P_e(F′1)=8.4×10⁻⁶**, 5× below the low-dwell ref (4×10⁻⁵) → **firmly low-dwell; high-dwell branch (0.03–0.05) retired**; certified ~0.008–0.010 stands (and the 0.003 squeezer increment is conservative). Proxy clk2 pe_F1 ~ grid P_e_rep is **[I]** (auditor to vet); F′2 residual 1.8×10⁻⁵ cross-checks dark-state ~4×10⁻⁵. The dense-ME high-dwell re-solve is now needed *only if the dwell proxy is contested*.
 - **[O] radial squeezer integral — input now COMPUTED; only the dwell-weighted assembly remains.** P_e(F′2)(r) measured on clk2 (`radial_pe.py`): it **falls** off-axis (1.53→0.88 ×10⁻⁵ over r=0–10 µm; M3 common shift preserves δ₂/dark state), so R_sq(r)=P_e·kernel **falls to 0.32× at r=10** — the "rate-rise" half is **disproven**, not sign-uncertain. The remaining question is only whether the dwell-weighting beats the off-axis 1/W tail (it did for cooling). Fold R_sq(r) into the MC ⟨n⟩-ODE (anchored to faithful 0.003 on-axis) and dwell-weight; expected cloud ≈ single-atom ≈ 0.008–0.010. Brief: `audit_squeezer_integral_MC.md`.
 - **✅ DONE (2026-06-20) Radial dynamic MC (S3)** — cooling half of the cloud: realized sits **below** quasi-static (W(r) peaks at the cold center, anti-correlated with n_ss(r)) → **frozen bound 0.0126 superseded; radial cooling dynamics are benign**. **3-level engine ⇒ RATIO result** (suppression ~1.2×/3.0×/7.4× at 25/100/400 µK *within its own bracket*), NOT the clock floor. Pipeline `mc.py`/`grid_build.py`/`engine.py` + fig `s3_radial_mc.png`. Provenance note: the brief's 0.0085 semiclassical-MC driver was **not in the file set** (asserted [V] in `clock_EIT_consolidated.md §8`, generating code absent). Clock-engine magnitude = clk2 per-radius re-run [O].
@@ -93,10 +104,13 @@ state which quantity.
 | `antitrap_kernel_grid.py` | anti-trap **kernel** (valid) + grid (steady-state runaway = artifact) | normal-trap grid = Fock = 0.0085 |
 | `raman_sbc.py` | RSC engine (anchors the RSC-vs-EIT comparison) | — |
 | `flatness_spec.py` | per-depth floor / flat-top flatness spec | s=1 → 0.00485 |
+| `radial_pe.py` | per-radius P_e(F′2) on clk2 (squeezer-rate input) | P_e *falls* off-axis 1.53→0.88e-5 |
+| `grid_avg_cloud.py` | Boltzmann cloud average of clk2 n̄(r) | 0.0056/0.0169/0.130 @ 25/100/400 µK |
+| `dwell.py` | clk2 F′=1 repump-dwell measurement | P_e(F′1)=8.4e-6 → low-dwell |
 
 ---
 
 *Maintenance: re-reconcile this index whenever a floor number, an authority file, or a convention
 changes. The protective value is the §2 "do not mistake" list and the §3 conventions — keep those
-current. Authoritative resolution docs (`ANTITRAP_RESOLUTION.md`, `floor_gap_resolution.md`) should
-be promoted into `docs/`, not left in archive, since this index points to them as load-bearing.*
+current. Authoritative resolution docs (`ANTITRAP_RESOLUTION.md`, `floor_gap_resolution.md`) are now in
+`docs/` (PR #4), since this index points to them as load-bearing.*

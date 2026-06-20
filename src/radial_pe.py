@@ -1,6 +1,9 @@
-"""Per-radius P_e(r) on the clk2 (full clock) engine -> the squeezer rate-rise channel.
-   R_sq(r) ~ P_e(F'2)(r) [leak driver, RISES off-axis] * kernel(nu_z(r)) [FALLS off-axis].
-   Settles which wins for the HEAT RATE (the increment further divides by W(r), which falls)."""
+"""Per-radius P_e(r) on the clk2 (full clock) engine -> TESTS the squeezer rate-rise channel.
+   R_sq(r) ~ P_e(F'2)(r) [leak driver] * kernel(nu_z(r)) [FALLS off-axis].
+   RESULT (2026-06-20): P_e FALLS off-axis (1.53->0.88e-5 over r=0-10um) -- the M3 shift is COMMON
+   to both legs (delta2 unchanged, dark state preserved) and the weaker off-axis field dominates.
+   The hypothesized off-axis rate-rise is DISPROVEN; R_sq falls to 0.32x at r=10 (kernel-falloff
+   unopposed). Only the 1/W tail amplification remains, dwell-discounted."""
 import numpy as np, qutip as qt
 from clk2 import (Eg, excited_energies, beams, build_frame, CGc, GAMMA, EM_REC, BR)
 NU0, ETA0, C_M3, W0 = 0.430, 0.094, 60.9, 19.0
