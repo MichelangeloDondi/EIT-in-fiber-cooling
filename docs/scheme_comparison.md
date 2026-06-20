@@ -3,7 +3,7 @@
 > **Version note (read first).** This is a **v12 snapshot** kept for the scheme-by-scheme
 > reasoning. Its clock-EIT floor (0.0064) predates the v14 refinement — the authoritative
 > clock-EIT solve floor is **0.0048 (dual) / 0.0072 (single-ended)** at the v14 operating point
-> (`operating_point.md`, `clock_EIT_consolidated.md`), and the all-in floor is ~0.012–0.019. The
+> (`operating_point.md`, `clock_EIT_consolidated.md`), and the certified single-atom floor is 0.008–0.010 (the v15 ~0.012–0.019 all-in was a double-count, withdrawn); the cloud floor is T_r-gated (≈0.007/0.012/0.022 at 25/100/400 µK). The
 > clock-RSC ≈0.45 disqualification below is **confirmed** and fully written up in
 > `clock_RSC_resolution.md` (the rank-2 obstruction; the engine's 0.0137 is an obstruction-free
 > idealization, not the floor). Treat the other per-scheme floors here as v12-era values.

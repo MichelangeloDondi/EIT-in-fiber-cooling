@@ -120,6 +120,47 @@ has_allin = (os.path.exists(readme) and
               or "all-in" in open(readme, encoding="utf-8", errors="ignore").read().lower()))
 check("README headlines the all-in floor (%s..%.3f)" % (allin_lo, fb.all_in_single_atom_lowdwell[1]), has_allin)
 
+# ---------- 3b. HARD: floor-correction durability (2026-06-20) ----------
+# The withdrawn all-in band (0.012-0.019/0.017), the renamed SSOT fields, and the
+# superseded semiclassical cloud floor (0.0094/0.0095) must not resurface as LIVE
+# in any doc that feeds the project-knowledge re-sync. The gate previously missed
+# these because (a) it grepped only specific strings and (b) the en-dash form
+# "0.012–0.019" defeated naive patterns. These checks are encoding-agnostic
+# (\D spans any separator) and context-aware (retired/superseded mentions exempt).
+print("\n[3b] HARD: withdrawn floor headline / renamed fields stay retired")
+def _banner_doc(f):
+    """Whole-doc exempt if its head declares it a historical/superseded record."""
+    with open(f, encoding="utf-8", errors="ignore") as fh:
+        head = "".join(fh.readline() for _ in range(4))
+    return bool(re.search(r"\[EXECUTED\]|PRE-correction|historical plan|snapshot record", head, re.I))
+GDOCS = [f for f in (glob.glob(os.path.join(DOCS, "*.md")) +
+                     glob.glob(os.path.join(DOCS, "papers", "*.md")) +
+                     [os.path.join(ROOT, "SCOPE.md"), os.path.join(ROOT, "CLAIMS.md")])
+         if not _banner_doc(f)]
+RETIRED = (r"withdrawn", r"superseded", r"double.?count", r"got wrong", r"\bv1[0-5]\b",
+           r"legacy", r"discard", r"earlier", r"semiclassical", r"pre-correction")
+check("no live withdrawn all-in band 0.012-0.019/0.017 (en-dash-safe)",
+      len(scan(GDOCS, r"0\.012\D{0,4}0\.01[79]", exempt=RETIRED)) == 0,
+      "; ".join(scan(GDOCS, r"0\.012\D{0,4}0\.01[79]", exempt=RETIRED)))
+check("no live antitrap_leak_increment (renamed -> squeezer_increment_lowdwell)",
+      len(scan(GDOCS, r"antitrap_leak_increment", exempt=RETIRED)) == 0,
+      "; ".join(scan(GDOCS, r"antitrap_leak_increment", exempt=RETIRED)))
+check("no bare all_in_single_atom old field (now all_in_single_atom_lowdwell)",
+      len(scan(GDOCS, r"all_in_single_atom(?!_lowdwell)", exempt=RETIRED)) == 0,
+      "; ".join(scan(GDOCS, r"all_in_single_atom(?!_lowdwell)", exempt=RETIRED)))
+def _cloud_floor_hits():
+    # 0.0094/0.0095 as a LIVE cloud floor; exempt the squeezer-heat derivation
+    # (faithful 0.0095 vs no-squeezer 0.0069), optima, table rows, v11 snapshots.
+    ex = RETIRED + (r"faithful", r"no-?squeezer", r"\bgrid\b", r"squeez", r"\bv11\b", r"frozen", r"optimum", r"\|")
+    out = []
+    for f in GDOCS:
+        for i, l in enumerate(open(f, encoding="utf-8", errors="ignore"), 1):
+            if re.search(r"0\.009[45]", l) and re.search(r"cloud", l, re.I) and not any(re.search(e, l, re.I) for e in ex):
+                out.append("%s:%d  %s" % (os.path.relpath(f, ROOT), i, l.strip()[:90]))
+    return out
+check("no live 0.0094/0.0095 semiclassical cloud floor (superseded by clk2 quasi-static)",
+      len(_cloud_floor_hits()) == 0, "; ".join(_cloud_floor_hits()))
+
 # ---------- 4. SOFT reconciliation sweep ----------
 print("\n[4] SOFT: remaining reconciliation sweep (non-fatal)")
 prose = [f for f in glob.glob(os.path.join(DOCS, "*.md"))]

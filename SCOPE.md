@@ -26,7 +26,7 @@ One page, so claims aren't over-extended. Numbers and evidence: `CLAIMS.md`,
 ## Boundaries that load-bear
 - **ν_z and U₀ are inferred** from the 1064 mode waist, not measured [O]. The cooling/thermometry
   scaling (η ∝ 1/√ν_z) rides on this.
-- The **all-in floor (0.012–0.019)** folds in an *estimated* anti-trap/leak increment [I]; the
+- The **certified single-atom all-in floor (0.008–0.010)** adds the anti-trap *squeezer* increment (≈0.003, once) to the solver floor [I] — the v15 0.012–0.019 was a withdrawn double-count, and the cloud floor is separately T_r-gated; the
   solver floor alone is 0.0048 (dual) / 0.0072 (single).
 - **Polarization purity** rests on the low-birefringence kagome beat-length condition [I]/[O].
 - The radial result is an **input/consequence**, not a cooled output: the radial temperature is

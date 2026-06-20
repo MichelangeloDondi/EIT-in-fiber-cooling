@@ -1,6 +1,6 @@
 # Feasibility — flat-top 1064 profile: the one lever that removes the radial inhomogeneity at its root
 
-**Why this matters most.** The all-in headline (0.012–0.019) is set by the radial inhomogeneity, and the
+**Why this matters most.** The cloud floor (T_r-gated — ~0.012 at 100 µK, up to ~0.022 uncooled) is set by the radial inhomogeneity (the single-atom floor is 0.008–0.010; the v15 0.012–0.019 all-in was a withdrawn double-count), and the
 inhomogeneity comes entirely from the **Gaussian transverse profile** of the 1064 lattice — the atoms at
 different radii sit in different trap depths, so ν_z(r) and the dark-resonance shift Δ_eff(r) vary across
 the cloud. A profile that is **flat over the cloud region** removes that variation at the source and
@@ -51,7 +51,7 @@ These decide optical feasibility; we cannot answer them from our side.
 These quantify the *payoff* and the *cost*, so the expert ask is well-motivated.
 1. **The floor payoff [I → compute].** If U(r) is flat over the cloud, ν_z(r) and Δ_eff(r) are constant →
    the inhomogeneity term vanishes → the axial floor collapses to the **cold on-axis value (~0.0064) for
-   all T_r**, and the all-in headline drops from 0.012–0.019 toward **~0.006–0.008** (axial-floor- and
+   all T_r**, and the cloud floor drops from its T_r-gated value (up to ~0.022 uncooled) to the on-axis single-atom **0.008–0.010** (axial-floor- and
    survival-limited, the radial term gone). Confirm the magnitude with the engine at flat-profile
    parameters; this is the number that justifies the whole effort.
 2. **Box-trap radial dynamics [O → couples to S3].** A box-like radial potential changes the radial
@@ -67,7 +67,7 @@ These quantify the *payoff* and the *cost*, so the expert ask is well-motivated.
    (e.g. "≤X% intensity variation over ±8 µm"), turning a vague "flat-top" into a number they can assess.
 
 ## Stakes — this is the headline mover, the only one left
-- **If feasible:** collapses the radial term → headline **~0.006–0.008** (from 0.012–0.019), for every
+- **If feasible:** collapses the radial term → cloud floor falls to the on-axis single-atom **0.008–0.010** (from the T_r-gated up-to-~0.022 uncooled; the v15 0.012–0.019 all-in was withdrawn), for every
   scheme. This is the single largest available improvement in the whole program, and the *only* one that
   moves the headline (the axial-scheme space is swept and closed).
 - **If infeasible** (no stable flat mode / walk-off over 2 m / contrast lost): the Gaussian radial
