@@ -19,6 +19,12 @@ usual museum exhibits:
 - process scratch (`sync_manifest.md`, the consolidation saga) → **not a result**;
 - regenerable logs whose conclusions are already in the live docs → **regenerate, don't hoard**.
 
+**Decisions, not numbers.** The archive holds *irreproducible reasoning* — why a choice was made at
+a point in time. Load-bearing **numbers** do not belong here: they live in `CLAIMS.md` / the SSOT
+(live, tagged, gate-guarded) and in their tracked scripts (reproducible by re-running). A frozen
+number-cache would be both a convenience duplicate *and* an unguarded staleness surface (this
+directory is out of `audit/check.py` scope) — exactly what this policy exists to prevent.
+
 ## Promotion (the inverse operation)
 
 If an archived result later becomes load-bearing, **promote it to `docs/`** and route it from
@@ -41,7 +47,7 @@ context must learn in the first line that this is not live.
   D1, RSC, and the control↔probe leg-swap. SUPERSEDED-banner'd (its `0.012–0.019` headline is the
   withdrawn double-count). `INDEX.md` does not route to it; kept as the provenance record of *why we
   did not go elsewhere* — the rationale a returning collaborator or paper-writer would want.
-- [`deciding_runs.md`](deciding_runs.md) — the **evidence layer** behind the live verdicts: the raw
-  results of the clk2 leg-swap A-vs-B gate, the F′=1 repump-dwell measurement, and the radial
-  dynamic-MC suppression. The conclusions live in the `docs/` findings; the *numbers that produced
-  them* are captured here (the `/tmp` gate logs were ephemeral and are gone).
+*(An earlier draft included a `deciding_runs.md` evidence ledger; it was dropped — every number in
+it is already preserved live, with reasoning, in the findings docs + SSOT and is reproducible via
+the tracked scripts, so it failed the inclusion test above. Load-bearing numbers stay in CLAIMS /
+the SSOT, not here.)*
