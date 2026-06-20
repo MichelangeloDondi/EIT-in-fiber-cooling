@@ -32,6 +32,12 @@ README mutually consistent; this ledger is the human-readable face of that.
 | F7 | Clock-RSC floor ~0.45 — **DISQUALIFIED** (rank-2 obstruction) | [V] | `audit_C_rank2.py` + FoM; `docs/clock_RSC_resolution.md` |
 | F8 | clock-RSC 0.0137 = obstruction-free **idealization**, NOT the floor | [V] (not physical) | `raman_sbc.py`; see resolution |
 
+## Clock-scheme leg assignment (control↔probe) — `src/clock_branching_check.py`, `docs/D1_hybrid_findings.md`
+| # | Claim | Tier | Source |
+|---|---|---|---|
+| LS1 | \|F′2,0⟩ dark-leg branching is **reversed** vs \|F′2,2⟩: clock probe leg \|1,−1⟩ collects 1/4 (stretched \|1,+1⟩ 3/4) ⇒ 3/4 of dark-leg decay diffuses onto the \|2,+1⟩ control leg | [V] | `clock_branching_check.py` (exact CG/6j; validated vs the stretched 0.75/0.25 anchor) |
+| LS2 | Control↔probe **swap REJECTED** — config A (dark \|1,−1⟩) = **0.0048 hard-converged**; config B (swap, dark \|2,+1⟩) ≈ 0.018 best-bounded, non-convergent at matched OmR. A favored ~3.8×. Cause: F=2-interior dark leg forces rep2=A (unique protecting repump, cannot clear \|2,+2⟩) → near-flat Fock heating tail. Magic-B and F′=3 sub-dominant; GATE 1 moot. Frame-conflict 0.0. EOM-Raman clearer also rejected (window empty). Convention: η=0.094 symmetric; relative 3.8× is convention-robust. | [V] | `clock_combined_solve.py` / `clk2.py` (in-repo, gate-verified); `docs/D1_hybrid_findings.md` |
+
 ## Field insensitivity — Audit-C (`audit_C_rank2.py`, `audit_C_breitrabi.py`, …)
 | # | Claim | Tier | Source |
 |---|---|---|---|

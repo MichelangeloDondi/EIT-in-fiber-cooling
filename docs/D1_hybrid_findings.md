@@ -69,6 +69,23 @@ The "−35% D1 cooling advantage" carried through earlier drafts is **retracted*
 5. The "b_leak depth-independent" phrasing over-reaches for D2 (sub-percent F′-admixture); exact only for D1.
 6. **Add the inhomogeneous-broadening axis** as a real argument *for* D1 (repump-concentrated ~18 MHz, isotope-tempered) — the floor-centric v10/early drafts treated D1 as floor-relevant only; the genuine performance case is broadening, not floor.
 
+## Clock-scheme leg assignment (control↔probe) — distinct OPEN question
+
+*Added 2026-06-19 (after auditor round 2). A different question from the D1-vs-D2 verdict above, and it does not reopen it: within the **m′=0 clock** scheme on D2, should the control leg stay on |2,+1⟩ (status quo, inherited from the stretched scheme) or swap to |1,−1⟩? Headline was overturned the same way round 1 was — a clean diffusion/branching argument that ignored the repump topology, which is the actual deciding factor.*
+
+**[V] The |F′2,0⟩ dark-leg branching is REVERSED vs |F′2,2⟩** — exact CG/6j, reproduced in-repo by `src/clock_branching_check.py` and validated against the stretched 0.75/0.25 anchor of `tagged_solver.py`:
+
+| excited state | → dark/probe leg | → \|2,+1⟩ control | renorm probe:control |
+|---|---|---|---|
+| \|F′2,2⟩ stretched | \|1,+1⟩  1/2 | 1/6 | **3/4 : 1/4** |
+| \|F′2,0⟩ clock | \|1,−1⟩  1/12 | 1/4 | **1/4 : 3/4** |
+
+Raw clock decays: |1,−1⟩ 1/12, |1,0⟩ 1/3, |1,+1⟩ 1/12, |2,−1⟩ 1/4, |2,+1⟩ 1/4 (|2,0⟩ CG-forbidden); F′=2→F hyperfine split 1/2:1/2 both (consistent with the b_leak 2/3 m′=0 entry above). The dark state sits ~94% on the probe leg, so the clock scheme **routes 3/4 of dark-leg decay onto the bright/control |2,+1⟩ leg → diffuses** (the stretched scheme recycles 3/4 onto the probe leg). The same physical assignment as stretched, but the branching flipped under it ⇒ the current clock leg assignment is **diffusion-suboptimal**.
+
+**[F] "verdict inverts / swap wins" is FALSIFIED** (auditor round 2; external `clock_combined_solve.py`, not in this repo — floors in-repo-unverified). The isolated diffusion lever is real and large — clean closed-Λ 0.0072→**0.0022** (3.29×, bigger than the stretched 2.5×) — **but the naive swap with the current option-A repumps is 3.3× WORSE** (0.0061→**0.0204**, at every δ₂). Cause: the swap parks ~92% in F=2 and the existing rep2 (σ+ F=2→F′1) mis-clears the F=2-dark spectator load → ~2.3% F=2 leak. Diffusion is **necessary, not sufficient** — the repump topology decides, as in round 1, now biting the other way.
+
+**[V] Decision RESOLVED — swap REJECTED, A holds ~3.8×.** Deciding run `clk2.py` (= `clock_combined_solve.py` + surgical hooks, audited byte-identical; both now in-repo): config A (dark |1,−1⟩, F=1 edge) floor **0.0048 hard-converged** (Nf=6–10 flat, frame-conflict 0.0); config B (swap, dark |2,+1⟩, F=2 interior) **≈0.018 best-bounded, diverges with Nf** at matched OmR=0.25 → A favored ~3.8×. Cause: F=2-interior dark leg forces rep2=A (σ+ F=2→F′1, the unique protecting topology), which cannot clear |2,+2⟩ → near-flat Fock heating tail (P(n+1)/P(n) → 0.97 at Nf=16). Isolated diffusion lever (0.0072→0.0022, 3.29×) real but dominated by the repump penalty — the lesson now earned four times. Magic-B survives (pair |1,−1⟩↔|2,+1⟩ unchanged). EOM-Raman |2,+2⟩ clearer also rejected (window empty: ideal clearer floors B at ≈0.005 ≫ A=0.0048; mandatory scatter depletes the dark state ~10×). F′=3 sub-dominant (~1.5 kHz marginal relief on A, cannot flip verdict). Convention: η=0.094 symmetric; relative 3.8× is convention-robust. **Do not swap.** → CLAIMS LS2 [V].
+
 ## Process state
 
 - **Sessions**: S1 ✓ · S2 ✓ · S3 ✓ · S4 ✓ · **S5 pending** (writes v11 — physics now locked).
