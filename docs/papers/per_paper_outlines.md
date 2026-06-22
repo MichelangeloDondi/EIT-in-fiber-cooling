@@ -114,7 +114,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Authorship:** Dondi (first), Minardi/Prevedelli.
 
-**Figures (~3–4):** (1) the radial mechanism (M1 ν_z(r), M2 Ω(r), M3 differential shift) + profile (`realistic_floor.png`); (2) cloud floor vs radial T — the semiclassical MC (`mb_ensemble_figure.png`), tail-dominated 0.0095@100 µK; (3) the EIT-tolerant/RSC-fragile regime map (150 kHz EIT feature vs 16 kHz RSC sideband vs the ν_z(r) swing); (4, opt.) direct EIT-vs-RSC floor vs radial T.
+**Figures (~3–4):** (1) the radial mechanism (M1 ν_z(r), M2 Ω(r), M3 differential shift) + profile (`realistic_floor.png`); (2) cloud floor vs radial T — the semiclassical MC (`mb_ensemble_figure.png`), tail-dominated ≈0.012@100 µK [v17; was 0.0095 semiclassical]; (3) the EIT-tolerant/RSC-fragile regime map (150 kHz EIT feature vs 16 kHz RSC sideband vs the ν_z(r) swing); (4, opt.) direct EIT-vs-RSC floor vs radial T.
 
 **Outline:** (i) the field cites inhomogeneous broadening (trap light × radial distribution) — what actually sets the floor in a soft-radial guided trap? (ii) the radial physics (M1/M2/M3; why M3 dominates; the soft-radial η_r≈1 picture); (iii) the cloud floor — the MC sampling positions and the position-dependent rate → floor vs radial T; (iv) the regime map (EIT's broad bright feature covers the swing; RSC's narrow sideband doesn't — ties to Paper T's why-EIT spine); (v) discussion — and the **atom-general** point that the soft radial mode stays recoil-limited *regardless of line narrowness*, so even alkaline-earth narrow-line/clock cooling needs radial compression (the P4 / Sr-relevant result).
 

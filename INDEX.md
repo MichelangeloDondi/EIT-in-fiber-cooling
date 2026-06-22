@@ -105,16 +105,16 @@ state which quantity.
 
 ---
 
-## 5. Validated engines (src/)
+## 5. Validated engines (in `src/` unless marked *repo root*)
 
 | engine | role | gate |
 |---|---|---|
-| `clk2.py` | deciding-run solver = base + hooks (swap/rep2mode/clearer/want_fock) | config A = 0.0048; clean-Λ A=0.0072 / B=0.0022 |
-| `clock_combined_solve.py` | the validated **base** clk2 is built on | clean-Λ = 0.0072 |
-| `verify_tagged_solve.py` | tagged-EIT steady-state solver | — |
+| `clk2.py` *(repo root)* | deciding-run solver = base + hooks (swap/rep2mode/clearer/want_fock) | config A = 0.0048; clean-Λ A=0.0072 / B=0.0022 |
+| `clock_combined_solve.py` *(repo root)* | the validated **base** clk2 is built on | clean-Λ = 0.0072 |
+| `tagged_solver.py` | validated tagged-EIT steady-state solver (single-ended retro) | constants gate-checked by `audit/check.py` |
 | `eit_cooling_tool.py` | PI **axial** tool (embeds the engine, self-checking; `--regression`) | dual ~0.0048 / single ~0.0072 (v17 preset, Nf=6 gate) |
 | `cloud_cooling_tool.py` | PI **radial/cloud** tool (box flat-top + two-tone; `--regression`) | box→on-axis ∀T_r; 1-/2-tone crossover ~120 µK |
-| `antitrap_kernel_grid.py` | anti-trap **kernel** (valid) + grid (steady-state runaway = artifact) | normal-trap grid = Fock = 0.0085 |
+| `antitrap_kernel_grid.py` *(not shipped — analysis in `ANTITRAP_RESOLUTION.md` + git history)* | anti-trap **kernel** (valid) + grid (steady-state runaway = artifact) | normal-trap grid = Fock = 0.0085 |
 | `raman_sbc.py` | RSC engine (anchors the RSC-vs-EIT comparison) | — |
 | `flatness_spec.py` | per-depth floor / flat-top flatness spec | s=1 → 0.00485 |
 | `radial_pe.py` | per-radius P_e(F′2) on clk2 (squeezer-rate input) | P_e *falls* off-axis 1.53→0.88e-5 |

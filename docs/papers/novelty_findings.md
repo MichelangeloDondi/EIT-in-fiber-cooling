@@ -85,7 +85,7 @@ every qualitative conclusion are established** — some of it by the prospective
   HCPCF atom interferometer. [lit]
 
 ### Decision (P3)
-**P1 backbone, not standalone.** Keep the geometry-specific floor budget (n̄_z ≈ 0.0095 at 100 µK,
+**P1 backbone, not standalone.** Keep the geometry-specific floor budget (n̄_z ≈ 0.012 at 100 µK [v17 T_r-gated cloud; was 0.0095 semiclassical],
 M1/M2/M3, MC ensemble) as P1's floor analysis; cite B1–B4. Do not pitch as a novel-discovery note.
 
 ---

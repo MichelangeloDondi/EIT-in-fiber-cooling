@@ -11,9 +11,9 @@ clock-EIT, field-insensitive pair |1,−1⟩ / |2,+1⟩ → |F′=2, m′=0⟩ (
 - Two-photon detuning **δ₂ servoed to the dark resonance**, set-point ≈ **−0.10 MHz (dual-end) / −0.19 MHz (single-ended tagged)** in the **canonical field convention** (δ₂ = probe − transition; CLAUDE.md + `eit_cooling_tool.py`). The optimum is slightly negative because it tracks the ≈ −0.2 MHz e3-Stark shift of the dark resonance. *(`tagged_solver.py` parameterizes the |g2⟩ state energy instead, so it reports the same servo point with the opposite sign — its optimum is d2 = +0.20, verified. Same physics; see INDEX §3 'δ₂ sign convention'.)* Parking at the bare hyperfine still costs the floor; the offset drifts with power/radius and must be servoed, not hardcoded.
 - B flexible 1.0–1.5 G for cooling (the cooling pair is first-order field-insensitive at any field; the 3.229 G clock-magic field is only for interrogation). Two repumpers (|1,0⟩ and |2,−2⟩ leaks), Δ_rep = +20…+40 MHz.
 
-**Floors (clock_tagged_solve, B=3.229, N_f-stable, δ₂-optimized):** clean Λ **0.0032** / dual-end **0.0048** / single-ended tagged **0.0076**. Cooling time τ ≈ 0.55 ms (sub-ms; ~1.5× slower than the OmR=0.25 point — see §2). Powers at the atoms (19 µm waist): control 0.11 µW, probe 4.8 nW, repump 5.0 nW.
+**Floors (`tagged_solver.py`, B=3.229, N_f-stable, δ₂-optimized):** clean Λ **0.0032** / dual-end **0.0048** / single-ended tagged **0.0072** (v17 2f_A=400; the older 2f_A=300 gave 0.0076 — see §3). Cooling time τ ≈ 0.55 ms (sub-ms; ~1.5× slower than the OmR=0.25 point — see §2). Powers at the atoms (19 µm waist): control 0.11 µW, probe 4.8 nW, repump 5.0 nW.
 
-*Model note:* the absolute floor depends on the recycler model — reduced 3-level ~0.0035, this multilevel-tagged 0.0048–0.0076, full-recycler limit ~0.002–0.004 if re-optimized at this point. The **3.5× improvement over the Δ=80/OmR=0.25 memo point is model-independent** (verified head-to-head in clock_tagged: 0.0166 → 0.0048).
+*Model note:* the absolute floor depends on the recycler model — reduced 3-level ~0.0035, this multilevel-tagged 0.0048–0.0072, full-recycler limit ~0.002–0.004 if re-optimized at this point. The **3.5× improvement over the Δ=80/OmR=0.25 memo point is model-independent** (verified head-to-head in `tagged_solver`: 0.0166 → 0.0048).
 
 ## §1b. Delivery [V] — two options, same atomic operating point
 

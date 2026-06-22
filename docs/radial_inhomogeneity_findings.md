@@ -1,5 +1,7 @@
 # v13 S4 — radial inhomogeneity of the Gaussian 1064 profile: the M3 (Δ_eff(r)) effect
 
+> **[v13 S4 snapshot — superseded for numbers.]** The radial story now lives in the master §8 (v17: T_r-gated cloud + dynamic box-MC), `audit_radial_dynamic_MC.md`, `src/radial_mc/`, and `cloud_cooling_tool.py`. Numbers here (e.g. the semiclassical 0.0094 cloud floor) predate the T_r-gated framing; the solver `clock_tagged_solve` is now `tagged_solver.py`. Kept for the M3 (Δ_eff(r)) mechanism derivation.
+
 ## System / model
 Dual-end clock-EIT, ⁸⁷Rb D2, F′=2, m′=0 dark pair, B=3.229 G, OmR=Ω_p/Ω_c=0.12, option-A repump. 1064 lattice Gaussian, w_L=19 µm, U₀=22.8 MHz (1094 µK), ν_z0=430 kHz. Solver: clock_tagged_solve (dual-end), driven per-radius via its nu_z / eta_z / Otot_abs / Dc hooks. Thermal floor = frozen-turning-radius average over the 2D radial Boltzmann distribution (atom placed at its classical turning radius — conservative).
 

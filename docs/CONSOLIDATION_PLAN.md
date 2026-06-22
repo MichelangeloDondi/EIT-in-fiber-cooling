@@ -1,4 +1,4 @@
-> **[EXECUTED 2026-06-20]** PR #4 (`claude/floor-correction`) landed gate-green: SSOT now uses `squeezer_increment_lowdwell` (0.003 scalar) → all-in 0.008–0.010, master is **v16**, SCOPE defers detection/survival to CLAIMS. **This is a historical plan** — references below to v15 / `antitrap_leak_increment` / 0.012–0.019 describe the PRE-correction state. Current authority map: `INDEX.md`.
+> **[EXECUTED 2026-06-20]** PR #4 (`claude/floor-correction`) landed gate-green: SSOT now uses `squeezer_increment_lowdwell` (0.003 scalar) → all-in 0.008–0.010, master is **v16** (now superseded by **v17**), SCOPE defers detection/survival to CLAIMS. **This is a historical plan** — references below to v15 / `antitrap_leak_increment` / 0.012–0.019 describe the PRE-correction state. Current authority map: `INDEX.md`.
 
 # Consolidation plan / discussion — session 2026-06-20 (floor correction + radial analysis)
 

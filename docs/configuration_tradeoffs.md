@@ -1,4 +1,6 @@
 # Configuration trade-study — pros & cons consolidation
+
+> **[v12-era snapshot — compiled 2026-06-16; superseded for numbers.]** Floor figures and version references here predate v17; the authoritative state is `docs/clock_EIT_consolidated.md` (v17) + `INDEX.md`. Kept for the configuration trade-study *reasoning*. (Cited `EIT_brief_v12_comparison.md` / `clock_EIT_consolidated_v13.md` are not in the repo — see git history.)
 **87Rb axial sideband cooling in a 1064 nm kagome-HCPCF lattice (Minardi group, UniBo)**
 Compiled 2026-06-16. Tags: **[V]** computed/verified · **[I]** inference/design ranking · **[O]** open bench item.
 
