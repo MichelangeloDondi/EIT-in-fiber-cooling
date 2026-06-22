@@ -10,6 +10,12 @@ cooling **lag** (floor → warm)?
 implies — because W(r) peaks at the cold center, the steady-state limit cycle is the
 *cooling-rate-weighted* spatial average, pulled below the plain spatial average.
 
+> **PI-facing consolidation:** `src/cloud_cooling_tool.py` embeds this same 3-level Λ engine
+> + trajectory MC in one self-contained, tunable file (with a `--regression` trust gate) and
+> adds the flat-top box profile and the two-tone lever. Use it for exploration; this `radial_mc/`
+> subsystem remains the original validated S3 implementation and the `s3_radial_mc.png` figure
+> generator.
+
 ---
 
 ## Files
