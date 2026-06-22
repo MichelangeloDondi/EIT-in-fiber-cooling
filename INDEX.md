@@ -36,7 +36,8 @@ rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as
 
 | quantity | value | scheme / point | solver (convergence) | tier |
 |---|---|---|---|---|
-| axial floor, dual-end | **~0.005–0.006** | m′=0, OmR 0.10→0.12 | clk2 0.0048 (Nf-conv, OmR=0.10) · `eit_cooling_tool` 0.0059 conv / 0.0048 Nf=6 gate | [V] |
+| axial floor, dual-end (**all contaminants, coherent**) | **~0.005–0.006** | m′=0, OmR 0.10→0.12 | `eit_cooling_tool` (F′0–3 as coherent ladder edges + repumps ⊗ Fock): 0.0051@0.10 / **0.0059@0.12** converged; 0.0048 at the Nf=6 gate | [V] |
+| ↳ clean base / clk2-raw (no F′1-spoiler, no F′3) | **~0.0014–0.0021** | m′=0, Δ=45 | `eit_cooling_tool` base (contaminants off) 0.0014 · clk2 (F′1-repump-only engine) ~0.0021 | [V] |
 | axial floor, single-tagged | **~0.0072** | m′=0, 2f_A=400 | `tagged_solver` / clk2 | [V] |
 | certified single-atom all-in | **0.008–0.010** | m′=0, low-dwell | solve + 0.003 squeezer (once) | [V]/[I] |
 | cloud floor, Gaussian | **0.007 / 0.012 / 0.022** | T_r = 25/100/400 µK | clk2 quasi-static × 3-level MC | [I] |
@@ -46,9 +47,11 @@ rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as
 | Ω_p/Ω_c (OmR) | **0.12 nominal** (0.10 floor-optimal, ~1.4× slower) | m′=0 | §3 | [V] |
 | 1-/2-tone crossover | **T_r ≈ 120 µK** | Gaussian | `cloud_cooling_tool` | [I] |
 
-*The `eit_cooling_tool --regression` gate runs **Nf=6 for speed** and prints ~0.0048 (= clk2's converged anchor); the **converged operating-point floor is ~0.0059**. The gate is a fast smoke test, **not** the converged floor.*
+*The all-contaminant 0.0048–0.0059 is a **coherent** solve (F′1/F′3 are Hamiltonian ladder edges, `eit_cooling_tool.py:730–736`), not a federated sum — the "+0.0034 F′1" is a coherent toggle. clk2-raw (0.0021, F′1-repump-only) + a perturbative F′1 (+0.0034) would give ~0.0055 additive; the coherent solve lands **below** that (0.0048) → sub-additive, and that coherent solve **is** the m′=0 verification of the additivity (the m′=0 analog of the m′=2 `combined_solve`). So m′=0 single-atom additivity is **not** open; the open m′=0 seam is the cloud × multilevel union (§4).*
 
-*Superseded m′=2 audit — do **not** mix into the rows above: `combined_solve.py` 0.0206/0.0178, δ₂ −0.15 (field) / +0.20 (state-energy), at Δ=40/OmR=0.25/2f_A=220 — the swapped scheme the leg-swap finding **rejected**. Its [I1] additivity closure is for **that** scheme; the m′=0 single-atom headline is **clk2-coherent (not a federated additive sum)**, so it is not underwritten by that result. The one m′=0 additivity seam that remains open is the **cloud × multilevel union** (§4).*
+*The `eit_cooling_tool --regression` gate runs **Nf=6 for speed** and prints ~0.0048 (the eit-tool **underconverged** at the operating OmR=0.12); the **converged operating-point floor is ~0.0059**. The gate is a fast smoke test, **not** the converged floor. (Separately, clk2's `__main__` anchor 0.0048 is at Δ=80/OmR=0.25 — a different point; do not equate it with the gate value.)*
+
+*Superseded m′=2 audit — do **not** mix into the rows above: `combined_solve.py` 0.0206/0.0178, δ₂ −0.15 (field) / +0.20 (state-energy), at Δ=40/OmR=0.25/2f_A=220 — the swapped scheme the leg-swap finding **rejected**. Its [I1] additivity closure is for **that** scheme. The m′=0 single-atom headline is the **`eit_cooling_tool` coherent all-contaminant solve** (F′1/F′3 are coherent ladder edges) — its sub-additivity vs clk2-raw + perturbative-F′1 is the m′=0's own verification, so it is **not** underwritten by the m′=2 result and is **not** open. The one m′=0 additivity seam that remains open is the **cloud × multilevel union** (§4).*
 
 ---
 

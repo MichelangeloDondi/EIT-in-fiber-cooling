@@ -12,12 +12,16 @@ SCOPE / WHAT IS AND IS NOT VERIFIED  (read before quoting a cloud number)
       r=9 um (n_ss=0.11) stays ~0.01 -- it does NOT heat to n_ss; early- and
       late-time relaxation rates agree (~1e-5), so there is no fast heating
       transient the single-rate fit could miss, and W(r) > 0 everywhere (the
-      clamp never fires). It is NOT YET verified against the MULTILEVEL solver:
-      F'1/F'3 contaminants shift with Delta_eff(r) off-axis, so the multilevel
-      n_ss at the box WALLS is unconfirmed (the flat BOTTOM has uniform Delta_eff
-      -> contaminants match on-axis; the walls are where W collapses -> frozen).
-      Certifying it needs clk2/ccs3 on the radial grid -- the documented open
-      "cloud x multilevel union". Quote the cloud floor as 3-level/single-rate.
+      clamp never fires). Partial multilevel check (n_ss only, not yet W): a clk2
+      first-cut shows the recycle/manifold contaminant DE-FANGS off-axis (n_ss shape
+      gentler than the 3-level, not steeper), and the dominant F'1 spoiler de-fangs
+      analytically (its detuning rises with Delta_eff -> spoiling x0.81 by r=9,
+      V/Delta=0.011-bounded) -- so the feared off-axis contaminant blow-up does NOT
+      happen. Still NOT certified: the multilevel W(r) is untested (the dead-wall is
+      <W*n_ss>/<W>, and only n_ss(r) is checked); F'1-on-the-radial-grid needs a
+      V/Delta-corrected ccs3; and this is per-radius steady state, not Fock x MC.
+      The certifying run is clk2/ccs3 on the radial grid -- the open "cloud x
+      multilevel union". Quote the cloud floor as 3-level/single-rate until then.
     * The 1064 scalar shift is COMMON-MODE (Delta_eff(r) moves the SINGLE-photon
       detuning but NOT delta2; the two-photon dark resonance holds at every r, so
       there is no first-order delta2-servo mismatch). Only the perturbative
