@@ -2,9 +2,12 @@
 
 *The single authoritative file per settled question, with its verdict. Read the named file before
 acting; do **not** reconstruct an answer from intermediate or superseded files — that is the failure
-this index exists to prevent. Last reconciled: 2026-06-20 (post floor-correction consolidation: **v16** master; SSOT double-count
-fix + SCOPE→CLAIMS deferral committed to PR #4; squeezer off-axis rate-rise **disproven**; full
-stale-number pass on v16). In-flux items are flagged §OPEN; do not cite those as final.*
+this index exists to prevent. Last reconciled: 2026-06-22 (**v17** master — folded the four-subversion
+delivery×tone matrix, the 1-/2-tone crossover T_r≈120 µK, and the dynamic box-MC confirmation of the
+flat-top into the master, and added the PI `cloud_cooling_tool.py`; **no v16 *conclusion* changed** —
+a coherence pass corrected stale *displayed* values only: §3 δ₂, §5 dual-floor range. Prior 2026-06-20
+v16 floor-correction: SSOT double-count fix + SCOPE→CLAIMS deferral (PR #4); squeezer off-axis
+rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as final.*
 
 ---
 
@@ -12,9 +15,9 @@ stale-number pass on v16). In-flux items are flagged §OPEN; do not cite those a
 
 | question | authority file | verdict (one line) |
 |---|---|---|
-| **Cooling scheme + operating point** | `clock_EIT_consolidated.md` (**v16**) | D2 clock-EIT, m′=0 pair \|1,−1⟩/\|2,+1⟩ → \|F′2,0⟩, **config A** (dark on \|1,−1⟩); Δ≈45 MHz (flat 40–55), Ω_p/Ω_c≈0.10–0.12, δ₂ servoed; ν_z=2π·430 kHz, U₀=1094 µK, η_z=0.094, η_eff(retro)=0.187; magic B=3.2288 G (interrogation), cooling 1–1.5 G. |
+| **Cooling scheme + operating point** | `clock_EIT_consolidated.md` (**v17**) | D2 clock-EIT, m′=0 pair \|1,−1⟩/\|2,+1⟩ → \|F′2,0⟩, **config A** (dark on \|1,−1⟩); Δ≈45 MHz (flat 40–55), Ω_p/Ω_c≈0.10–0.12 (**0.12 nominal**; 0.10 is floor-optimal but ~1.4× slower cooling — §3), δ₂ servoed; ν_z=2π·430 kHz, U₀=1094 µK, η_z=0.094, η_eff(retro)=0.187; magic B=3.2288 G (interrogation), cooling 1–1.5 G. **Four subversions:** A/B (1-tone) / C/D (2-tone) × dual/retro — tone count set by radial temperature (1 tone <120 µK, 2 above; §4, §8). |
 | **Leg assignment (config A vs B)** | `clock_leg_swap_finding.md` (**RESOLVED**) | The swap is **rejected; A holds** (3.8× advantage; B's F=2-interior dark leg can't clear \|2,+2⟩). |
-| **Why EIT, not RSC** | `clock_EIT_consolidated.md` §I/§II (+ `EIT_brief_v12.md`) | On the Δm=2 field-insensitive pair, RSC hits a **rank-2 destructive-interference obstruction** (Σg=0 → floor ~0.45); EIT escapes it. Cited as established (Naber 2016), not new. |
+| **Why EIT, not RSC** | `clock_EIT_consolidated.md` §I/§II | On the Δm=2 field-insensitive pair, RSC hits a **rank-2 destructive-interference obstruction** (Σg=0 → floor ~0.45); EIT escapes it. Cited as established (Naber 2016), not new. |
 | **Excited state at 1064 (anti-trap potential)** | `Rb-87_5P3_2_Scalar_Polarizability_…md` | 5P₃/₂ **anti-trapped** at 1064 (α₀≈−1149 a₀³); **\|F′2,0⟩ pure scalar +38.1 MHz** (F′=2 tensor term vanishes → geometry-independent). |
 | **Anti-trap FLOOR (m′=0)** | **`ANTITRAP_RESOLUTION.md`** | Repump-**dwell**-gated **~0.01–0.05, pinned not runaway**. Low-dwell (P_e_rep~4e-5) → faithful bulk **~0.01**; high-dwell (~3.5e-4) → ~0.03–0.05. The grid 0.03→0.10 growth is a **boundary artifact**, not a floor. Point-number for a chosen repump = workstation/sparse-iterative job. |
 | **Floor budget / all-in** *(corrected; SSOT committed to PR #4 — see §3)* | `operating_point.py` (SSOT) **+ the §3 convention** | **single-atom on-resonance ≈ 0.008–0.010** (low-dwell, **CERTIFIED**). **High-dwell** = **RETIRED** (measured low-dwell: clk2 config-A P_e(F′1)=8.4×10⁻⁶, 5× below the 4×10⁻⁵ low-dwell ref → the 0.03–0.05 branch does not apply; certified floor stands). **Cloud-limited = [O]** = cooling(r) + squeezer integral. **Cooling half CHARACTERIZED** (dynamic MC: realized sits *below* quasi-static — W(r) peaks at the cold center, anti-correlated with n_ss(r) → frozen 0.0126 superseded, dynamics benign; **3-level engine ⇒ ratio result**, clock magnitude pending). **Squeezer half [O] but DE-RISKED** (clk2: P_e(F′2)(r) measured *falls* off-axis — M3 is a common shift, δ₂ preserved, dark state stays dark → heat rate R_sq falls to 0.32× at r=10; the "rate-rise" driver is **disproven**. Only the 1/W tail amplification remains, which the cooling dwell-weighting defeats → likely **cloud ≈ single-atom ≈ 0.008–0.010**; magnitude confirm = MC dwell-weighted integral, **not sign-deciding**). **Cloud all-in ≈ 0.007/0.012/0.022 at T_r=25/100/400 µK** [I, cross-engine], **T_r-gated** → cloud ≈ single-atom (~0.012) if radial-cooled to ~100 µK. Old **0.012–0.019** / **0.012–0.017** withdrawn (§3, §4). Single-atom edges = the two delivery configs (dual-end 0.0048 / single-tagged **0.0072**), each + 0.003 squeezer once. |
@@ -32,8 +35,8 @@ stale-number pass on v16). In-flux items are flagged §OPEN; do not cite those a
 - **`recycle_dwell_S3.py`** — a D1/hybrid recycle-**traffic** tool (N_cool/N_rep per leak). **NOT the anti-trap floor authority.** Its `n_floor=0.077…` Markov estimate is superseded by `ANTITRAP_RESOLUTION.md`. *(This exact mistake was made and caught 2026-06-20.)*
 - **`antitrap_kernel_grid.py` grid steady-state runaway (0.03→0.10)** — a truncation/boundary **artifact** (`ANTITRAP_RESOLUTION.md:22–23`), not a physical floor. The closed-form **kernel** (0.031 m′=0, 0.018 F′1) IS valid; the grid *steady state* runaway is not.
 - **`operating_point.py` `all_in_single_atom = (0.012, 0.019)`** [the OLD field] — was **double-counted** (`antitrap_leak_increment=0.007` is the *no-squeezer bulk* ≈ the solve floor). **FIXED 2026-06-20** (committed PR #4): the field is now `squeezer_increment_lowdwell = 0.003` (scalar) and `all_in_single_atom_lowdwell` = solve + squeezer ≈ **0.008–0.010**. **Any copy still showing (0.012, 0.019) or `antitrap_leak_increment` is pre-correction — discard.**
-- **`EIT_brief_v11.md` / `v12.md`** — **frozen and correct**, carried *by reference*; the **current master is `clock_EIT_consolidated.md` v16**. Read v11/v12 for D1 (§12) and the five-column comparison, not for the current floor.
-- **`clock_EIT_consolidated.md` v14 / v15** — superseded by **v16** (committed PR #4). Re-sync project knowledge after the PRs land (use `docs/INDEX.md` as the authority map).
+- **The `EIT_brief` lineage (`v11` / `v12` / `v17`)** — **superseded**; the **current master is `clock_EIT_consolidated.md` v17** (the v17 brief's four-subversion matrix + box-MC are folded into master §4/§8). The briefs are **not kept as files** — see git history for v11/v12 (D1 §12, the five-column comparison). Do not cite them for the current floor.
+- **`clock_EIT_consolidated.md` v14 / v15 / v16** — superseded by the current **v17** master. Re-sync project knowledge from the live docs (use `INDEX.md` as the authority map).
 - **Any `clock_leg_swap_finding.md` headed "[O] swap favored"** — the **RESOLVED** version ("swap rejected; A holds") supersedes it.
 - **`v12_plan.md` / `D1_hybrid_plan.md` / `v12_decision.md`** — process scaffolding; conclusions are in v16 / the findings docs.
 
@@ -100,7 +103,8 @@ state which quantity.
 | `clk2.py` | deciding-run solver = base + hooks (swap/rep2mode/clearer/want_fock) | config A = 0.0048; clean-Λ A=0.0072 / B=0.0022 |
 | `clock_combined_solve.py` | the validated **base** clk2 is built on | clean-Λ = 0.0072 |
 | `verify_tagged_solve.py` | tagged-EIT steady-state solver | — |
-| `eit_cooling_tool.py` | public tool (embeds the engine, self-checking) | — |
+| `eit_cooling_tool.py` | PI **axial** tool (embeds the engine, self-checking; `--regression`) | dual ~0.0048 / single ~0.0072 (v17 preset, Nf=6 gate) |
+| `cloud_cooling_tool.py` | PI **radial/cloud** tool (box flat-top + two-tone; `--regression`) | box→on-axis ∀T_r; 1-/2-tone crossover ~120 µK |
 | `antitrap_kernel_grid.py` | anti-trap **kernel** (valid) + grid (steady-state runaway = artifact) | normal-trap grid = Fock = 0.0085 |
 | `raman_sbc.py` | RSC engine (anchors the RSC-vs-EIT comparison) | — |
 | `flatness_spec.py` | per-depth floor / flat-top flatness spec | s=1 → 0.00485 |

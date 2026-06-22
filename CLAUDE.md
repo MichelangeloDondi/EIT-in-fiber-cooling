@@ -45,9 +45,9 @@ The other `src/` modules are independent engines that answer specific sub-questi
 
 `docs/` is the authoritative record of the physics and design state — **read the relevant
 doc before changing the corresponding code or numbers.** `docs/clock_EIT_consolidated.md`
-(v14) is the consolidated technical brief and history; the README's "Canonical doc map"
-table routes each topic (operating point, sequence, delivery, radial, polarizability, paper
-plan) to its authoritative file.
+(v17) is the consolidated technical brief and history; the top-level `INDEX.md` is the authority
+router that maps each settled question (operating point, delivery, radial, polarizability, floors)
+to its authoritative file.
 
 ## Conventions that are easy to get wrong
 
