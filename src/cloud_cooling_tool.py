@@ -4,6 +4,25 @@
                             clock-EIT cooling of 87Rb in the 1064 nm HCPCF lattice
 ================================================================================
 
+SCOPE / WHAT IS AND IS NOT VERIFIED  (read before quoting a cloud number)
+    This is a REDUCED 3-level Lambda engine + single-rate trajectory MC
+    (d<n>/dt = -W(r)*(<n> - n_ss(r)), with W clamped >= 0). Two scope rails:
+    * The "dead-wall flat-top collapse" headline is VERIFIED at THIS level: the
+      off-axis freeze is EMERGENT, not an artifact of the clamp. A cold atom at
+      r=9 um (n_ss=0.11) stays ~0.01 -- it does NOT heat to n_ss; early- and
+      late-time relaxation rates agree (~1e-5), so there is no fast heating
+      transient the single-rate fit could miss, and W(r) > 0 everywhere (the
+      clamp never fires). It is NOT YET verified against the MULTILEVEL solver:
+      F'1/F'3 contaminants shift with Delta_eff(r) off-axis, so the multilevel
+      n_ss at the box WALLS is unconfirmed (the flat BOTTOM has uniform Delta_eff
+      -> contaminants match on-axis; the walls are where W collapses -> frozen).
+      Certifying it needs clk2/ccs3 on the radial grid -- the documented open
+      "cloud x multilevel union". Quote the cloud floor as 3-level/single-rate.
+    * The 1064 scalar shift is COMMON-MODE (Delta_eff(r) moves the SINGLE-photon
+      detuning but NOT delta2; the two-photon dark resonance holds at every r, so
+      there is no first-order delta2-servo mismatch). Only the perturbative
+      tensor/vector shifts could drift delta2 off-axis (second-order, held out).
+
 WHAT THIS IS / HOW IT RELATES TO eit_cooling_tool.py
     eit_cooling_tool.py  computes the AXIAL floor <n_z> and fixes the operating
         point and delivery (dual-end vs retro). It treats the radial motion as

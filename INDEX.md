@@ -30,6 +30,28 @@ rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as
 
 ---
 
+## 1b. Canonical numbers (SSOT) — reference this; do not restate
+
+*All rows are the **m′=0 clock** scheme at the **v17 operating point** (Δ=+45, OmR=0.12 nominal, 2f_A=400). Quote with the convention + solver shown; do **not** mix with the superseded m′=2 audit numbers (note at end).*
+
+| quantity | value | scheme / point | solver (convergence) | tier |
+|---|---|---|---|---|
+| axial floor, dual-end | **~0.005–0.006** | m′=0, OmR 0.10→0.12 | clk2 0.0048 (Nf-conv, OmR=0.10) · `eit_cooling_tool` 0.0059 conv / 0.0048 Nf=6 gate | [V] |
+| axial floor, single-tagged | **~0.0072** | m′=0, 2f_A=400 | `tagged_solver` / clk2 | [V] |
+| certified single-atom all-in | **0.008–0.010** | m′=0, low-dwell | solve + 0.003 squeezer (once) | [V]/[I] |
+| cloud floor, Gaussian | **0.007 / 0.012 / 0.022** | T_r = 25/100/400 µK | clk2 quasi-static × 3-level MC | [I] |
+| cloud floor, flat-top (box) | **~on-axis ∀T_r (~0.005–0.006)** | dead-wall | `cloud_cooling_tool` 3-level/single-rate — **multilevel-unverified** | [I]/[O] |
+| δ₂ set-point | **−0.10 dual / −0.19 single** | **field convention** (probe−transition) | ccs3 / clk2 (see §3) | [V] |
+| Δ (single-photon) | **+45 MHz** (flat 40–55) | m′=0 | clk2 / tagged | [V] |
+| Ω_p/Ω_c (OmR) | **0.12 nominal** (0.10 floor-optimal, ~1.4× slower) | m′=0 | §3 | [V] |
+| 1-/2-tone crossover | **T_r ≈ 120 µK** | Gaussian | `cloud_cooling_tool` | [I] |
+
+*The `eit_cooling_tool --regression` gate runs **Nf=6 for speed** and prints ~0.0048 (= clk2's converged anchor); the **converged operating-point floor is ~0.0059**. The gate is a fast smoke test, **not** the converged floor.*
+
+*Superseded m′=2 audit — do **not** mix into the rows above: `combined_solve.py` 0.0206/0.0178, δ₂ −0.15 (field) / +0.20 (state-energy), at Δ=40/OmR=0.25/2f_A=220 — the swapped scheme the leg-swap finding **rejected**. Its [I1] additivity closure is for **that** scheme; the m′=0 single-atom headline is **clk2-coherent (not a federated additive sum)**, so it is not underwritten by that result. The one m′=0 additivity seam that remains open is the **cloud × multilevel union** (§4).*
+
+---
+
 ## 2. Do NOT mistake these (intermediate / superseded — look authoritative, are not)
 
 - **`recycle_dwell_S3.py`** — a D1/hybrid recycle-**traffic** tool (N_cool/N_rep per leak). **NOT the anti-trap floor authority.** Its `n_floor=0.077…` Markov estimate is superseded by `ANTITRAP_RESOLUTION.md`. *(This exact mistake was made and caught 2026-06-20.)*
