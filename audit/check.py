@@ -169,8 +169,8 @@ hist = (r"was\b", r"stale", r"abandon", r"superseded", r"legacy", r"historical",
         r"reference", r"scan at")
 soft("docs still stating Delta=55 / OmR=0.10 operating point",
      scan(prose, r"\u0394\s*=?\s*55|Delta\s*=\s*55|OmR\s*=\s*0\.10", exempt=hist))
-soft("docs with negative delta2 set-point (sign convention)",
-     scan(prose, r"\u03b4\u2082[^.]{0,30}[\u2212-]0\.(1[0-9]|2[0-9])", exempt=hist))
+soft("docs with positive delta2 set-point (non-canonical: field convention is negative; see INDEX \u00a73)",
+     scan(prose, r"\u03b4\u2082[^.]{0,30}\+0\.(1[0-9]|2[0-9])", exempt=hist))
 
 # ---------- verdict ----------
 print("\n" + "=" * 72)

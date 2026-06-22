@@ -23,7 +23,7 @@ Tools: `eit_cooling_tool.py` (v0.2.4), `thermometry.py` (v0.2.0). Apparatus: Mar
 Clock-EIT, D2, dark pair **|1,−1⟩ (probe σ⁺) / |2,+1⟩ (control σ⁻) → |F′2,0⟩**; both
 g_F·m_F=+½ ⇒ field-insensitive at any B. Axial ν_z=2π×430 kHz (cooled), η_z=0.094,
 η_eff(2k)=0.187. **Operating point:** Δ=45, OmR=Ω_p/Ω_c=0.12, Ω_tot=√(4Δν_z)≈8.80,
-δ₂ servoed ≈ +0.13, repump option A (Ω_rep=3, Drep1=15, Drep2=5), B=1 G. **Ideal dual-end floor
+δ₂ servoed ≈ −0.13 (field convention, matching the table below; see INDEX §3), repump option A (Ω_rep=3, Drep1=15, Drep2=5), B=1 G. **Ideal dual-end floor
 ⟨n_z⟩=0.0048** (P₀=0.9952). **[V]**
 
 ---
@@ -168,7 +168,7 @@ is servo-limited, not stability-limited.**
 
 ## 7. Open items & checkable questions **[O]**
 
-1. **δ₂ tolerance at the single-end set-point (≈ +0.25, steeper flank than dual-end)** — does it need a tighter
+1. **δ₂ tolerance at the single-end set-point (≈ −0.25, steeper flank than dual-end)** — does it need a tighter
    servo than the dual-end ±20 kHz?
 2. **Realistic η_dp** for the HCPCF retro (end-face vs external mirror, λ/4 + double-pass AOM losses);
    where does the floor land at η_dp=0.3, and is a larger tag worth a lower floor?

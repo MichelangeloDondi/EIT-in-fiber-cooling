@@ -1,7 +1,7 @@
 # archive/ — results of lasting value, not the live record
 
 This is the narrow tier between the **live authoritative docs** (`docs/`, routed by
-[`docs/INDEX.md`](../INDEX.md)) and **git history** (which already holds every superseded file
+[`INDEX.md`](../../INDEX.md)) and **git history** (which already holds every superseded file
 version). It exists for results that have **standalone explanatory or evidential value but no
 live home** — and for nothing else.
 
@@ -37,7 +37,7 @@ they became load-bearing.)
 `audit/check.py` deliberately does **not** scan `archive/` — archived snapshots legitimately
 contain withdrawn numbers (e.g. the pre-correction `0.012–0.019` all-in band). To keep that honest,
 **any archived doc that carries superseded numbers MUST open with a dated `SUPERSEDED` banner**
-pointing to the current authority (`docs/INDEX.md` / the SSOT / v16). A reader who lands here out of
+pointing to the current authority (`INDEX.md` / the SSOT / v17). A reader who lands here out of
 context must learn in the first line that this is not live.
 
 ## Index
