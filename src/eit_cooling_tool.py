@@ -113,7 +113,7 @@ VALIDATION
     The embedded engine reproduces the independently obtained steady-state floors
     (run with --regression): clean-Lambda recoil limit 0.0072; clean base 0.0014;
     with the F'=1 / F'=3 / F'=0 contaminants 0.0048 / 0.0024 / 0.0015; full
-    dual-end 0.0048; full single-end 0.0075. The regression is evaluated at the
+    dual-end 0.0048; full single-end 0.0072 (the v17 2f_A=400 preset). The regression is evaluated at the
     magic field, at which those reference values were generated; the cooling floor
     is field-insensitive (|Delta<n_z>| <= 0.0003 between 1 G and 3.2288 G), so the
     1 G cooling default and the regression anchor agree.
@@ -642,10 +642,12 @@ def _selftests():
     check("single-end auto-beta realizes requested OmR", abs(OmR_eff - cfg2.OmR) < 1e-6)
 
     # (7) the table surfaces a parasitic near-resonance: down-shifted retro carrier sits
-    #     ~88 MHz from F=2->F'1 (a channel the linearized solver only partly carried)
+    #     ~198 MHz from F=2->F'1 (a channel the linearized solver only partly carried).
+    #     This magnitude tracks the v17 preset (Delta=45, 2f_A=400 -> retro carrier at -355);
+    #     recompute it if the single_end_tagged preset's operating point moves.
     d_to_F1 = dict(near_resonances(g2["retro_carrier_rejected"].freq)).get("F2->F'1")
-    check("retro carrier flagged ~88 MHz from F=2->F'1",
-          d_to_F1 is not None and abs(abs(d_to_F1) - 88.06) < 1.0)
+    check("retro carrier flagged ~198 MHz from F=2->F'1",
+          d_to_F1 is not None and abs(abs(d_to_F1) - 198.06) < 1.0)
 
     print(f"\n  {n_ok}/{n_ok} checks passed.")
 
@@ -1025,7 +1027,7 @@ def _regression(Nf: int = 6):
     c = preset("dual_end_optimal"); c.N_f = Nf; c.B_field = B_AUDIT
     nb, d = run(c); show("dual-end full (preferred)", nb, d, 0.0048, 0.0007)
     c = preset("single_end_tagged"); c.N_f = Nf; c.B_field = B_AUDIT
-    nb, d = run(c); show("single-end tagged full", nb, d, 0.0075, 0.0009)
+    nb, d = run(c); show("single-end tagged full", nb, d, 0.0072, 0.0009)   # v17 2f_A=400 (was 0.0075 at the old tag=300 preset)
 
     print(f"\n  {n_ok}/{n_ok} regression checks passed.")
 
@@ -1063,8 +1065,10 @@ def _liouvillian_gap(L, NA, Nf):
        The steady state (|Re lambda| ~ 0) is removed by a rate floor; among the remaining modes
        the slowest with motional content (nc > NC_MIN) is the asymptotic rate."""
     from scipy.sparse.linalg import eigs as speigs
+    from qutip.core.data import to as _to_data, CSR as _CSR
     SHIFT, RATE_FLOOR, NC_MIN = 1e-5, 1e-6, 0.05
-    A = L.data.as_scipy().tocsc(); D = NA * Nf
+    # qutip 5.x: Dense Liouvillian has no .as_scipy(); convert to CSR (storage-only) first.
+    A = _to_data(_CSR, L.data).as_scipy().tocsc(); D = NA * Nf
     Nm = qt.tensor(qt.qeye(NA), qt.destroy(Nf).dag() * qt.destroy(Nf)).full()
     v0 = np.ones(D * D) / np.sqrt(D * D)                 # fixed start vector -> deterministic
     try:
