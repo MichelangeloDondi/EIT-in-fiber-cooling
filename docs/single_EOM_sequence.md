@@ -120,7 +120,7 @@ The worry is that thermometry "needs different powers and detunings," and that s
 - The atom is **already in the right initial state**: EIT cooling parks it in the dark state |1,−1⟩ near n=0, which is exactly the state the sideband-π drives from. No extra state-prep step.
 
 **What actually changes — three RF moves, all µs or faster:**
-1. **EOM RF frequency hop:** from 6.835 + tag (+ δ₂ ≈ +0.25 MHz, the dark resonance) to **6.835 + tag ± ν_z** (± 0.43 MHz, the motional sidebands). That's a ~0.43 MHz step on a 7.13 GHz carrier — a **phase-continuous DDS hop in clock cycles (ns)**.
+1. **EOM RF frequency hop:** from 6.835 + tag (+ δ₂ ≈ −0.25 MHz, field convention — the dark resonance; see INDEX §3) to **6.835 + tag ± ν_z** (± 0.43 MHz, the motional sidebands). That's a ~0.43 MHz step on a 7.13 GHz carrier — a **phase-continuous DDS hop in clock cycles (ns)**.
 2. **Probe AOM amplitude + envelope:** from the weak CW EIT probe (OmR = 0.12) to the thermometry π-pulse level (s ≈ 0.3–0.5), with a **Blackman amplitude envelope over 13–21 µs**, gated on/off. The AOM responds in the acoustic transit time (**ns–100s of ns**); the envelope is just the AWG waveform.
 3. **Repumpers OFF, master ON for readout:** gate the repumpers off during the coherent π-pulse, then gate the master (F2→F′3) on for state-selective detection afterward — both simple AOM/shutter gates.
 

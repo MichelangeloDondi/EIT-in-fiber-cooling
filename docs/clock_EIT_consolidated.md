@@ -53,7 +53,7 @@ Two-photon detuning **δ₂ is servoed to the dark resonance**, not hardcoded �
 | probe/control ratio Ω_p/Ω_c | **0.10–0.12** | rate/floor dial — the weaker-probe lever (§6) |
 | total Rabi Ω_tot | √(4Δ·ν_z) ≈ 8.8 MHz | pinned to the EIT condition |
 | → Ω_c, Ω_p | ≈ 8.74, 1.05 MHz | at Δ=45, OmR=0.12 (authoritative: `operating_point.md`) |
-| δ₂ servo set-point | ≈ −0.10 (dual-end) / −0.19 (single-ended, 2f_A=400) | servoed to the dark resonance; tool-confirmed at the v17 point |
+| δ₂ servo set-point | ≈ −0.10 (dual-end) / −0.19 (single-ended, 2f_A=400) | **field convention** (probe−transition; tracks the e3-Stark shift; `tagged_solver` reports +0.20 in its state-energy convention — INDEX §3); servoed, tool-confirmed at v17 |
 | repump Rabi Ω_rep | **≈ 3** (not 1.5) | audited/optimized this session |
 | repump detuning Δ_rep1 (F=1→F′1) | **≈ 15 MHz** (not 30) | closer = better |
 | repump detuning Δ_rep2 (F=2→F′1) | 5 MHz | default near-optimal |

@@ -16,7 +16,7 @@ README mutually consistent; this ledger is the human-readable face of that.
 |---|---|---|---|
 | OP1 | Δ = 45 MHz (floor flat 40–55) | [V] | Δ-scan, `tagged_solver.py` |
 | OP2 | OmR = Ω_p/Ω_c = 0.12 (Ω_c = 8.74, Ω_p = 1.05 MHz) | [V] | EIT condition Ω_tot = √(4Δν_z) + scan |
-| OP3 | δ₂ ≈ +0.25 (single) / +0.13 (dual), positive convention | [V] | compensates −0.2 MHz e3 Stark, `tagged_solver.py` |
+| OP3 | δ₂ ≈ −0.10 (dual) / −0.19 (single), **field convention** (probe−transition) | [V] | tracks the ≈−0.2 MHz e3 Stark shift; `eit_cooling_tool.py` at v17. `tagged_solver.py` corroborates with the opposite state-energy sign (optimum d2=+0.20). See INDEX §3. |
 | OP4 | 2f_A = 400 MHz single-end tag (DOWN-shift) | [V] | tagged-delivery design |
 | OP5 | η_dp delivery-efficiency acceptance flat 20–50 % | [V] | scan |
 

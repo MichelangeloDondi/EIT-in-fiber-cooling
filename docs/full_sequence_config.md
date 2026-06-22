@@ -68,7 +68,7 @@ F1→F′2 = +6834.7, F1→F′1 = +6677.7 MHz.
   linewidth = synthesizer (sub-100 Hz). The floor doubles at 0.26 kHz two-photon linewidth, so this
   is the binding spec — **met without an OPLL.** **[V/V·an]**
 - **Operating point:** **Δ=45, OmR=0.12** (Pareto knee), **δ₂ servoed** to the dark resonance
-  (single-end set-point ≈ +0.25). 1560 EOM at **≈7.13 GHz** (probe + 300 MHz tag).
+  (single-end set-point ≈ −0.25, field convention; see INDEX §3). 1560 EOM at **≈7.13 GHz** (probe + 300 MHz tag).
 - **Repumpers (option A, leak-locked):** repump1 **F=1→F′1** via a 157 MHz step (AOM preferred for
   amplitude/polarization control); **repump2 F=2→F′1 from the MASTER** (incoherent, F=2 manifold,
   Rb-85-stable — clean offload). Helicities σ⁻/σ⁺ as required.

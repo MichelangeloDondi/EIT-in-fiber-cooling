@@ -75,6 +75,15 @@ optimum). The dual floor is F′1-dominated and ~OmR-robust at ~0.005 across 0.1
 harmless — but **don't read 0.10 as the operating point** (0.10 was also the OmR of the superseded
 v12 Δ=55/OmR=0.10 point; the §5 floor table is at Δ=45 now).
 
+**The δ₂ sign convention.** Canonical is the **field convention** (δ₂ = probe − transition; CLAUDE.md +
+the public `eit_cooling_tool.py`): the servoed two-photon-detuning optimum is **slightly negative** —
+**≈ −0.10 (dual) / −0.19 (single) at the v17 point** — because it tracks the ≈ −0.2 MHz e3-Stark shift
+of the dark resonance. **`tagged_solver.py` uses the opposite parameterization** (the |g2⟩ *state
+energy*, `+d2·P(g2,g2)`), so it reports the same servo point with the **opposite sign** — its optimum
+is **d2 = +0.20** (verified). Same physics; **quote δ₂ negative** in the field convention. Magnitudes
+vary with the operating point (OmR, 2f_A, B): the canonical v17 numbers are −0.10/−0.19; older delivery
+docs at 2f_A=300 / B=1 G read ≈ −0.13/−0.25.
+
 **The solve-vs-all-in label.** "single-atom 0.005/0.0072" (clk2) = **solve only** (potential-out);
 "all-in" = solve + anti-trap + cloud. The word "single-atom" is **overloaded** between files — always
 state which quantity.
