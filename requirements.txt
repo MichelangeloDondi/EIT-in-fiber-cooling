@@ -1,4 +1,8 @@
 numpy>=1.24
+# NOTE: numpy 2.0 + macOS Accelerate emits spurious matmul FP warnings AND makes the
+# multilevel eit_cooling_tool.py --regression solves very slow (tens of min/solve vs ~2 min
+# total on numpy<2 / OpenBLAS). Smoke test + cloud_cooling_tool gate are unaffected.
+# For the full axial gate, prefer numpy<2 or a numpy built against OpenBLAS.
 scipy>=1.10
 qutip>=5.0
 sympy>=1.12
