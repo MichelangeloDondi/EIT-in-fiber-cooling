@@ -63,8 +63,9 @@ These are pinned in the `src/engines/eit_cooling_tool.py` module docstring and a
 
 ## Git workflow
 
-Develop on the current feature branch `claude/v17-consolidation` (PR #8, under review); start a new
-`claude/*` branch for unrelated work. Commit with clear messages and push with `git push -u origin
+The v17 consolidation merged via PR #8; the pedagogical layer (guide + figures + reference/src
+restructure + the 0.0118 retraction) is PR #9 on `claude/v17-guide-and-src-restructure`. Start a new
+`claude/*` branch for further work. Commit with clear messages and push with `git push -u origin
 <branch>`. Do not push to other branches or open PRs unless explicitly asked.
 
 Project version: **0.3.0**, single source `CITATION.cff` (the redundant empty `0.3.0` marker file
