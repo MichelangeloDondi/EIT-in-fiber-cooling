@@ -150,7 +150,7 @@ activemq-data/
 # Environments
 .env
 .envrc
-.venv
+.venv*
 env/
 venv/
 ENV/
@@ -231,6 +231,10 @@ Icon?
 fig_*.png
 *_cache.npz
 cloudgrid_*.npz
+union_grid*.npz
+
+# Literature PDFs -- LOCAL ONLY, never committed (copyright); see README repo map
+refs/
 
 # macOS
 .DS_Store
@@ -240,6 +244,9 @@ Icon?
 
 fig_*.png
 *_cache.npz
+
+# ...but DO track the curated publication figures committed under figures/
+!figures/fig_*.png
 
 # Archives (regenerate; never commit)
 *.zip

@@ -1,7 +1,7 @@
 # Consistency gate
 
 `check.py` is the repository's self-consistency gate. It enforces that the
-single source of truth (`src/operating_point.py`) and the rest of the repo
+single source of truth (`src/engines/operating_point.py`) and the rest of the repo
 agree, so a parameter migration can't silently reach some files and not others.
 
 ```

@@ -8,7 +8,7 @@ the residual floor rise with radial T is modest (recoil/inhomogeneity-limited),
 not catastrophic.  Curves: Boltzmann-column-averaged floor and an independent
 Monte-Carlo trajectory floor; single-atom (turning-point) floor for reference.
 
-Engine: ../src/radial_floor_mc.py  (Dc0 = 45 cooling-rate grid; U0 = 1094 uK,
+Engine: ../src/engines/radial_floor_mc.py  (Dc0 = 45 cooling-rate grid; U0 = 1094 uK,
 w_L = 19 um).
 """
 import os, sys
@@ -17,7 +17,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "engines"))
 import radial_floor_mc as rmc
 
 n_g = rmc.d["n45"]; W_g = rmc.d["W45"]      # v14 operating cooling-rate grid

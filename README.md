@@ -11,18 +11,23 @@ the cloud floor set by the in-fibre radial temperature and removable with a flat
 ## If you have just inherited this project, read in this order
 
 1. **This file** — the map (10 min).
-2. **`docs/clock_EIT_consolidated.md` (v17)** — THE MASTER. The full technical state (PART I)
-   *and* the conceptual path that produced it (PART II — the historical reasoning; start there
-   to understand *why* each choice was made). Everything else is subordinate to this file.
-3. **`START_HERE_simulations.md`**, then run the two simulations with `--regression` — watch the
+2. **`GUIDE.md`** — the **narrative walkthrough**: the whole experiment front-to-back, from building
+   the setup through the cooling to the thermometry data analysis, with the figures and diagrams.
+   Read this first to understand *what* and *why* before the dense reference. Its 8 chapters live in
+   `docs/guide/`.
+3. **`docs/clock_EIT_consolidated.md` (v17)** — THE MASTER. The full technical state (PART I)
+   *and* the conceptual path that produced it (PART II — the historical reasoning). The guide
+   narrates over this; this file is the authority everything is subordinate to.
+4. **`START_HERE_simulations.md`**, then run the two simulations with `--regression` — watch the
    headline numbers reproduce on your machine. This is how you learn to trust (then modify) the
    model.
-4. **`INDEX.md`** — the authority router: the single canonical file per settled question, the
+5. **`INDEX.md`** — the authority router: the single canonical file per settled question, the
    list of intermediate/superseded files that *look* authoritative but are not (§2), and the
    load-bearing conventions you must know before quoting any floor (§3). When in doubt about
    which file to believe, this is the arbiter.
 
-After those four you are oriented. The rest of `docs/` and `src/` are reference depth.
+After those you are oriented. The rest of `docs/` (the grouped `reference/` depth) and `src/` are
+reference depth.
 
 ---
 
@@ -40,8 +45,10 @@ After those four you are oriented. The rest of `docs/` and `src/` are reference 
   OmR 0.10→0.12 — the probe lever trades ~1.4× cooling rate for a negligible floor change); certified
   single-atom **0.008–0.010** with the once-only anti-trap squeezer (master §5).
 - **Cloud floor:** **T_r-gated** — ≈ 0.007 / 0.012 / 0.022 at T_r = 25 / 100 / 400 µK; a
-  **flat-top 1064 mode removes the T_r dependence**, collapsing it to ~on-axis (~0.005–0.006) for
-  *every* T_r (master §8). The single largest mover and the one off-desk ask (XLIM).
+  **flat-top 1064 mode** collapses it **far below the Gaussian at every T_r** (the lever), reaching
+  ≈ on-axis for the **cooled** cloud (~0.0072, verified) — the **uncooled** flat-top digit is not yet
+  converged (≥ 0.021, cluster-pending; see [INDEX §1b](INDEX.md)). The single largest mover and the one
+  off-desk ask (XLIM).
 - **Four delivery×tone subversions:** A = 1-tone dual-end (baseline), B = 1-tone retro (fallback),
   C/D = the 2-tone versions. **Tone count is chosen by radial temperature: one tone below
   T_r ≈ 120 µK, two tones above** (master §4, §8).
@@ -51,22 +58,28 @@ After those four you are oriented. The rest of `docs/` and `src/` are reference 
 ## Repository map
 
 ```
+GUIDE.md                         THE NARRATIVE WALKTHROUGH (8 chapters, front to back)
 docs/
+  guide/                         the 8 narrative chapters (01 apparatus … 08 running & optimising)
   clock_EIT_consolidated.md      THE MASTER (v17): technical state + conceptual path
   operating_point.md             SSOT operating point + retro-cap optimization
-  polarizability_5P32_1064.md    standalone validated result (5P3/2 anti-trap at 1064)
-  …findings docs                 architecture/delivery, thermometry, D1, radial, tradeoffs
-  archive/                       results of lasting value + the anti-museum policy (archive/README.md);
-                                 superseded briefs live in git history, not here
+  thermometry.md                 consolidated thermometry/readout authority (method -> spec)
+  reference/                     the ~17 findings docs, grouped by topic (scheme, delivery, floor,
+                                 radial, thermometry, excited_state) — see the DOCUMENT MAP at INDEX.md §6
+  papers/                        P1 (in-fibre cooling) + Paper T (rank-2 obstruction theory)
+  archive/                       superseded snapshots, kept for the reasoning (anti-museum:
+                                 superseded briefs live in git history, not here)
 src/
-  eit_cooling_tool.py            PI tool #1 — AXIAL floor + delivery (self-contained, --regression)
-  cloud_cooling_tool.py          PI tool #2 — RADIAL/cloud floor (flat-top, two-tone; --regression)
-  clk2.py clock_combined_solve.py  the multilevel deciding-run solvers (the floor authority)
+  engines/                       validated numerical solvers (the floor authority; see INDEX.md §5)
+    eit_cooling_tool.py          PI tool #1 — AXIAL floor + delivery (self-contained, --regression)
+    cloud_cooling_tool.py        PI tool #2 — RADIAL/cloud floor (flat-top, two-tone; --regression)
+    clk2.py clock_combined_solve.py  the multilevel deciding-run solvers
+    raman_sbc.py                 RSC engine (anchors the RSC-vs-EIT comparison)
+    …                            (tagged_solver, radial_inhomogeneity, thermometry, operating_point, …)
+  tools/                         supporting scripts (diagnostics, paper-T, sensitivity checks)
   radial_mc/                     the S3 radial-MC subsystem (engine/grid_build/mc; subsumed by cloud_cooling_tool)
-  raman_sbc.py                   RSC engine (anchors the RSC-vs-EIT comparison)
-  …                              see INDEX.md §5 for the validated-engine list + gate values
 START_HERE_simulations.md        how to run/tune the two PI tools (read before src/)
-INDEX.md                         authority router + "do not mistake" list + conventions
+INDEX.md                         authority router + "do not mistake" list + conventions + document map (§6)
 CLAIMS.md                        audited ledger: every headline number → evidence tier + script
 SCOPE.md                         what the model covers, and what it does not
 figures/                         curated publication figures
@@ -86,8 +99,8 @@ that subsystem) into one tunable file. Use the tools to explore; use `clk2` /
 Requires Python 3 + `numpy scipy sympy qutip` (5.x) `matplotlib` (`pip install -r requirements.txt`).
 
 ```bash
-python src/eit_cooling_tool.py --regression     # axial floors at the v17 preset: dual ~0.0048 / single ~0.0072 (Nf=6 gate; a converged run gives dual ~0.0059 at OmR=0.12). ~2 min on numpy<2; slower on numpy-2 + macOS Accelerate
-python src/cloud_cooling_tool.py --regression   # box collapse + two-tone crossover (~3 min)
+python src/engines/eit_cooling_tool.py --regression     # axial floors at the v17 preset: dual ~0.0048 / single ~0.0072 (Nf=6 gate; a converged run gives dual ~0.0059 at OmR=0.12). ~2 min on numpy<2; slower on numpy-2 + macOS Accelerate
+python src/engines/cloud_cooling_tool.py --regression   # box collapse + two-tone crossover (~3 min)
 ```
 
 Each claim in the master is tagged **[V]** verified / **[I]** inference / **[O]** open, with the

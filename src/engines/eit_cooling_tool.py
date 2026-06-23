@@ -927,7 +927,7 @@ def solve(option='A', Dc=80.0, twofA=220.0, eta_dp=0.5, Drep1=30.0, Drep2=5.0,
         fk = [qt.basis(Nf, k) for k in range(Nf)]
         motion = [float(np.real(qt.expect(qt.tensor(qt.qeye(NA), fk[k]*fk[k].dag()), rho)))
                   for k in range(Nf)]
-        return dict(nbar=nbar, conf=conf, pops=pops, motion=motion, L=L, NA=NA)
+        return dict(nbar=nbar, conf=conf, pops=pops, motion=motion, L=L, NA=NA, rho=rho)
     if want_pops:
         return nbar, conf, pops
     return nbar, conf
@@ -1542,6 +1542,14 @@ def _demo_sweeps(Nf: int = 6):
 # =============================================================================
 if __name__ == "__main__":
     import sys
+    _np_major = int(np.__version__.split(".")[0])
+    if _np_major >= 2:
+        print(
+            f"WARNING: numpy {np.__version__} detected.  On macOS with the Accelerate"
+            " backend this makes each multilevel steady-state solve ~10–20× slower"
+            " (tens of minutes per --regression run instead of ~2 min).\n"
+            "  Fix: pip install 'numpy<2'   (see memory entry numpy2-accelerate-slow)\n"
+        )
     if "--report" in sys.argv:
         _selftests()
         report(preset("dual_end_optimal"))

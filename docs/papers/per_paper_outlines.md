@@ -38,7 +38,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Positioning (Lan/Yb):** the *content* (cited) supports the why-EIT narrative; it is **not** a standalone demonstration-of-depth preprint (prior art). The demonstration of depth is P1.
 
-**Backing:** `src/tagged_solver.py`; `rank2_verify.py`, `audit_C_rank2.py` (archive).
+**Backing:** `src/engines/tagged_solver.py`; `rank2_verify.py`, `audit_C_rank2.py` (archive).
 
 ---
 
@@ -64,7 +64,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Positioning (Lan/Yb):** this is the result Lan cares about — the cold field-insensitive source for his in-fibre platform.
 
-**Backing:** `src/eit_cooling_tool.py`, `src/thermometry.py`, `docs/operating_point.md`, `docs/architecture_delivery_thermometry.md`.
+**Backing:** `src/engines/eit_cooling_tool.py`, `src/engines/thermometry.py`, `docs/operating_point.md`, `docs/reference/delivery/architecture_delivery_thermometry.md`.
 
 ---
 
@@ -90,7 +90,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Positioning (Lan/Yb):** telecom-leveraged, OPLL-free, fibre-integrated → attractive for transportable/integrated systems; a methods credential.
 
-**Backing:** `docs/operating_point.md` (§1b, §3), `docs/single_EOM_sequence.md`, `docs/architecture_delivery_thermometry.md`.
+**Backing:** `docs/operating_point.md` (§1b, §3), `docs/reference/delivery/single_EOM_sequence.md`, `docs/reference/delivery/architecture_delivery_thermometry.md`.
 
 ---
 
@@ -124,7 +124,7 @@ Expands `paper_planning_memo.md` into draft skeletons. Same universal flags appl
 
 **Positioning (Lan/Yb):** **the strongest Sr-relevant piece** — "the soft radial mode is recoil-limited regardless of line narrowness, so you still need compression" is exactly the point for Lan's Sr radial ground-state cooling; the regime map is platform-general.
 
-**Backing:** `src/radial_inhomogeneity.py`, `src/radial_floor_mc.py`, `docs/radial_inhomogeneity_findings.md`, figures.
+**Backing:** `src/engines/radial_inhomogeneity.py`, `src/engines/radial_floor_mc.py`, `docs/reference/radial/radial_inhomogeneity_findings.md`, figures.
 
 ---
 

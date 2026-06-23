@@ -13,7 +13,7 @@ Tags: [V] computed here, [I] estimate, [O] bench input to be measured.
 Numbers internal in SI; reported in convenient units.
 """
 import os, sys, math
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "engines"))
 import operating_point as op
 
 # ---- constants ----

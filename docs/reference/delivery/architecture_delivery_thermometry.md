@@ -100,6 +100,8 @@ independently) — more hardware (2nd EDFA+PPLN), no retro loss. **[I]**
 
 ## 4. Sideband thermometry (m′=0) **[V]**
 
+> Consolidated authority: **[`thermometry.md`](../../thermometry.md)**. This section is the delivery-context summary; quote `thermometry.md` for the readout method/spec.
+
 Reads the **same** clock pair |1,−1⟩/|2,+1⟩ (no park/transfer). **Blackman-shaped sideband-π
 pulses**, ratio R = A_red/A_blue; probe strength s = Ω₀/ν_z sets t_π (s=0.12→52.7 µs … s=0.5→12.7 µs;
 larger s shortens the pulse since Blackman decouples the carrier-leak constraint).

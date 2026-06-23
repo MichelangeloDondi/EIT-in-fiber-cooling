@@ -4,6 +4,8 @@
    to both legs (delta2 unchanged, dark state preserved) and the weaker off-axis field dominates.
    The hypothesized off-axis rate-rise is DISPROVEN; R_sq falls to 0.32x at r=10 (kernel-falloff
    unopposed). Only the 1/W tail amplification remains, dwell-discounted."""
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "engines"))
 import numpy as np, qutip as qt
 from clk2 import (Eg, excited_energies, beams, build_frame, CGc, GAMMA, EM_REC, BR)
 NU0, ETA0, C_M3, W0 = 0.430, 0.094, 60.9, 19.0

@@ -12,12 +12,16 @@ SCOPE / WHAT IS AND IS NOT VERIFIED  (read before quoting a cloud number)
       r=9 um (n_ss=0.11) stays ~0.01 -- it does NOT heat to n_ss; early- and
       late-time relaxation rates agree (~1e-5), so there is no fast heating
       transient the single-rate fit could miss, and W(r) > 0 everywhere (the
-      clamp never fires). It is NOT YET verified against the MULTILEVEL solver:
-      F'1/F'3 contaminants shift with Delta_eff(r) off-axis, so the multilevel
-      n_ss at the box WALLS is unconfirmed (the flat BOTTOM has uniform Delta_eff
-      -> contaminants match on-axis; the walls are where W collapses -> frozen).
-      Certifying it needs clk2/ccs3 on the radial grid -- the documented open
-      "cloud x multilevel union". Quote the cloud floor as 3-level/single-rate.
+      clamp never fires). The MULTILEVEL certifying run has since been done
+      (cloud_multilevel_union.py = eit-tool coherent (x) Fock on the radial grid;
+      see INDEX 1b): it CONFIRMS the dead-wall on the multilevel engine -- the
+      COOLED box floor is settled at ~0.0072 (100 uK, Nf-converged [V]); the
+      UNCOOLED hot-box floor is Nf-divergent (>=0.021 @Nf8 and rising -> cluster-
+      pending [O]; the earlier Nf=6 0.0118 was under-resolved and is RETRACTED).
+      The flat-top-collapses-the-cloud lever holds qualitatively at every T_r;
+      "collapses to ~on-axis" holds only for the COOLED cloud. THIS tool stays
+      3-level, so quote ITS cloud numbers as 3-level/single-rate and take the
+      certified magnitudes from the union (INDEX 1b), not from here.
     * The 1064 scalar shift is COMMON-MODE (Delta_eff(r) moves the SINGLE-photon
       detuning but NOT delta2; the two-photon dark resonance holds at every r, so
       there is no first-order delta2-servo mismatch). Only the perturbative

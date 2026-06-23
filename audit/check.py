@@ -5,7 +5,7 @@ audit/check.py  --  repository consistency gate.
 Run from the repo root:   python3 audit/check.py
 
 HARD checks (exit code 1 on any failure) -- these define a self-consistent repo:
-  * the SSOT (src/operating_point.py) is internally consistent
+  * the SSOT (src/engines/operating_point.py) is internally consistent
   * the validated engine reproduces its documented anchors
   * no superseded operating point survives in code presets
   * the master doc carries no stale floor numbers
@@ -18,8 +18,9 @@ import os, sys, re, glob, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC  = os.path.join(ROOT, "src")
+ENGINES = os.path.join(SRC, "engines")          # validated solvers live here (v17 src/ subdivision)
 DOCS = os.path.join(ROOT, "docs")
-sys.path.insert(0, SRC)
+sys.path.insert(0, ENGINES)
 SLOW = "--slow" in sys.argv
 
 fails, warns = [], []
@@ -73,7 +74,7 @@ def engine_constants():
         import tagged_solver as ts
         return dict(GAMMA=ts.GAMMA, NU=ts.NU, ETA=ts.ETA, F3=ts.F3), "import"
     except Exception:
-        src = open(os.path.join(SRC, "tagged_solver.py"), encoding="utf-8", errors="ignore").read()
+        src = open(os.path.join(ENGINES, "tagged_solver.py"), encoding="utf-8", errors="ignore").read()
         m = re.search(r"GAMMA,\s*NU,\s*ETA\s*=\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)", src)
         f = re.search(r"\bF3\s*=\s*([\d.]+)", src)
         return dict(GAMMA=float(m.group(1)), NU=float(m.group(2)),
@@ -86,8 +87,8 @@ check("tagged_solver ETA == SSOT eta_780",        ec["ETA"] == op.ETA_780,      
 check("tagged_solver F3 == SSOT F3-above-F2",     ec["F3"] == op.F3_ABOVE_F2_MHZ, "%s vs %s" % (ec["F3"], op.F3_ABOVE_F2_MHZ))
 if SLOW:
     try:
-        r = subprocess.run([sys.executable, os.path.join(SRC, "tagged_solver.py")],
-                           cwd=SRC, capture_output=True, text=True, timeout=600)
+        r = subprocess.run([sys.executable, os.path.join(ENGINES, "tagged_solver.py")],
+                           cwd=ENGINES, capture_output=True, text=True, timeout=600)
         tail = (r.stderr.strip().splitlines()[-1] if r.stderr.strip() else "nonzero exit")
         check("tagged_solver full self-test (anchors 0.0034/0.0085)", r.returncode == 0, tail)
     except subprocess.TimeoutExpired:
@@ -95,7 +96,7 @@ if SLOW:
 
 # ---------- 3. HARD stale-value checks ----------
 print("\n[3] HARD: no superseded values in code / master doc")
-tool = [f for f in glob.glob(os.path.join(SRC, "*.py")) if os.path.basename(f) != "operating_point.py"]
+tool = [f for f in glob.glob(os.path.join(SRC, "**", "*.py"), recursive=True) if os.path.basename(f) != "operating_point.py"]
 stale_presets = scan(tool, r"Delta\s*=\s*55(\.0)?\b", exempt=(r"#",))
 stale_presets = [h for h in stale_presets if "Config(" in h or "preset" in h.lower()]
 check("no Delta=55 in code Config presets", len(stale_presets) == 0, "; ".join(stale_presets))

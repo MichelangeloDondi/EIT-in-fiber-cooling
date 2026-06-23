@@ -138,7 +138,7 @@ the *operating point* (`Delta`, `OmR`) rebuilds the grid automatically (~1 min, 
   Accelerate BLAS backend; the results are unaffected (the `--regression` gate is the backstop). More
   importantly, the **multilevel axial solves are dramatically slower** on numpy-2 + Accelerate — the
   full `eit_cooling_tool.py --regression` is ~2 min on numpy<2 / OpenBLAS but can take *tens of minutes
-  per solve* here. The fast smoke test (`python src/eit_cooling_tool.py`) and the whole
+  per solve* here. The fast smoke test (`python src/engines/eit_cooling_tool.py`) and the whole
   `cloud_cooling_tool.py --regression` are unaffected. For the full axial gate, run on numpy<2 or a
   numpy built against OpenBLAS (e.g. a conda-forge build), or just trust the smoke test + the cloud gate.
 

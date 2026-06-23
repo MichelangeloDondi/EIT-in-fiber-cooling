@@ -18,7 +18,7 @@ Run as a script for the full printed report.
 import os, sys
 import sympy as sp
 from sympy.physics.wigner import clebsch_gordan
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "engines"))
 import operating_point as op
 
 J  = sp.Rational(1, 2)   # 5S1/2

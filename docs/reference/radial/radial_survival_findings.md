@@ -5,7 +5,7 @@
 transient — staying far below the 1094 µK trap depth. The anti-trapped 5P₃/₂ state is **benign
 during cooling**: the excited fraction is small (ρ_ee ≈ 0.01), so the time-averaged radial trap
 stays confining, and the anti-trap adds <1% to recoil heating. The trap-depth scatter limit
-(~16,500 photons) bounds the **readout**, not the cooling. (`src/radial_survival.py`)
+(~16,500 photons) bounds the **readout**, not the cooling. (`src/tools/radial_survival.py`)
 
 ## Numbers
 - Recoil: 0.18 µK/photon → radial heating ~0.06 µK/photon.

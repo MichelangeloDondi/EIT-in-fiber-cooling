@@ -1,8 +1,13 @@
-numpy>=1.24
-# NOTE: numpy 2.0 + macOS Accelerate emits spurious matmul FP warnings AND makes the
-# multilevel eit_cooling_tool.py --regression solves very slow (tens of min/solve vs ~2 min
-# total on numpy<2 / OpenBLAS). Smoke test + cloud_cooling_tool gate are unaffected.
-# For the full axial gate, prefer numpy<2 or a numpy built against OpenBLAS.
+numpy>=1.24,<2
+# PINNED <2 for PERFORMANCE reproducibility, NOT correctness -- and that distinction is the whole point:
+# numpy 2 gives IDENTICAL numbers, but numpy 2 + macOS Accelerate makes the multilevel solves
+# (eit_cooling_tool.py --regression, cloud_multilevel_union.py) ~10x slower (tens of min/solve vs ~2 min
+# on numpy<2 / OpenBLAS), plus spurious matmul FP warnings, so a cold clone TIMES OUT instead of
+# reproducing the floor. The cold-clone bar is reproduce-in-reasonable-time, which numpy 2 fails.
+# ==> Do NOT relax this pin just because "numpy 2 gives the same values" -- that test passes and misses
+#     the point. numpy<2 runs the ENTIRE repo (the .venv-np1 env is the existence proof). The smoke test
+#     and cloud_cooling_tool gate are fine on numpy 2; relax the <2 bound ONLY with a verified-fast
+#     (OpenBLAS / non-Accelerate) numpy 2.
 scipy>=1.10
 qutip>=5.0
 sympy>=1.12

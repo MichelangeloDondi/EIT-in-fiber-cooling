@@ -1,26 +1,58 @@
-# Figures (v14)
+# Figures
 
-Every figure is regenerated from the validated engines in `../src/` (and the
-rate grid in `../data/`); each `fig_*.py` writes the matching `fig_*.png`.
-They reflect the v14 baseline scheme: the field-insensitive clock pair
-`|1,-1>` (probe sigma+) / `|2,+1>` (control sigma-) -> `|F'2, m'=0>`.
+Every figure is regenerated from the validated engines in `../src/` (and, for the cloud floor, the
+rate grid in `../data/`); each `fig_*.py` writes the matching `fig_*.png`. They depict the v17 scheme:
+the field-insensitive clock pair `|1,-1>` (probe σ⁺) / `|2,+1>` (control σ⁻) → `|F'2, m'=0>`.
+
+The curated `.png`s are committed (the repo-wide `fig_*.png` ignore is for regenerated outputs at the
+working root; the figures here were force-added). They are embedded across the
+[Guide](../GUIDE.md) chapters, the [master brief](../docs/clock_EIT_consolidated.md), and
+[`thermometry.md`](../docs/thermometry.md).
+
+## Guide / master figures
+
+| script | output | shows | engine | embedded in |
+|---|---|---|---|---|
+| `fig_scheme_d2.py` | `fig_scheme_d2.png` | cooling scheme (level diagram) | hand-drawn | GUIDE, Ch 02, master §2 |
+| `fig_rsc_vs_eit.py` | `fig_rsc_vs_eit.png` | EIT vs RSC floors: field-insensitive clock pair vs field-sensitive stretched | `raman_sbc` + `tagged_solver` | Ch 02 |
+| `fig_retro_flatness.py` | `fig_retro_flatness.png` | single-ended floor vs retro reflectivity: a large tag (2f_A=400) is flat | `tagged_solver` | Ch 03, master §4 |
+| `fig_delta2_landscape.py` | `fig_delta2_landscape.png` | floor vs two-photon detuning δ₂ (shallow optimum) | `tagged_solver` | Ch 04 |
+| `fig_stark_5P32.py` | `fig_stark_5P32.png` | 5P₃/₂ tensor-Stark manifold (m′=0 = EIT target, pure scalar) | self-contained | Ch 05, master §7 |
+| `fig_cloud_floor.py` | `fig_cloud_floor.png` | cloud floor vs radial temperature (MC below the quasi-static column) | `radial_floor_mc` (needs `../data/rategrid.npz`) | Ch 06, master §8 |
+| `fig_thermometry.py` | `fig_thermometry.png` | sideband-asymmetry thermometry at the floor + calibration | `thermometry` | Ch 07, `thermometry.md` |
+| `fig_apparatus.py` | `fig_apparatus.png` | apparatus/trap schematic + the ~80× anisotropy | hand-drawn | Ch 01 |
+| `fig_knobspace.py` | `fig_knobspace.png` | floor lever (OmR) + speed lever (Δ) | baked (operating_point §2, master §6) | Ch 04 |
+| `fig_floor_budget.py` | `fig_floor_budget.png` | floor-budget waterfall (F′=1 dominates) | baked (master §5/§7) | Ch 05 |
+| `fig_radial_efficiency.py` | `fig_radial_efficiency.png` | the dead-wall: W(r) collapse vs n_ss(r) climb | baked (`cloud_multilevel_union` grid) | Ch 06 |
+
+## Paper-T figures (theory paper, not the guide)
 
 | script | output | shows | engine |
 |---|---|---|---|
-| `fig_scheme_d2.py` | `fig_scheme_d2.png` | cooling scheme (level diagram) | hand-drawn |
-| `fig_delta2_landscape.py` | `fig_delta2_landscape.png` | floor vs two-photon detuning; servo set-point delta2=+0.25 MHz, <n_z>=0.0048 | `tagged_solver` |
-| `fig_retro_flatness.py` | `fig_retro_flatness.png` | floor vs retro reflectivity: large tag (2fA=400) is flat | `tagged_solver` |
-| `fig_cloud_floor.py` | `fig_cloud_floor.png` | cloud floor vs radial temperature (100 uK: MC 0.009, static-column 0.019) | `radial_floor_mc` |
-| `fig_thermometry.py` | `fig_thermometry.png` | sideband-asymmetry thermometry at the floor + calibration | `thermometry` |
-| `fig_rsc_vs_eit.py` | `fig_rsc_vs_eit.png` | EIT vs RSC floors: field-insensitive clock pair vs field-sensitive stretched | `raman_sbc` + `tagged_solver` |
-| `fig_stark_5P32.py` | `fig_stark_5P32.png` | 5P3/2 tensor-Stark manifold (m'=0 = EIT target) | self-contained |
+| `fig_level_scheme.py` | `fig_level_scheme.png` / `.pdf` | Paper-T level scheme | self-contained |
+| `fig_fom_vs_detuning.py` | `fig_fom_vs_detuning.png` | Paper-T two-photon figure-of-merit vs detuning | self-contained |
+
+## Notes & caveats
+
+- **Stale on-figure annotations (regen queued).** A few `.png`s carry pre-v17 annotations:
+  `fig_delta2_landscape` shows an older δ₂ set-point (the canonical v17 servo point is **−0.10 dual /
+  −0.19 single** in the field convention — INDEX §3); `fig_cloud_floor` shows an older 3-level metric.
+  The captions in the guide quote the current numbers and link [INDEX §1b](../INDEX.md); the figures
+  will be regenerated so the pixels match.
+- **`fig_radial_mc.png` is an orphan** — it has no regen script. Prefer `fig_cloud_floor.png` (which
+  does). Authoring a `fig_radial_mc.py` to de-orphan it is an optional cleanup.
+- **`fig_rsc_vs_eit`** marks the clock-pair RSC floor as a **lower bound** (Nf=10; higher Fock cutoff
+  does not converge within budget). The defensible claim is comparative — EIT beats RSC on the
+  field-insensitive pair.
+- **The 4 newest figures are baked / hand-drawn, not live-solve.** A single multilevel solve is
+  ~10 min on a typical Mac (the INDEX numpy-pin note), so `fig_knobspace`, `fig_floor_budget`, and
+  `fig_radial_efficiency` *plot documented or cached engine values* (provenance in each script's
+  docstring) rather than re-solving; `fig_apparatus` is hand-drawn. To regenerate the underlying
+  numbers from scratch, run the cited engine/grid on a fast-numpy box or a cluster. (The
+  originally-planned EIT-cycle figure was dropped as redundant with `fig_thermometry`; the
+  floor-budget waterfall replaces it.)
 
 Regenerate all:
 ```sh
 cd figures && for f in fig_*.py; do python3 "$f"; done
 ```
-
-Note: `fig_rsc_vs_eit` marks the clock-pair RSC floor as a LOWER BOUND (Nf=10);
-higher Fock cutoff does not converge within budget. The "0.45" clock-RSC value
-in earlier notes was not reproduced by the engine and is treated as unverified;
-the defensible claim is comparative (EIT beats RSC on the field-insensitive pair).

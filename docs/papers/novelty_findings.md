@@ -7,7 +7,7 @@ motivation, P3 = floor budget / backbone), properly cited. The genuinely novel c
 the program is the **experiment (P1)**, which is bench-gated on the 6.835 GHz two-photon linewidth.
 
 Flags: `[V]` computed/verified in this repo · `[lit]` established in the literature (cited).
-Backing computations: `src/m0_vector_raman_check.py`, `src/breit_rabi_sensitivity.py`.
+Backing computations: `src/tools/m0_vector_raman_check.py`, `src/tools/breit_rabi_sensitivity.py`.
 
 ---
 
@@ -17,7 +17,7 @@ The **physics is correct and verified** (rank-2 null `B4`, floor `F7/F8` in `CLA
 findings change is **scope** and **novelty**.
 
 ### T1 — Scope: the m=0 clock transition is NOT obstructed and IS coolable  [V]
-`src/m0_vector_raman_check.py`. The abstract's "matched g_F m_F" definition of clock pair *includes*
+`src/tools/m0_vector_raman_check.py`. The abstract's "matched g_F m_F" definition of clock pair *includes*
 the m=0 pair |1,0⟩/|2,0⟩, which is connected by a **Δm=0** (not Δm=2) Raman; the Δm=0 amplitude runs
 through the **rank-1 (vector)** channel, which is allowed in J=½.
 - Δm=2 matched pair |1,−1⟩→|2,+1⟩ : Σ_F′ g = 0 (rank-2 null), G ∝ 1/Δ², FoM flat ≈ 5.6 — obstructed (reproduces the paper).
@@ -27,7 +27,7 @@ through the **rank-1 (vector)** channel, which is allowed in J=½.
 correct narrow statement: only the **Δm=2 matched pairs (m≠0)** are rank-2-obstructed.
 
 ### T2 — The m=±1 magic pair is not *forced* by field-insensitivity  [V]
-`src/breit_rabi_sensitivity.py` (Breit–Rabi, ⁸⁷Rb ground). |dν/dB|:
+`src/tools/breit_rabi_sensitivity.py` (Breit–Rabi, ⁸⁷Rb ground). |dν/dB|:
 - m=0 : 1.15 / 1.73 / 3.71 kHz/G at B = 1 / 1.5 / 3.23 G (quadratic K = 575 Hz/G²).
 - m=±1 magic pair : first-order zero at B = 3.229 G (residual 862 Hz/G²); comparable/worse than m=0 *away* from the magic field.
 - Dephasing at 1 mG field noise : m=0 @1.5 G = 1.7 Hz ; magic @3.229 G = 0.0004 Hz (~1000×).
@@ -54,6 +54,12 @@ Point-for-point against Paper T's core:
 Paper T's additions — the rank-2 **tensor** language, the cooling FoM/floor, the alkali-series
 generalization, the EIT contrast — are re-framing and corollary, not a new result. A PRA referee in
 this area will know the 2016 paper.
+
+**Bonus — Naber also de-risks the m′=0 thermometry.** The same paper's finding that the differential
+AC-Stark *vanishes at an optimal laser intensity ratio* — on the exact |1,−1⟩↔|2,+1⟩ readout pair — is
+the empirical characterization + nulling knob for the thermometry's differential-Stark bias (the
+readout [O1]); and its rank-2 null tells the Δm=+2 readout it cannot detune scatter away. So the prior
+art that demotes Paper T simultaneously sharpens the thermometry validation. See `../thermometry.md` §5.
 
 ### Decision (T)
 **Demoted from standalone preprint → P1 design-rationale/motivation, cited to Naber–Spreeuw 2016.**
