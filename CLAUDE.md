@@ -60,9 +60,9 @@ These are pinned in the `eit_cooling_tool.py` module docstring and assumed throu
 
 ## Git workflow
 
-Develop on the branch `claude/claude-md-docs-l18qov`; create it locally if missing. Commit
-with clear messages and push with `git push -u origin <branch>`. Do not push to other
-branches or open PRs unless explicitly asked.
+Develop on the current feature branch `claude/v17-consolidation` (PR #8, under review); start a new
+`claude/*` branch for unrelated work. Commit with clear messages and push with `git push -u origin
+<branch>`. Do not push to other branches or open PRs unless explicitly asked.
 
-Note a version mismatch to keep consistent when bumping: the empty marker file `0.3.0` and
-the README cite v0.3.0, while `CITATION.cff` lists `version: 0.2.4`.
+Project version: **0.3.0**, single source `CITATION.cff` (the redundant empty `0.3.0` marker file
+was removed in the v17 tidy; the README cites no version). Keep `CITATION.cff` authoritative when bumping.

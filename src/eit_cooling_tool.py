@@ -927,7 +927,7 @@ def solve(option='A', Dc=80.0, twofA=220.0, eta_dp=0.5, Drep1=30.0, Drep2=5.0,
         fk = [qt.basis(Nf, k) for k in range(Nf)]
         motion = [float(np.real(qt.expect(qt.tensor(qt.qeye(NA), fk[k]*fk[k].dag()), rho)))
                   for k in range(Nf)]
-        return dict(nbar=nbar, conf=conf, pops=pops, motion=motion, L=L, NA=NA)
+        return dict(nbar=nbar, conf=conf, pops=pops, motion=motion, L=L, NA=NA, rho=rho)
     if want_pops:
         return nbar, conf, pops
     return nbar, conf

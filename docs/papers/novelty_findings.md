@@ -55,6 +55,12 @@ Paper T's additions — the rank-2 **tensor** language, the cooling FoM/floor, t
 generalization, the EIT contrast — are re-framing and corollary, not a new result. A PRA referee in
 this area will know the 2016 paper.
 
+**Bonus — Naber also de-risks the m′=0 thermometry.** The same paper's finding that the differential
+AC-Stark *vanishes at an optimal laser intensity ratio* — on the exact |1,−1⟩↔|2,+1⟩ readout pair — is
+the empirical characterization + nulling knob for the thermometry's differential-Stark bias (the
+readout [O1]); and its rank-2 null tells the Δm=+2 readout it cannot detune scatter away. So the prior
+art that demotes Paper T simultaneously sharpens the thermometry validation. See `../thermometry.md` §5.
+
 ### Decision (T)
 **Demoted from standalone preprint → P1 design-rationale/motivation, cited to Naber–Spreeuw 2016.**
 DO NOT submit standalone. The polished manuscript + package in `docs/papers/` are retained but
