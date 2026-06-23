@@ -15,20 +15,20 @@ standalone Python scripts and verified against an internal regression gate.
 
 Install: `pip install -r requirements.txt` (numpy, scipy, qutip 5.x, sympy, matplotlib; Python 3).
 
-Primary tool (`src/eit_cooling_tool.py`):
-- `python src/eit_cooling_tool.py` — spectrum tables for the presets + 14 fast self-tests (< 1 s). **This is the fast smoke test; run it after any edit to that file.**
-- `python src/eit_cooling_tool.py --report` — full reports: spectrum, floor, cooling dynamics, regime (~45 s).
-- `python src/eit_cooling_tool.py --regression` — **the validation gate**: reproduces the benchmarked steady-state floors (~2 min). Run this after any change touching the atomic engine or delivery model and confirm the floors are unchanged.
+Primary tool (`src/engines/eit_cooling_tool.py`):
+- `python src/engines/eit_cooling_tool.py` — spectrum tables for the presets + 14 fast self-tests (< 1 s). **This is the fast smoke test; run it after any edit to that file.**
+- `python src/engines/eit_cooling_tool.py --report` — full reports: spectrum, floor, cooling dynamics, regime (~45 s).
+- `python src/engines/eit_cooling_tool.py --regression` — **the validation gate**: reproduces the benchmarked steady-state floors (~2 min). Run this after any change touching the atomic engine or delivery model and confirm the floors are unchanged.
 
-Other engines are run directly and print/plot their own self-checks, e.g. `python src/tagged_solver.py`, `python src/raman_sbc.py`, `python src/radial_inhomogeneity.py`, `python src/thermometry.py`. `python src/radial_floor_mc.py` needs `data/rategrid.npz`.
+Other engines are run directly and print/plot their own self-checks, e.g. `python src/engines/tagged_solver.py`, `python src/engines/raman_sbc.py`, `python src/engines/radial_inhomogeneity.py`, `python src/engines/thermometry.py`. `python src/engines/radial_floor_mc.py` needs `data/rategrid.npz`.
 
-Regenerate figures: `cd figures && for f in fig_*.py; do python3 "$f"; done` (each `fig_*.py` writes the matching `fig_*.png` from the engines in `src/`).
+Regenerate figures: `cd figures && for f in fig_*.py; do python3 "$f"; done` (each `fig_*.py` writes the matching `fig_*.png` from the engines in `src/engines/`).
 
 There is no separate test runner: the tests *are* the in-file `_selftests()` and the `--regression` gate.
 
 ## Architecture
 
-**`src/eit_cooling_tool.py` is the centerpiece** — a single ~2000-line self-contained file
+**`src/engines/eit_cooling_tool.py` is the centerpiece** — a single ~2000-line self-contained file
 organized into numbered sections (see its module docstring's table of contents). Two
 logically distinct halves live in it:
 - **Delivery / spectrum model** (Section 3): maps hardware knobs (EOM depth/frequency, sideband orders, tagging AOM, quarter-wave plate, retro efficiency) onto the explicit set of optical tones at the atoms. This is where the delivery *architectures* differ: `dual_end`, `single_end` tagged retro, and ideal `clean_lambda`. Selected via named `preset(...)` strings on a `Config`.
@@ -36,12 +36,15 @@ logically distinct halves live in it:
 
 Public API of the tool: `Config`, `preset(name)`, `run(cfg) -> (nbar, delta2)`, `report(cfg)`.
 
-The other `src/` modules are independent engines that answer specific sub-questions; several
+The other validated engines in `src/engines/` answer specific sub-questions; several
 **reuse the validated engine** rather than reimplementing it:
 - `tagged_solver.py` — validated tagged-EIT steady-state floor (single-ended retro); the workhorse behind several figures.
 - `radial_inhomogeneity.py` / `radial_floor_mc.py` — radial-cloud average of the on-axis floor (`radial_inhomogeneity.py` calls `eit_cooling_tool.run`/`Config` unchanged; `radial_floor_mc.py` is a semiclassical ensemble MC over `data/rategrid.npz`).
 - `raman_sbc.py` — standalone resolved-sideband Raman engine for the RSC-vs-EIT comparison (deliberately *not* a wrap of the dark-resonance engines).
 - `thermometry.py` — sideband-asymmetry thermometry / readout model.
+
+`src/tools/` holds supporting scripts (diagnostics, paper-T computations, sensitivity checks) that
+import the engines but are not part of the validated-engine set.
 
 `docs/` is the authoritative record of the physics and design state — **read the relevant
 doc before changing the corresponding code or numbers.** `docs/clock_EIT_consolidated.md`
@@ -51,7 +54,7 @@ to its authoritative file.
 
 ## Conventions that are easy to get wrong
 
-These are pinned in the `eit_cooling_tool.py` module docstring and assumed throughout:
+These are pinned in the `src/engines/eit_cooling_tool.py` module docstring and assumed throughout:
 - **All optical frequencies, detunings, and Rabi frequencies are ANGULAR, written as ordinary frequency in 2π·MHz** — a literal `5` means 2π·5 MHz. Trap frequencies too (`nu_z = 0.430` = 2π·430 kHz).
 - **Single frequency reference:** the bare |F=2⟩→|F′=2⟩ transition is defined as 0 MHz; "bluer" = more positive. Every detuning is (field) − (transition).
 - **Sign conventions:** `Delta > 0` is blue of |F′=2⟩ (blue-detuned EIT cooling). `delta2` is the primary two-photon knob; the EOM drive `f_mod` is *derived* from it per configuration (a numeric `f_mod` overrides, and `delta2` is then reported back as derived).

@@ -13,16 +13,16 @@ run #2 to see what a real cloud does at that point.
 
 | tool | question it answers | output |
 |---|---|---|
-| **`src/eit_cooling_tool.py`** | the **axial** floor — how close to the ground state one atom on the axis gets, for a given operating point and delivery | steady-state ⟨n_z⟩ + the exact optical spectrum at the atoms |
-| **`src/cloud_cooling_tool.py`** | the **radial/cloud** floor — what a cloud at temperature T_r reaches, and how much a flat-top or a second tone helps | cloud ⟨n_z⟩ vs profile, coverage, T_r, tone count |
+| **`src/engines/eit_cooling_tool.py`** | the **axial** floor — how close to the ground state one atom on the axis gets, for a given operating point and delivery | steady-state ⟨n_z⟩ + the exact optical spectrum at the atoms |
+| **`src/engines/cloud_cooling_tool.py`** | the **radial/cloud** floor — what a cloud at temperature T_r reaches, and how much a flat-top or a second tone helps | cloud ⟨n_z⟩ vs profile, coverage, T_r, tone count |
 
 ```bash
-pip install -r requirements.txt          # numpy(<2) scipy qutip(5.x) sympy matplotlib
+pip install -r requirements.txt               # numpy(<2) scipy qutip(5.x) sympy matplotlib
 
-python src/eit_cooling_tool.py           # spectrum tables + 14 fast self-checks (<1 s) — the smoke test
-python src/eit_cooling_tool.py --report  # full annotated operating-point report (~30 s)
-python src/eit_cooling_tool.py --regression   # reproduce the audited axial floors (the trust gate)
-python src/cloud_cooling_tool.py --regression # reproduce the box-collapse + two-tone crossover (~3 min)
+python src/engines/eit_cooling_tool.py           # spectrum tables + 14 fast self-checks (<1 s) — the smoke test
+python src/engines/eit_cooling_tool.py --report  # full annotated operating-point report (~30 s)
+python src/engines/eit_cooling_tool.py --regression   # reproduce the audited axial floors (the trust gate)
+python src/engines/cloud_cooling_tool.py --regression # reproduce the box-collapse + two-tone crossover (~3 min)
 ```
 
 The `--regression` modes are the **trust gates**: they re-derive the numbers the guide quotes, so you
@@ -47,6 +47,7 @@ the cloud tool caches the slow part and re-runs in seconds).
 | **one cooling tone vs two** | cloud | `n_tones`, `Delta2` | two_tone_hot |
 
 ```python
+# run from the repo root; sys.path is set automatically when running the script directly
 from eit_cooling_tool import Config, run, report
 cfg = Config(configuration="dual_end", Delta=50, OmR=0.11, B_field=1.5)
 nbar, delta2 = run(cfg)     # steady-state axial floor + the servoed two-photon detuning

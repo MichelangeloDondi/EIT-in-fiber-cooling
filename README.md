@@ -70,12 +70,14 @@ docs/
   archive/                       superseded snapshots, kept for the reasoning (anti-museum:
                                  superseded briefs live in git history, not here)
 src/
-  eit_cooling_tool.py            PI tool #1 — AXIAL floor + delivery (self-contained, --regression)
-  cloud_cooling_tool.py          PI tool #2 — RADIAL/cloud floor (flat-top, two-tone; --regression)
-  clk2.py clock_combined_solve.py  the multilevel deciding-run solvers (the floor authority)
+  engines/                       validated numerical solvers (the floor authority; see INDEX.md §5)
+    eit_cooling_tool.py          PI tool #1 — AXIAL floor + delivery (self-contained, --regression)
+    cloud_cooling_tool.py        PI tool #2 — RADIAL/cloud floor (flat-top, two-tone; --regression)
+    clk2.py clock_combined_solve.py  the multilevel deciding-run solvers
+    raman_sbc.py                 RSC engine (anchors the RSC-vs-EIT comparison)
+    …                            (tagged_solver, radial_inhomogeneity, thermometry, operating_point, …)
+  tools/                         supporting scripts (diagnostics, paper-T, sensitivity checks)
   radial_mc/                     the S3 radial-MC subsystem (engine/grid_build/mc; subsumed by cloud_cooling_tool)
-  raman_sbc.py                   RSC engine (anchors the RSC-vs-EIT comparison)
-  …                              see INDEX.md §5 for the validated-engine list + gate values
 START_HERE_simulations.md        how to run/tune the two PI tools (read before src/)
 INDEX.md                         authority router + "do not mistake" list + conventions + document map (§6)
 CLAIMS.md                        audited ledger: every headline number → evidence tier + script
@@ -97,8 +99,8 @@ that subsystem) into one tunable file. Use the tools to explore; use `clk2` /
 Requires Python 3 + `numpy scipy sympy qutip` (5.x) `matplotlib` (`pip install -r requirements.txt`).
 
 ```bash
-python src/eit_cooling_tool.py --regression     # axial floors at the v17 preset: dual ~0.0048 / single ~0.0072 (Nf=6 gate; a converged run gives dual ~0.0059 at OmR=0.12). ~2 min on numpy<2; slower on numpy-2 + macOS Accelerate
-python src/cloud_cooling_tool.py --regression   # box collapse + two-tone crossover (~3 min)
+python src/engines/eit_cooling_tool.py --regression     # axial floors at the v17 preset: dual ~0.0048 / single ~0.0072 (Nf=6 gate; a converged run gives dual ~0.0059 at OmR=0.12). ~2 min on numpy<2; slower on numpy-2 + macOS Accelerate
+python src/engines/cloud_cooling_tool.py --regression   # box collapse + two-tone crossover (~3 min)
 ```
 
 Each claim in the master is tagged **[V]** verified / **[I]** inference / **[O]** open, with the

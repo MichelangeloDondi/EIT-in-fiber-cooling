@@ -148,7 +148,9 @@ under** (Nf, T_r, operating point, convention).
 
 ---
 
-## 5. Validated engines (all in `src/`)
+## 5. Validated engines (all in `src/engines/`)
+
+Support tools (diagnostics, paper-T computations, sensitivity checks) live in `src/tools/`.
 
 | engine | role | gate |
 |---|---|---|
@@ -159,11 +161,9 @@ under** (Nf, T_r, operating point, convention).
 | `cloud_cooling_tool.py` | PI **radial/cloud** tool (box flat-top + two-tone; `--regression`) | box→on-axis ∀T_r **[3-level engine; the multilevel hot-cloud digit is non-converged, §1b]**; 1-/2-tone crossover ~120 µK |
 | `antitrap_kernel_grid.py` *(not shipped — analysis in `ANTITRAP_RESOLUTION.md` + git history)* | anti-trap **kernel** (valid) + grid (steady-state runaway = artifact) | normal-trap grid = Fock = 0.0085 |
 | `raman_sbc.py` | RSC engine (anchors the RSC-vs-EIT comparison) | — |
-| `flatness_spec.py` | per-depth floor / flat-top flatness spec | s=1 → 0.00485 |
-| `radial_pe.py` | per-radius P_e(F′2) on clk2 (squeezer-rate input) | P_e *falls* off-axis 1.53→0.88e-5 |
-| `grid_avg_cloud.py` | Boltzmann cloud average of clk2 n̄(r) | 0.0056/0.0169/0.130 @ 25/100/400 µK |
-| `dwell.py` | clk2 F′=1 repump-dwell measurement | P_e(F′1)=8.4e-6 → low-dwell |
 | `cloud_multilevel_union.py` | cloud × multilevel union: eit-tool n_ss(r)/W(r) on the radial grid → dead-wall MC (modes: grid/grid8/compare/closure/nf/defang) | engine sound (produced the citable cooled floor **and** exposed its own hot divergence): cooled box-cloud **0.0072 @100µK [V, Nf-conv]**; uncooled @556µK Nf-divergent → **≥0.021 @Nf8, cluster-pending** (the Nf=6 0.0118 retracted as under-resolved); closure HOLDS r=0–3 (0.92/0.98, 0.97/0.99; 98%-resolved) |
+
+*Support tools in `src/tools/` (import engines; not in the validated set): `flatness_spec.py` (per-depth floor spec), `radial_pe.py` (per-radius P_e on clk2), `grid_avg_cloud.py` (Boltzmann cloud average), `dwell.py` (F′=1 repump dwell), `detection_snr.py`, `rsc_floor_rate_eqn.py`, `paper_T_fom.py`, and others.*
 
 ---
 
