@@ -9,7 +9,7 @@ the floor.*
 ## The four knobs
 
 The atomic operating point is delivery-independent and fully audited
-([`operating_point.md`](../operating_point.md), SSOT `src/operating_point.py`):
+([`operating_point.md`](../operating_point.md), SSOT `src/engines/operating_point.py`):
 
 | knob | value | role |
 |---|---|---|
@@ -59,5 +59,5 @@ Pick the probe by the floor budget, the detuning by the speed budget.*
 ---
 
 **Go deeper →** the operating point, the weaker-probe scan, and the retro-cap optimisation are in
-[`operating_point.md`](../operating_point.md) (SSOT `src/operating_point.py`); the cooling-dynamics
+[`operating_point.md`](../operating_point.md) (SSOT `src/engines/operating_point.py`); the cooling-dynamics
 levers (rate-vs-Δ, the saturation) are master [§6](../clock_EIT_consolidated.md).

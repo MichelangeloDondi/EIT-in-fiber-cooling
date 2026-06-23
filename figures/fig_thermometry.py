@@ -12,7 +12,7 @@ Panel B : calibration.  Inferred <n> vs true <n>.  The raw ratio is biased high
           at the floor (the carrier wing contaminates the tiny red signal); the
           pedestal-subtracted estimate recovers the diagonal.
 
-Engine: ../src/thermometry.py  (validated coherent core; ETA_R=0.187,
+Engine: ../src/engines/thermometry.py  (validated coherent core; ETA_R=0.187,
 nu_z=2pi x 430 kHz).
 """
 import os, sys
@@ -21,7 +21,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "engines"))
 import thermometry as th
 
 NBAR = 0.0048          # v14 operating floor (matches the tagged-solver landscape)

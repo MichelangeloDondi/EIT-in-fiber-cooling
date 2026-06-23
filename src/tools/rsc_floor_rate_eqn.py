@@ -27,7 +27,7 @@ import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "engines"))
 import operating_point as op
 
-FOM = 5.6                       # computed in src/paper_T_fom.py (rank-2-limited, detuning-flat)
+FOM = 5.6                       # computed in src/tools/paper_T_fom.py (rank-2-limited, detuning-flat)
 ETA_SB = op.ETA_RETRO_2K          # sideband Lamb-Dicke parameter (2k retro Raman), 0.187
 ETA_780 = op.ETA_780          # single-beam (1k) absorption recoil, 0.094
 ETA_EM = getattr(op, "ETA_EM", 0.054)

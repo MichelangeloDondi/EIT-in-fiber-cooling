@@ -1,7 +1,7 @@
 # CLAIMS — audited ledger
 
 Every headline number with its **evidence tier** and **source**. The canonical numbers live in
-`src/operating_point.py` (the single source of truth); this ledger maps each to its evidence so
+`src/engines/operating_point.py` (the single source of truth); this ledger maps each to its evidence so
 the thesis and the papers draft from one audited place rather than scattered docs.
 
 **Tiers.** **[V]** verified — computed by a solver/script in this repo, or a closed analytic
@@ -11,7 +11,7 @@ result. **[I]** inference — physically-motivated estimate, order-unity uncerta
 The consistency gate (`audit/check.py`) keeps the SSOT, the engines, the master doc, and the
 README mutually consistent; this ledger is the human-readable face of that.
 
-## Operating point — `src/operating_point.py`, `src/eit_cooling_tool.py`
+## Operating point — `src/engines/operating_point.py`, `src/engines/eit_cooling_tool.py`
 | # | Claim | Tier | Source |
 |---|---|---|---|
 | OP1 | Δ = 45 MHz (floor flat 40–55) | [V] | Δ-scan, `tagged_solver.py` |
@@ -29,14 +29,14 @@ README mutually consistent; this ledger is the human-readable face of that.
 | F4 | **Cloud floor T_r-gated, [O]**: clk2 clock-unit quasi-static 0.0056 / 0.0169 / 0.130 at T_r = 25 / 100 / 400 µK (conservative ceiling; realized < quasi-static per dynamic MC) → cloud all-in ~0.007 / 0.012 / 0.022. Old flat 0.0094 semiclassical = legacy unverified | [I]/[O] | SSOT `FloorBudget.cloud_qs_clk2`; dynamic-MC brief (pending) |
 | F5 | Axial recoil bound η_em² ≈ 0.003 | [V] | recoil |
 | F6 | Stretched-RSC floor 0.00196 (**field-SENSITIVE** pair) | [V] | `raman_sbc.py` self-test |
-| F7 | Clock-RSC floor ~0.45 — **DISQUALIFIED** (rank-2 obstruction) | [V] | `audit_C_rank2.py` + FoM; `docs/clock_RSC_resolution.md` |
+| F7 | Clock-RSC floor ~0.45 — **DISQUALIFIED** (rank-2 obstruction) | [V] | `audit_C_rank2.py` + FoM; `docs/reference/scheme/clock_RSC_resolution.md` |
 | F8 | clock-RSC 0.0137 = obstruction-free **idealization**, NOT the floor | [V] (not physical) | `raman_sbc.py`; see resolution |
 
-## Clock-scheme leg assignment (control↔probe) — `src/clock_branching_check.py`, `docs/D1_hybrid_findings.md`
+## Clock-scheme leg assignment (control↔probe) — `src/tools/clock_branching_check.py`, `docs/reference/excited_state/D1_hybrid_findings.md`
 | # | Claim | Tier | Source |
 |---|---|---|---|
 | LS1 | \|F′2,0⟩ dark-leg branching is **reversed** vs \|F′2,2⟩: clock probe leg \|1,−1⟩ collects 1/4 (stretched \|1,+1⟩ 3/4) ⇒ 3/4 of dark-leg decay diffuses onto the \|2,+1⟩ control leg | [V] | `clock_branching_check.py` (exact CG/6j; validated vs the stretched 0.75/0.25 anchor) |
-| LS2 | Control↔probe **swap REJECTED** — config A (dark \|1,−1⟩) = **0.0048 hard-converged**; config B (swap, dark \|2,+1⟩) ≈ 0.018 best-bounded, non-convergent at matched OmR. A favored ~3.8×. Cause: F=2-interior dark leg forces rep2=A (unique protecting repump, cannot clear \|2,+2⟩) → near-flat Fock heating tail. Magic-B and F′=3 sub-dominant; GATE 1 moot. Frame-conflict 0.0. EOM-Raman clearer also rejected (window empty). Convention: η=0.094 symmetric; relative 3.8× is convention-robust. | [V] | `clock_combined_solve.py` / `clk2.py` (in-repo, gate-verified); `docs/D1_hybrid_findings.md` |
+| LS2 | Control↔probe **swap REJECTED** — config A (dark \|1,−1⟩) = **0.0048 hard-converged**; config B (swap, dark \|2,+1⟩) ≈ 0.018 best-bounded, non-convergent at matched OmR. A favored ~3.8×. Cause: F=2-interior dark leg forces rep2=A (unique protecting repump, cannot clear \|2,+2⟩) → near-flat Fock heating tail. Magic-B and F′=3 sub-dominant; GATE 1 moot. Frame-conflict 0.0. EOM-Raman clearer also rejected (window empty). Convention: η=0.094 symmetric; relative 3.8× is convention-robust. | [V] | `clock_combined_solve.py` / `clk2.py` (in-repo, gate-verified); `docs/reference/excited_state/D1_hybrid_findings.md` |
 
 ## Field insensitivity — Audit-C (`audit_C_rank2.py`, `audit_C_breitrabi.py`, …)
 | # | Claim | Tier | Source |
@@ -46,7 +46,7 @@ README mutually consistent; this ledger is the human-readable face of that.
 | B3 | Magic B = 3.2288 G (interrogation only; cooling 1–1.5 G) | [V] | Breit-Rabi |
 | B4 | Δm=+2 clock Raman rank-2-null in J=½ → only via I·J ∝ Δ_HFS/Δ² | [V] | `audit_C_rank2.py` |
 
-## Detection — `src/detection_snr.py`
+## Detection — `src/tools/detection_snr.py`
 | # | Claim | Tier | Source |
 |---|---|---|---|
 | D1 | OD/atom = 2.6×10⁻⁴ → OD ≈ 1 at N ≈ 3900 atoms | [V] | σ₀/A_mode |
@@ -56,7 +56,7 @@ README mutually consistent; this ledger is the human-readable face of that.
 | D5 | Single-atom in-fibre detection NOT available → **ensemble OD** | [V] | composite |
 | D6 | HCPCF backscatter at 780 nm (only matters for a backward-fluorescence route) | [O] | bench |
 
-## Survival — `src/radial_survival.py`
+## Survival — `src/tools/radial_survival.py`
 | # | Claim | Tier | Source |
 |---|---|---|---|
 | S1 | Survival ~100 % through cooling (radial heats 7–30 µK ≪ 1094 µK depth) | [V] | recoil 0.06 µK/photon × N_cool |
@@ -65,7 +65,7 @@ README mutually consistent; this ledger is the human-readable face of that.
 | S4 | Trap-depth scatter limit ~16,500 photons (bounds the READOUT) | [V] | (U₀−T)/0.06 |
 | S5 | Radial ends warm ~107–130 µK → feeds inhomogeneity (not a loss channel) | [V] | consequence |
 
-## Radial state — `src/operating_point.py` (`n_radial`, `p0_3d`)
+## Radial state — `src/engines/operating_point.py` (`n_radial`, `p0_3d`)
 | # | Claim | Tier | Source |
 |---|---|---|---|
 | R1 | ν_r = 5.42 kHz (soft, NOT cooled; η_r = 0.84 → not resolved-sideband) | [I]/[O] | w1064 inferred; measure directly |
@@ -79,7 +79,7 @@ README mutually consistent; this ledger is the human-readable face of that.
 | A2 | Single 1560 EOM makes the 6.835 GHz partner — common-mode, **no OPLL** | [V] | design |
 | A3 | ν_z = 2π×430 kHz (axial, cooled) | [I]/[O] | w1064 inferred; measure directly |
 | A4 | U₀ = 22.8 MHz = 1094 µK | [I]/[O] | inferred; measure in situ |
-| A5 | 5P3/2 anti-trapped at 1064 nm (+19 to +57 MHz) | [V] | `docs/polarizability_5P32_1064.md` |
+| A5 | 5P3/2 anti-trapped at 1064 nm (+19 to +57 MHz) | [V] | `docs/reference/excited_state/polarizability_5P32_1064.md` |
 
 ## Decisive open questions — bench
 | # | Claim | Tier | Source |

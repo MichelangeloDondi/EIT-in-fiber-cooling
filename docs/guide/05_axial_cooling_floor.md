@@ -62,7 +62,7 @@ transient squeezer ≈ 0.003 once):
 A previously-quoted all-in band of 0.012–0.019 was a **double-count** and is withdrawn; quote the
 0.008–0.010. The canonical floor table — every value with its convergence tier and the solver that
 produces it — is **[INDEX §1b](../../INDEX.md)**. Reproduce it yourself with
-`python src/eit_cooling_tool.py --regression` ([Chapter 08](08_running_and_optimizing.md)).
+`python src/engines/eit_cooling_tool.py --regression` ([Chapter 08](08_running_and_optimizing.md)).
 
 ---
 

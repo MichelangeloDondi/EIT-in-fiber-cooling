@@ -5,7 +5,7 @@ equilibrate to the warm n_ss. This is the mechanism behind the flat-top cloud
 collapse (Guide Ch 06, master Section 8).
 
 DATA PROVENANCE: the multilevel n_ss(r), W(r) below are the output of
-    python src/cloud_multilevel_union.py grid       # -> union_grid.npz (Nf=6)
+    python src/engines/cloud_multilevel_union.py grid       # -> union_grid.npz (Nf=6)
 (the headline coherent eit_cooling_tool engine on the radial grid; W is the
 relaxation-fit rate, identical to cloud_cooling_tool.nss_and_W). They are baked
 in as literals because the grid .npz is gitignored (regenerated, not shipped)

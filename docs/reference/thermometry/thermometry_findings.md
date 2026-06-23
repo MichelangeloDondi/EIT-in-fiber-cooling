@@ -1,6 +1,6 @@
 > **CONSOLIDATED AUTHORITY → [`thermometry.md`](../../thermometry.md).** This file is the detailed
 > falsification **audit**, retained of record. Note: its park→read |1,−1⟩→|1,0⟩ (read on |1,0⟩↔|2,0⟩)
-> step is **superseded** — the current m′=0 engine (`../src/thermometry.py`) reads the cooling pair
+> step is **superseded** — the current m′=0 engine (`../src/engines/thermometry.py`) reads the cooling pair
 > |1,−1⟩↔|2,+1⟩ **directly**, no transfer (`thermometry.md` §1). The audit's physics conclusions (the
 > finite-pulse pedestal, scatter/θ cancellation, common-mode cancellation) carry over unchanged.
 >

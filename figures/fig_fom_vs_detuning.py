@@ -5,14 +5,14 @@ The coherence-per-scatter FoM vs Raman detuning. The Dm=2 clock Raman (rank-2 li
 FLAT at ~5.6 -- you cannot detune out of trouble -- while an allowed Raman improves as
 Delta/Gamma. Neither helps the Dm=2 case reach the FoM ~ 170 needed for ground-state cooling.
 
-Curve and constants come from the verified core (src/paper_T_fom.py); stdlib + matplotlib only.
+Curve and constants come from the verified core (src/tools/paper_T_fom.py); stdlib + matplotlib only.
 """
 import os, sys
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "tools"))
 import paper_T_fom as pt
 
 GHZ = 1000.0

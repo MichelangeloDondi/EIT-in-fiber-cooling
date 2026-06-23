@@ -71,7 +71,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 - **Key scaling:** FoM ≡ (coherent Raman rate)/(scatter rate) ∝ (Δ_HFS/Δ²)/(Γ/Δ²) = **Δ_HFS/Γ**,
   *independent of detuning*. Contrast the allowed case (FoM ∝ Δ/Γ, improvable by detuning).
   ⇒ the obstruction's quantitative bite: **you cannot detune your way out.**
-- Numerically (computed in `src/paper_T_fom.py`, LaTeX-ready in `paper_T_core_derivation.md`):
+- Numerically (computed in `src/tools/paper_T_fom.py`, LaTeX-ready in `paper_T_core_derivation.md`):
   the null is **exact** — g(F′=1) = −g(F′=2) = −1/(4√3); the survivor G₂ = 22.7 MHz ∝ the
   F′=1,2 splitting; and **FoM ≈ 5.6** (radians of two-photon rotation per scattered photon),
   **flat across Δ = 1–30 GHz**. An earlier independent estimate gave ≈4 (A₂,∞ ≈ 16 MHz); both are
@@ -99,7 +99,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 - One line on why you cannot simply pull the Raman near-resonant: the scatter then diverges (you
   lose the FoM); EIT is the structured near-resonant solution (dark-state interference).
 
-### 7. Generality and scope  *(**DONE** — computed in `src/paper_T_generality.py`; table in `paper_T_core_derivation.md` §7)*
+### 7. Generality and scope  *(**DONE** — computed in `src/tools/paper_T_generality.py`; table in `paper_T_core_derivation.md` §7)*
 - The obstruction is generic to **J = ½ ground manifolds** driving Δm = 2: applies to the
   field-insensitive clock pairs of the alkalis (Rb, Cs, Na, K, …). FoM ≈ Δ_HFS/Γ differs per
   species (different excited-state HFS) → tabulate FoM for Rb-87, Cs-133, K-39/41, Na-23.
@@ -126,7 +126,7 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 ## What is [V] vs what must be ADDED for publication
 **Already computed [V]:**
 - Rank-2 electronic null + the I·J routing (`audit_C_rank2.py`) — §3.
-- **FoM derivation — DONE** (`src/paper_T_fom.py` + LaTeX-ready `paper_T_core_derivation.md`):
+- **FoM derivation — DONE** (`src/tools/paper_T_fom.py` + LaTeX-ready `paper_T_core_derivation.md`):
   exact null, Δ_HFS/Δ² survivor, detuning-independent FoM ≈ 5.6 — §3–§4.
 - Floor ≈ 0.45 and its robustness; the 0.0137 obstruction-free idealization (`clock_RSC_resolution.md`, `raman_sbc.py`) — §5.
 - EIT contrast floor 0.0048/0.0072 (`tagged_solver.py`) — §6.
@@ -135,11 +135,11 @@ sideband cooling of alkali clock qubits and singles out EIT as the field-insensi
 **Must add (the writing/derivation work):**
 1. ~~Clean analytic derivation of the FoM scaling~~ — **DONE** (`paper_T_core_derivation.md`); now
    just transcribe into the manuscript and add the $|m_J,m_I\rangle$-basis appendix.
-2. ~~Transparent rate-equation reproducing n̄ ≈ 0.45~~ — **DONE** (`src/rsc_floor_rate_eqn.py`,
+2. ~~Transparent rate-equation reproducing n̄ ≈ 0.45~~ — **DONE** (`src/tools/rsc_floor_rate_eqn.py`,
    written into §5 of `paper_T_core_derivation.md`): n̄ = O(0.1–1) at FoM ≈ 5.6, FoM ≳ 170 to
    recover; brackets the 0.45 and the 0.0137 idealization.
 3. ~~Fig. 1 (level scheme + geometry)~~ — **DONE** (`figures/fig_level_scheme.py`). ~~Fig. 3~~ — **DONE**.
-4. ~~Generality table (§7)~~ — **DONE** (`src/paper_T_generality.py`): null universal (Σg=0 for
+4. ~~Generality table (§7)~~ — **DONE** (`src/tools/paper_T_generality.py`): null universal (Σg=0 for
    I=3/2–7/2); FoM 0.2 (Li) → 9.3 (Cs), all ≪170, sub-unity for the light alkalis. *(orig: plug excited-HFS
    splittings.)*
 5. **Literature positioning** — see below.

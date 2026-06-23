@@ -5,7 +5,7 @@ operating point.  Shows the EIT cooling resonance and the servo set-point
 (the e3 admixture Stark-shifts g2 by ~ -0.2 MHz, so the optimum sits at a
 small POSITIVE delta2 offset, not at 0).
 
-Engine: ../src/tagged_solver.py  (legs='swapped' = adopted; e3 + rejected
+Engine: ../src/engines/tagged_solver.py  (legs='swapped' = adopted; e3 + rejected
 tagged fields included).
 """
 import os, sys
@@ -14,7 +14,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "engines"))
 import tagged_solver as ts
 
 # ---- v14 operating point ----

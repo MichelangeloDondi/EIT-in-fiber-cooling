@@ -1,7 +1,7 @@
 # SCOPE — what the model is and isn't
 
 One page, so claims aren't over-extended. Numbers and evidence: `CLAIMS.md`,
-`src/operating_point.py`.
+`src/engines/operating_point.py`.
 
 ## What this is
 - A **1D (axial) cooler.** The 1064 nm axial lattice mode (ν_z ≈ 430 kHz) is resolved-sideband

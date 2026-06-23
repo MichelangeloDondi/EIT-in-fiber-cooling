@@ -2,7 +2,7 @@
 fig_rsc_vs_eit.py  --  Paper T headline: on the field-insensitive clock pair,
 EIT cools but RSC is rank-2 DISQUALIFIED.
 
-All floors are imported from the SSOT (src/operating_point.py) so the figure
+All floors are imported from the SSOT (src/engines/operating_point.py) so the figure
 cannot drift from the canonical numbers:
   * EIT,  clock pair |1,-1>/|2,+1>  (field-insensitive)  -> 0.0048  [solve, dual-end]
   * RSC,  clock pair |1,-1>/|2,+1>  (field-insensitive)  -> ~0.45   DISQUALIFIED
@@ -25,7 +25,7 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src", "engines"))
 import operating_point as op
 
 EIT_CLOCK   = op.FLOOR.solve_dual_end       # 0.0048

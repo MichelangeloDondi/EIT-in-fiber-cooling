@@ -1,6 +1,6 @@
 # Paper T — §3–§4 core derivation (the rank-2 obstruction and the FoM ceiling)
 
-LaTeX-ready. Every result is verified numerically in `src/paper_T_fom.py` (the null is exact; the
+LaTeX-ready. Every result is verified numerically in `src/tools/paper_T_fom.py` (the null is exact; the
 scaling and the FoM are computed). Tags: [V] = checked by the script.
 
 ## Setup
@@ -77,7 +77,7 @@ far above the obstruction-free idealization $\bar n\to10^{-3}$ ($\mathrm{FoM}\to
 a standard-SBC engine returns, $\approx0.0137$), and **(ii)** reaching a useful floor
 $\bar n\approx0.01$ would require $\mathrm{FoM}\gtrsim170$ — a factor $\sim30$ beyond the
 $J=\tfrac12$, $\Delta m=2$ ceiling. The $\Delta m=2$ clock Raman is therefore **disqualified** for
-ground-state cooling; EIT (§6) reaches $\bar n\approx0.005$. **[V:** `src/rsc_floor_rate_eqn.py`**]**
+ground-state cooling; EIT (§6) reaches $\bar n\approx0.005$. **[V:** `src/tools/rsc_floor_rate_eqn.py`**]**
 
 ## §7 — generality: the whole alkali series
 The null is a property of the $J=\tfrac12$ ground manifold, so it holds for **every** alkali. The
@@ -105,7 +105,7 @@ of the $\gtrsim170$ needed for ground-state cooling, and for the light alkalis (
 $\Delta_{F'}$ shrinks down the series while $\Gamma$ does not, the obstruction bites hardest for
 the lightest alkalis. EIT cooling — near-resonant, where the excited hyperfine structure is
 resolved — is the field-insensitive route for all of them. **[V** null + angular factors; **I**
-tabulated excited-state constants; `src/paper_T_generality.py`**]**
+tabulated excited-state constants; `src/tools/paper_T_generality.py`**]**
 
 *(Alkaline-earth and alkaline-earth-like clock species — Sr, Yb, Ca$^+$, … — are a different
 regime: the $J=0$ ground state has no rank-2 issue and sideband cooling proceeds on a resolved

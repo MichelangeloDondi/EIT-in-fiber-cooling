@@ -6,7 +6,7 @@ are pushed far off every D2 line.  With a small tag (2fA = 160 MHz) the
 rejected forward-probe scatter (~ 1/eta_dp, only 160 MHz detuned) reheats the
 dark state as eta_dp drops.  Floor is optimized over delta2 at each point.
 
-Engine: ../src/tagged_solver.py (legs='swapped').
+Engine: ../src/engines/tagged_solver.py (legs='swapped').
 """
 import os, sys
 import numpy as np
@@ -14,7 +14,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src", "engines"))
 import tagged_solver as ts
 
 Delta, OmR, Nf = 45.0, 0.12, 14

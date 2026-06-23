@@ -72,7 +72,7 @@ rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as
 ## 3. Load-bearing conventions (state these before quoting any floor number)
 
 **The increment convention** *(the single cause of three contested floor numbers this session)*.
-The solve floor (`src/clk2.py`, config A = 0.0048; `:234` puts one ground frequency on all internal
+The solve floor (`src/engines/clk2.py`, config A = 0.0048; `:234` puts one ground frequency on all internal
 states) is **traffic-in, anti-trap-potential-out** — i.e. the *no-squeezer* quantity. The only
 honest thing to add is the **squeezer heat** = faithful − no-squeezer ≈ **0.003** (= the recoil
 bound). **Do NOT add the no-squeezer bulk (~0.007)** — that double-counts the traffic floor. The
@@ -89,7 +89,7 @@ all-in ≈ **0.007/0.012/0.022** at T_r=25/100/400 µK [I, cross-engine], **T_r-
 dwell-weighted magnitude confirm remains (**[O], not sign-deciding**).
 
 **The repump-dwell caveat.** The anti-trap floor is **dwell-gated ~0.01–0.05**. Low-dwell (~0.01) is
-**design intent, not a result** — the adopted F′=1 EIT repump (`src/clk2.py:135`) sits on the exact leg
+**design intent, not a result** — the adopted F′=1 EIT repump (`src/engines/clk2.py:135`) sits on the exact leg
 `ANTITRAP_RESOLUTION.md` flags as the dwell bottleneck. Only **RSC-to-\|F=2,m=0⟩** forces low dwell
 *structurally*. The F′=1 dwell is now **MEASURED** (clk2 config-A P_e(F′1)=8.4×10⁻⁶, 5× below the 4×10⁻⁵ low-dwell ref) → **firmly low-dwell; the 0.03–0.05 high-dwell branch is RETIRED**, the certified ~0.008–0.010 stands, and the 0.003 squeezer increment is conservative.
 
@@ -183,7 +183,7 @@ Support tools (diagnostics, paper-T computations, sensitivity checks) live in `s
 
 **Authorities (`docs/`)**
 - [`docs/clock_EIT_consolidated.md`](docs/clock_EIT_consolidated.md) — **THE MASTER (v17)**: technical state + conceptual path
-- [`docs/operating_point.md`](docs/operating_point.md) — operating-point notes (SSOT = `src/operating_point.py`) · [`docs/thermometry.md`](docs/thermometry.md) — **consolidated thermometry authority** (readout method + spec)
+- [`docs/operating_point.md`](docs/operating_point.md) — operating-point notes (SSOT = `src/engines/operating_point.py`) · [`docs/thermometry.md`](docs/thermometry.md) — **consolidated thermometry authority** (readout method + spec)
 - [`clock_leg_swap_finding.md`](clock_leg_swap_finding.md) *(repo root)* — config A vs B (**RESOLVED**: A holds)
 
 **Reference · scheme (`docs/reference/scheme/`)**

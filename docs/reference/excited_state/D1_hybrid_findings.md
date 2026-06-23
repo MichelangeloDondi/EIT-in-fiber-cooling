@@ -73,7 +73,7 @@ The "−35% D1 cooling advantage" carried through earlier drafts is **retracted*
 
 *Added 2026-06-19 (after auditor round 2). A different question from the D1-vs-D2 verdict above, and it does not reopen it: within the **m′=0 clock** scheme on D2, should the control leg stay on |2,+1⟩ (status quo, inherited from the stretched scheme) or swap to |1,−1⟩? Headline was overturned the same way round 1 was — a clean diffusion/branching argument that ignored the repump topology, which is the actual deciding factor.*
 
-**[V] The |F′2,0⟩ dark-leg branching is REVERSED vs |F′2,2⟩** — exact CG/6j, reproduced in-repo by `src/clock_branching_check.py` and validated against the stretched 0.75/0.25 anchor of `tagged_solver.py`:
+**[V] The |F′2,0⟩ dark-leg branching is REVERSED vs |F′2,2⟩** — exact CG/6j, reproduced in-repo by `src/tools/clock_branching_check.py` and validated against the stretched 0.75/0.25 anchor of `tagged_solver.py`:
 
 | excited state | → dark/probe leg | → \|2,+1⟩ control | renorm probe:control |
 |---|---|---|---|

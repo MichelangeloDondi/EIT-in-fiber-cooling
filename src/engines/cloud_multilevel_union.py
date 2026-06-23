@@ -51,17 +51,17 @@ WHAT Nf=6 SETTLES vs WHAT NEEDS CONVERGENCE (the Mac-grade / cite-grade split)
     confirm early-rate ~= late-rate (one extra solve).
 
 MODES
-  python src/cloud_multilevel_union.py            # the full Nf=6 radial grid + dead-wall MC (default)
-  python src/cloud_multilevel_union.py grid8      # the same grid at Nf=8 -> union_grid_nf8.npz
-  python src/cloud_multilevel_union.py compare    # citable-number test: floor drift Nf6->Nf8 (4 profiles)
-  python src/cloud_multilevel_union.py closure 9  # single-rate closure check at r=9um
-  python src/cloud_multilevel_union.py nf 9       # per-radius Nf=6/8/10 bound at r=9um (sanity, not the decider)
-  python src/cloud_multilevel_union.py defang 9   # isolated F'1 increment (with_e1 on/off) at r=9um (opt-in deliverable)
+  python src/engines/cloud_multilevel_union.py            # the full Nf=6 radial grid + dead-wall MC (default)
+  python src/engines/cloud_multilevel_union.py grid8      # the same grid at Nf=8 -> union_grid_nf8.npz
+  python src/engines/cloud_multilevel_union.py compare    # citable-number test: floor drift Nf6->Nf8 (4 profiles)
+  python src/engines/cloud_multilevel_union.py closure 9  # single-rate closure check at r=9um
+  python src/engines/cloud_multilevel_union.py nf 9       # per-radius Nf=6/8/10 bound at r=9um (sanity, not the decider)
+  python src/engines/cloud_multilevel_union.py defang 9   # isolated F'1 increment (with_e1 on/off) at r=9um (opt-in deliverable)
 
 COST  ~11-25 min per radius (the multilevel sparse steady-state LU dominates; faster BLAS does
   NOT help -- it is the sparse solve, not dense matmul). An 8-radius grid is ~2-3 h. Run
   detached, ideally with a numpy<2 / OpenBLAS venv:
-      .venv-np1/bin/python src/cloud_multilevel_union.py
+      .venv-np1/bin/python src/engines/cloud_multilevel_union.py
   Writes union_grid.npz (saved after EACH radius, so a kill leaves partial results) and prints
   one line per radius (multilevel vs 3-level) then the dead-wall floor comparison.
 """

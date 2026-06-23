@@ -6,7 +6,7 @@ essentially free (~10 fJ for ΔOD = 0.01), so **detection is not the bottleneck*
 floor on a population fraction is atom-number/projection noise √(f(1−f)/N). Guided-mode
 fluorescence is intrinsically an ensemble method (<1 collected photon per atom) and, in the
 forward direction, is swamped by the co-propagating same-wavelength readout beam. **Single-atom
-in-fibre detection is not available; the experiment is an ensemble OD measurement.** (`src/detection_snr.py`)
+in-fibre detection is not available; the experiment is an ensemble OD measurement.** (`src/tools/detection_snr.py`)
 
 ## Numbers
 - Mode: w = 19 µm, A_mode = 1.13×10⁻⁵ cm²; σ₀ = 2.9×10⁻⁹ cm² → **OD/atom = 2.6×10⁻⁴**.

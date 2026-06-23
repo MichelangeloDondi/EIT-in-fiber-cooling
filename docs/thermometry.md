@@ -1,7 +1,7 @@
 # Thermometry — sideband-asymmetry readout of ⟨n_z⟩ (consolidated authority)
 
 *The single authoritative discussion of how the cooling result ⟨n_z⟩ is **measured**. Method →
-results → readout spec → open items. Engine: `src/thermometry.py` (v0.2.0); figure:
+results → readout spec → open items. Engine: `src/engines/thermometry.py` (v0.2.0); figure:
 `figures/fig_thermometry.py`. Tags: **[V]** computed/derived, **[I]** inference, **[O]** open.*
 
 > The cooling floor is worthless if ⟨n_z⟩ cannot be read without bias at the 0.01 level (half the
@@ -93,7 +93,7 @@ tagged delivery**.
 
 ## 4. What backs the numbers
 
-`src/thermometry.py` (the **generic** coherent two-level⊗Fock core — gates: weak-probe recovers ⟨n⟩,
+`src/engines/thermometry.py` (the **generic** coherent two-level⊗Fock core — gates: weak-probe recovers ⟨n⟩,
 Nf-stable, uniform-scatter-leaves-R-invariant — with g,e **relabeled** to the m′=0 pair, so it carries
 the transition-agnostic §2 results but **not** the Δm=+2-specific spectral environment, §5) +
 `figures/fig_thermometry.py`. The detailed
@@ -147,7 +147,7 @@ superseded by §1 here). The laser/delivery context is in **`architecture_delive
 ## Provenance & supersession
 
 - Results (pulse shaping, scatter cancellation, branching pedestal, calibration, BSB fit): computed
-  in `src/thermometry.py` v0.2.0; figure `figures/fig_thermometry.py`.
+  in `src/engines/thermometry.py` v0.2.0; figure `figures/fig_thermometry.py`.
 - **Superseded:** `thermometry_sim.py` / `thermometry_phase.py` (the earlier *swapped m′=2* model:
   cool in a field-sensitive pair, park in |1,+1⟩, transfer to read on |1,0⟩↔|2,0⟩). The current
   m′=0 scheme reads the cooling pair directly — `thermometry.py` is the live engine. The
