@@ -15,7 +15,7 @@ RADIAL mode (nu_r = 5.42 kHz) is not. Scored here:
 Tags: [V] computed, [I] estimate, [O] bench. SI internally.
 """
 import os, sys, math
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "engines"))
 import operating_point as op
 
 # ---- constants ----

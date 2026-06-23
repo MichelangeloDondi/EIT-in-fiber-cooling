@@ -1,6 +1,8 @@
 """Measure clk2's physical F'=1 repump dwell -> decide low- vs high-dwell regime.
    ANTITRAP_RESOLUTION thresholds: low-dwell P_e_rep ~ 4e-5 -> anti-trap ~0.01;
    high-dwell ~3.5e-4 -> ~0.03-0.05. F'=2 residual should be ~4e-5 (dark-state, sanity)."""
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "engines"))
 import clk2 as m
 # config A (settled), validated full floor ~0.0048; defaults Dc=80, Drep1=30, Drep2=5, OmR=0.25
 for Nf in (8, 10):

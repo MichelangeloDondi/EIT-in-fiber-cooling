@@ -1,5 +1,5 @@
 import numpy as np
-import os as _os; _DATA=_os.path.join(_os.path.dirname(_os.path.abspath(__file__)),'..','data')
+import os as _os; _DATA=_os.path.join(_os.path.dirname(_os.path.abspath(__file__)),'..','..','data')
 d=np.load(_os.path.join(_DATA,'rategrid.npz')); rs=d['rs']; wL=19.0; wr=0.03405  # /us
 U0uK=1094.0
 Ur=lambda r:U0uK*(1-np.exp(-2*r**2/wL**2))

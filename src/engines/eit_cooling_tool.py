@@ -1542,6 +1542,14 @@ def _demo_sweeps(Nf: int = 6):
 # =============================================================================
 if __name__ == "__main__":
     import sys
+    _np_major = int(np.__version__.split(".")[0])
+    if _np_major >= 2:
+        print(
+            f"WARNING: numpy {np.__version__} detected.  On macOS with the Accelerate"
+            " backend this makes each multilevel steady-state solve ~10–20× slower"
+            " (tens of minutes per --regression run instead of ~2 min).\n"
+            "  Fix: pip install 'numpy<2'   (see memory entry numpy2-accelerate-slow)\n"
+        )
     if "--report" in sys.argv:
         _selftests()
         report(preset("dual_end_optimal"))

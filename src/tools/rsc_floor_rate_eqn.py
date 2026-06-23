@@ -24,7 +24,7 @@ DISQUALIFICATION -- n_ss = O(0.1-1) at the obstruction-bounded FoM, and FoM >~ 1
 reach n~0.01 -- is robust across the reasonable parameter range.
 """
 import os, sys
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "engines"))
 import operating_point as op
 
 FOM = 5.6                       # computed in src/paper_T_fom.py (rank-2-limited, detuning-flat)

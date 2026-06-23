@@ -1,6 +1,8 @@
 """Flat-top flatness spec: per-radial-depth floor on the validated config-A engine.
 Maps fractional intensity variation DU/U over the cloud to floor degradation, to
 back out the flatness tolerance XLIM needs. Uses clk2's validated building blocks."""
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "engines"))
 import numpy as np, qutip as qt
 import clk2 as m   # validated engine (config A = 0.00485, clean-Lambda 0.0072)
 from clk2 import Eg, excited_energies, beams, build_frame, CGc, GAMMA, EM_REC, BR
