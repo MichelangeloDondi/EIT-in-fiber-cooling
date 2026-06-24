@@ -11,9 +11,12 @@ Right (SPEED lever): cooling time tau vs detuning Delta -- lower Delta cools
 DATA PROVENANCE (baked documented values -- compute-free, reproducible, and matching
 the canonical docs by construction; each multilevel solve is ~10 min on this Mac,
 so a live scan is a cluster job -- see INDEX numpy-pin note):
-  * floor vs OmR @ Delta=80 (dual-end, tagged_solver): operating_point.md §2 line 29
-        OmR 0.10/0.15/0.25 -> 0.0041/0.0072/0.0166  (clk2 at this point is 0.0048 -- a
-        different solver; line 16 attributes the 0.0166 memo point to tagged_solver)
+  * floor vs OmR @ Delta=80 (dual-end): operating_point.md §2 line 29 labels this curve
+        the "dual-end floor vs Omega_p/Omega_c": OmR 0.10/0.15/0.25 -> 0.0041/0.0072/0.0166.
+        NOT clk2 -- clk2 config-A at Dc=80/OmR=0.25 is 0.0048 (clk2.py header, line 13), a
+        different solver/recycler; do not relabel this curve "clk2". (op §2 line 16's
+        "0.0166 -> 0.0048" is the tagged-solver Delta80->Delta45 improvement, a separate
+        fact from this curve's label -- citing it here before was muddled; Cuddy caught it.)
   * floor vs OmR @ Delta=45 (eit_cooling_tool): master §5     0.10/0.12 -> 0.0051/0.0059
   * cooling time tau vs Delta (dual-end, OmR=0.10): master §6  45/60/80 -> 0.14/0.30/0.69 ms
 """

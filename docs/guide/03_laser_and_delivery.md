@@ -61,6 +61,10 @@ core). It turns out **not** to bind:
 
 ![Floor vs retro reflectivity — flat at a large tag](../../figures/fig_retro_flatness.png)
 
+*(Figure pixels are **stale**: the plotted floor (~0.0049) is an old tagged_solver run; the canonical
+single-tagged 2f_A=400 floor is **0.0072** — the values in the text below and `operating_point.md` §3. The
+**flat-in-η_dp shape** it shows is the robust result; a magnitude-corrected regeneration is queued.)*
+
 At a 400 MHz tag the floor is **flat in retro efficiency over 20–40 %** (0.0073 / 0.0072 / 0.0072),
 because the tag pushes the amplified rejected-forward-probe scatter far enough off-resonance that it
 washes out. Lower efficiency only forces a slightly larger EOM depth and nW-scale launch power — not a
