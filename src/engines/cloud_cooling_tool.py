@@ -199,8 +199,15 @@ def nss_and_W(r_um, Delta, OmR, w0_um, Otot_ref, Nf=16):
     return nss, max(W, 0.0), s
 
 
+# Engine outputs (grids/caches) live here, NOT the repo root — so a clone-and-run
+# stays clean. Gitignored (see .gitignore `outputs/`); created on demand.
+_OUTDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "outputs")
+os.makedirs(_OUTDIR, exist_ok=True)
+
+
 def _grid_key(cfg):
-    return ("cloudgrid_D%.0f_OmR%.2f_nt%d_D2%.0f_nr%d_rm%.0f_Nf%d.npz"
+    return os.path.join(_OUTDIR,
+            "cloudgrid_D%.0f_OmR%.2f_nt%d_D2%.0f_nr%d_rm%.0f_Nf%d.npz"
             % (cfg.Delta, cfg.OmR, cfg.n_tones, cfg.Delta2, cfg.n_radii,
                cfg.r_max_um, cfg.Nf))
 
