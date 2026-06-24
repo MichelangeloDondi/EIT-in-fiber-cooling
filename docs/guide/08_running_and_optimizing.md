@@ -2,7 +2,7 @@
 
 *The two simulations that make this program runnable — how to reproduce every number, then turn the
 knobs yourself.*
-[← Thermometry](07_thermometry_and_analysis.md) · [Guide cover →](../../GUIDE.md)
+[← Thermometry](07_thermometry_and_analysis.md) · [Guide cover (README) →](../../README.md)
 
 ---
 
