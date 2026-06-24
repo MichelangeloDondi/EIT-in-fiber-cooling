@@ -9,6 +9,8 @@ a coherence pass corrected stale *displayed* values only: §3 δ₂, §5 dual-fl
 v16 floor-correction: SSOT double-count fix + SCOPE→CLAIMS deferral (PR #4); squeezer off-axis
 rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as final.*
 
+> **Auditing a number? The path is four steps.** (1) Find it in **§1b** (canonical values, one place) or in **[`CLAIMS.md`](CLAIMS.md)** (every headline number → evidence tier `[V]`/`[I]`/`[O]` → the script that establishes it). (2) Note the **convention** in **§3** that decides *which* number a script reports (solve vs all-in, single-atom vs cloud, field vs state-energy δ₂) — most apparent disagreements in this project's history were convention mismatches, not physics. (3) Open the script named in **§5** (validated engines + their gate values) and run it. (4) Run the gates: `python audit/check.py` (the repo consistency gate) and the two `python src/engines/{eit_cooling_tool,cloud_cooling_tool}.py --regression` floors. Engine outputs land in `outputs/` (gitignored), so a clone-and-run stays clean. The `[O]` items in **§4** are *not* settled — do not cite them as final.
+
 ---
 
 ## 1. Settled questions → authority → verdict
@@ -16,7 +18,7 @@ rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as
 | question | authority file | verdict (one line) |
 |---|---|---|
 | **Cooling scheme + operating point** | `clock_EIT_consolidated.md` (**v17**) | D2 clock-EIT, m′=0 pair \|1,−1⟩/\|2,+1⟩ → \|F′2,0⟩, **config A** (dark on \|1,−1⟩); Δ≈45 MHz (flat 40–55), Ω_p/Ω_c≈0.10–0.12 (**0.12 nominal**; 0.10 is floor-optimal but ~1.4× slower cooling — §3), δ₂ servoed; ν_z=2π·430 kHz, U₀=1094 µK, η_z=0.094, η_eff(retro)=0.187; magic B=3.2288 G (interrogation), cooling 1–1.5 G. **Four subversions:** A/B (1-tone) / C/D (2-tone) × dual/retro — tone count set by radial temperature (1 tone <120 µK, 2 above; §4, §8). |
-| **Leg assignment (config A vs B)** | `clock_leg_swap_finding.md` (**RESOLVED**) | The swap is **rejected; A holds** (3.8× advantage; B's F=2-interior dark leg can't clear \|2,+2⟩). |
+| **Leg assignment (config A vs B)** | `docs/reference/scheme/clock_leg_swap_finding.md` (**RESOLVED**) | The swap is **rejected; A holds** (3.8× advantage; B's F=2-interior dark leg can't clear \|2,+2⟩). |
 | **Why EIT, not RSC** | `clock_EIT_consolidated.md` §I/§II | On the Δm=2 field-insensitive pair, RSC hits a **rank-2 destructive-interference obstruction** (Σg=0 → floor ~0.45); EIT escapes it. Cited as established (Naber 2016), not new. |
 | **Excited state at 1064 (anti-trap potential)** | `docs/reference/excited_state/polarizability_5P32_1064.md` | 5P₃/₂ **anti-trapped** at 1064 (α₀≈−1149 a₀³); **\|F′2,0⟩ pure scalar +38.1 MHz** (F′=2 tensor term vanishes → geometry-independent). |
 | **Anti-trap FLOOR (m′=0)** | **`docs/reference/floor/ANTITRAP_RESOLUTION.md`** | Repump-**dwell**-gated **~0.01–0.05, pinned not runaway**. Low-dwell (P_e_rep~4e-5) → faithful bulk **~0.01**; high-dwell (~3.5e-4) → ~0.03–0.05. The grid 0.03→0.10 growth is a **boundary artifact**, not a floor. Point-number for a chosen repump = workstation/sparse-iterative job. |
@@ -64,7 +66,7 @@ rate-rise **disproven**). In-flux items are flagged §OPEN; do not cite those as
 - **`operating_point.py` `all_in_single_atom = (0.012, 0.019)`** [the OLD field] — was **double-counted** (`antitrap_leak_increment=0.007` is the *no-squeezer bulk* ≈ the solve floor). **FIXED 2026-06-20** (committed PR #4): the field is now `squeezer_increment_lowdwell = 0.003` (scalar) and `all_in_single_atom_lowdwell` = solve + squeezer ≈ **0.008–0.010**. **Any copy still showing (0.012, 0.019) or `antitrap_leak_increment` is pre-correction — discard.**
 - **The `EIT_brief` lineage (`v11` / `v12` / `v17`)** — **superseded**; the **current master is `clock_EIT_consolidated.md` v17** (the v17 brief's four-subversion matrix + box-MC are folded into master §4/§8). The briefs are **not kept as files** — see git history for v11/v12 (D1 §12, the five-column comparison). Do not cite them for the current floor.
 - **`clock_EIT_consolidated.md` v14 / v15 / v16** — superseded by the current **v17** master. Re-sync project knowledge from the live docs (use `INDEX.md` as the authority map).
-- **Any `clock_leg_swap_finding.md` headed "[O] swap favored"** — the **RESOLVED** version ("swap rejected; A holds") supersedes it.
+- **Any `docs/reference/scheme/clock_leg_swap_finding.md` headed "[O] swap favored"** — the **RESOLVED** version ("swap rejected; A holds") supersedes it.
 - **`v12_plan.md` / `D1_hybrid_plan.md` / `v12_decision.md`** — process scaffolding; conclusions are in v16 / the findings docs.
 
 ---
@@ -185,10 +187,10 @@ Support tools (diagnostics, paper-T computations, sensitivity checks) live in `s
 **Authorities (`docs/`)**
 - [`docs/clock_EIT_consolidated.md`](docs/clock_EIT_consolidated.md) — **THE MASTER (v17)**: technical state + conceptual path
 - [`docs/operating_point.md`](docs/operating_point.md) — operating-point notes (SSOT = `src/engines/operating_point.py`) · [`docs/thermometry.md`](docs/thermometry.md) — **consolidated thermometry authority** (readout method + spec)
-- [`clock_leg_swap_finding.md`](clock_leg_swap_finding.md) *(repo root)* — config A vs B (**RESOLVED**: A holds)
 
 **Reference · scheme (`docs/reference/scheme/`)**
 - [`clock_RSC_resolution.md`](docs/reference/scheme/clock_RSC_resolution.md) — why EIT, not RSC (rank-2 obstruction)
+- [`clock_leg_swap_finding.md`](docs/reference/scheme/clock_leg_swap_finding.md) — config A vs B (**RESOLVED**: A holds ~3.8×)
 
 **Reference · delivery (`docs/reference/delivery/`)**
 - [`laser_architecture_comparison.md`](docs/reference/delivery/laser_architecture_comparison.md) — single 1560 nm EOM → SHG, all-fiber

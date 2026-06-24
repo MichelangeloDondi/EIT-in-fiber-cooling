@@ -228,6 +228,9 @@ __marimo__/
 Icon?
 
 # Generated tool outputs (regenerate; keep curated copies under docs/figures/)
+# The engines now write grids/caches under outputs/ (see cloud_cooling_tool / cloud_multilevel_union),
+# so a clone-and-run stays clean; the bare-name patterns below cover older runs that wrote to the root.
+outputs/
 fig_*.png
 *_cache.npz
 cloudgrid_*.npz

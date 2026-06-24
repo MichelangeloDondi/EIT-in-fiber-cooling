@@ -77,6 +77,10 @@ import qutip as qt
 import eit_cooling_tool as eit
 import cloud_cooling_tool as cc
 
+# Engine outputs (union grids) go to outputs/, NOT the repo root (see .gitignore); created on demand.
+_OUTDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "outputs")
+os.makedirs(_OUTDIR, exist_ok=True)
+
 # --- operating point (matches the v17 dual_end preset + the cloud tool's geometry) -----------
 DELTA, OMR, NF = 45.0, 0.12, 6
 D2_FIXED = -0.10                              # field-convention dual on-axis delta2 (held fixed)
@@ -218,7 +222,7 @@ def _floor(S, NSS, W, prof, T, rf):
     return cc.run_mc(cc.Config(**kw), np.asarray(S), np.asarray(NSS), np.asarray(W))
 
 
-def main(Nf=NF, npz="union_grid.npz"):
+def main(Nf=NF, npz=os.path.join(_OUTDIR, "union_grid.npz")):
     print("cloud x multilevel UNION -- headline coherent engine on the radial grid", flush=True)
     print("Delta=%.0f OmR=%.2f Nf=%d delta2=%.2f(fixed)  Oref=%.4f  w0=%.0fum"
           % (DELTA, OMR, Nf, D2_FIXED, OREF, W0_UM), flush=True)
@@ -253,7 +257,7 @@ def main(Nf=NF, npz="union_grid.npz"):
     print("\nDONE  (saved %s)" % npz, flush=True)
 
 
-def compare(npz6="union_grid.npz", npz8="union_grid_nf8.npz"):
+def compare(npz6=os.path.join(_OUTDIR, "union_grid.npz"), npz8=os.path.join(_OUTDIR, "union_grid_nf8.npz")):
     """CITABLE-NUMBER TEST (Cuddy red-team): the Nf=6->converged correction that would license the
        Mac-derivable shortcut is a property of the W-WEIGHTED FLOOR, not a single per-radius n_ss --
        so test the FLOOR directly across two Nf grids. The hot (556uK) row is decisive: it puts the
@@ -285,7 +289,7 @@ if __name__ == "__main__":
     elif mode == "defang" and len(sys.argv) >= 3:
         defang_check(float(sys.argv[2]))              # `... defang 9`   isolated F'1 increment (opt-in)
     elif mode == "grid8":
-        main(Nf=8, npz="union_grid_nf8.npz")          # `... grid8`      the Nf=8 grid (for compare)
+        main(Nf=8, npz=os.path.join(_OUTDIR, "union_grid_nf8.npz"))   # `... grid8`  Nf=8 grid (for compare)
     elif mode == "compare":
         compare()                                     # `... compare`    citable-number floor test
     else:
