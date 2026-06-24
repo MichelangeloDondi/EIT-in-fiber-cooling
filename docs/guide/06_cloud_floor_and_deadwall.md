@@ -20,11 +20,12 @@ scaling laws (with s(r) = exp(−2r²/w²)) are:
 Because the inhomogeneity the cloud samples is set by k_BT_r/U₀ — the radial *temperature* over the trap
 depth — the cloud floor is **T_r-gated**: cooler radial mode → tighter sampling → lower floor.
 
-![Cloud floor vs radial temperature (MC sits below the quasi-static column)](../../figures/fig_cloud_floor.png)
+![Cloud axial floor — a flat-top box collapses the T_r-driven Gaussian rise (multilevel union)](../../figures/fig_cloud_floor_multilevel.png)
 
-*The cloud floor rises with radial temperature, and the realised (dynamic Monte-Carlo) floor sits below
-the quasi-static estimate. The on-figure annotation is an older 3-level metric; current canonical
-numbers and tiers are in [INDEX §1b](../../INDEX.md), and a refreshed figure is queued.*
+*Post-retraction (multilevel union): the Gaussian cloud floor rises with radial temperature [I]; a
+flat-top box collapses it to cooled **0.0072** [V] / uncooled **≥0.021** [O] — the Nf=6 0.0118 is
+retracted as under-resolved. Canonical numbers and tiers are in [INDEX §1b](../../INDEX.md). (The earlier
+3-level dynamic-MC view — realised MC below the quasi-static column — is `figures/fig_cloud_floor.png`.)*
 
 ## The dead-wall: why a flat-top freezes the edge cold
 
