@@ -36,7 +36,7 @@ dT_rad = T_r_uK*f_rad                                  # uK per scattered photon
 # ---- cooling photon budget (continuous EIT: ~Delta_n / eta^2 photons) ----
 T_axial_init = 100.0                                   # post-molasses axial T [I/O]
 n_z_init = op.n_thermal(T_axial_init, op.NU_Z_MHZ)
-n_z_final = op.FLOOR.all_in_single_atom[0]
+n_z_final = op.FLOOR.all_in_single_atom_lowdwell[0]   # SSOT field renamed (low-dwell certified)
 dn = n_z_init - n_z_final
 N_cool = {eta: dn/eta**2 for eta in (op.ETA_RETRO_2K, op.ETA_780)}   # 2-photon LD vs single-photon
 N_cool_lo, N_cool_hi = min(N_cool.values()), max(N_cool.values())

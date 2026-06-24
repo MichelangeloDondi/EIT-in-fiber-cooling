@@ -11,8 +11,12 @@ Right (SPEED lever): cooling time tau vs detuning Delta -- lower Delta cools
 DATA PROVENANCE (baked documented values -- compute-free, reproducible, and matching
 the canonical docs by construction; each multilevel solve is ~10 min on this Mac,
 so a live scan is a cluster job -- see INDEX numpy-pin note):
-  * floor vs OmR @ Delta=80 (dual-end, clk2 deciding-solver): operating_point.md §2
-        OmR 0.10/0.15/0.25 -> 0.0041/0.0072/0.0166
+  * floor vs OmR @ Delta=80 (dual-end): operating_point.md §2 line 29 labels this curve
+        the "dual-end floor vs Omega_p/Omega_c": OmR 0.10/0.15/0.25 -> 0.0041/0.0072/0.0166.
+        NOT clk2 -- clk2 config-A at Dc=80/OmR=0.25 is 0.0048 (clk2.py header, line 13), a
+        different solver/recycler; do not relabel this curve "clk2". (op §2 line 16's
+        "0.0166 -> 0.0048" is the tagged-solver Delta80->Delta45 improvement, a separate
+        fact from this curve's label -- citing it here before was muddled; Cuddy caught it.)
   * floor vs OmR @ Delta=45 (eit_cooling_tool): master §5     0.10/0.12 -> 0.0051/0.0059
   * cooling time tau vs Delta (dual-end, OmR=0.10): master §6  45/60/80 -> 0.14/0.30/0.69 ms
 """
@@ -22,7 +26,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # --- floor vs OmR (the weaker-probe lever) ------------------------------------
-omr80, fl80 = [0.10, 0.15, 0.25], [0.0041, 0.0072, 0.0166]      # Delta=80, clk2
+omr80, fl80 = [0.10, 0.15, 0.25], [0.0041, 0.0072, 0.0166]      # Delta=80, dual-end (tagged_solver, op_point.md §2)
 omr45, fl45 = [0.10, 0.12], [0.0051, 0.0059]                    # Delta=45, eit-tool
 # --- cooling time vs Delta (the speed lever) ----------------------------------
 dz, tau = [45.0, 60.0, 80.0], [0.14, 0.30, 0.69]               # ms, dual-end OmR=0.10
@@ -30,7 +34,7 @@ dz, tau = [45.0, 60.0, 80.0], [0.14, 0.30, 0.69]               # ms, dual-end Om
 fig, (axL, axR) = plt.subplots(1, 2, figsize=(11.0, 4.6))
 
 # LEFT: floor vs OmR
-axL.plot(omr80, fl80, "o-", color="#1565c0", lw=2.4, ms=7, label=r"$\Delta=80$ (clk2)")
+axL.plot(omr80, fl80, "o-", color="#1565c0", lw=2.4, ms=7, label=r"$\Delta=80$ (dual-end)")
 axL.plot(omr45, fl45, "s--", color="#2e7d32", lw=2.2, ms=7, label=r"$\Delta=45$ (eit-tool)")
 axL.plot(0.12, 0.0059, "*", color="#c0392b", ms=17, zorder=5)
 axL.annotate("operating point\nΔ=45, OmR=0.12\n(~1.4× faster than 0.10)",
