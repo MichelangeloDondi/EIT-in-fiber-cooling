@@ -172,15 +172,14 @@ Support tools (diagnostics, paper-T computations, sensitivity checks) live in `s
 
 ## 6. Document map — every doc, grouped (so nothing is orphaned)
 
-*New-reader order: [`README.md`](README.md) → [`GUIDE.md`](GUIDE.md) (the narrative walkthrough) → [`START_HERE_simulations.md`](START_HERE_simulations.md) → this index → the master. §1 above gives the authority + verdict per **settled question**; this map lists **every** file by topic. The repo is three layers: **narrate** (`GUIDE.md` + `docs/guide/`), **run** (`START_HERE` + `src/`), **reference** (this index → master → `docs/reference/` → `CLAIMS`/`SCOPE`).*
+*New-reader order: [`README.md`](README.md) (the front door — map + the narrative chapter guide) → the [`docs/guide/`](docs/guide/) chapters → [`START_HERE_simulations.md`](START_HERE_simulations.md) → this index → the master. §1 above gives the authority + verdict per **settled question**; this map lists **every** file by topic. The repo is three layers: **narrate** (the README chapter guide + `docs/guide/`), **run** (`START_HERE` + `src/`), **reference** (this index → master → `docs/reference/` → `CLAIMS`/`SCOPE`).*
 
 **Governance / entry**
-- [`README.md`](README.md) — project guide, repo map, trust gates · [`GUIDE.md`](GUIDE.md) — front-to-back narrative walkthrough · [`START_HERE_simulations.md`](START_HERE_simulations.md) — run/tune the two PI tools
+- [`README.md`](README.md) — **the front door**: map, headline, the narrative chapter guide, trust gates · [`START_HERE_simulations.md`](START_HERE_simulations.md) — run/tune the two PI tools
 - [`CLAIMS.md`](CLAIMS.md) — audited ledger (number → tier → script) · [`SCOPE.md`](SCOPE.md) — what the model covers / omits · [`CLAUDE.md`](CLAUDE.md) — working guide
 - **Subsystem READMEs:** [`audit/`](audit/) — constants gate-check (`check.py`) · [`src/radial_mc/`](src/radial_mc/README_radial_mc.md) — the S3 radial-MC subsystem · [`figures/`](figures/) — publication figures
 
-**The Guide — narrative spine (`GUIDE.md` + `docs/guide/`)** *(pedagogical; narrates over the master, links here for canonical numbers)*
-- [`GUIDE.md`](GUIDE.md) — cover, headline, chapter TOC, reading order
+**The narrative — chapters (`docs/guide/`)** *(pedagogical; narrates over the master, links here for canonical numbers; the cover, headline, and chapter TOC are now in [`README.md`](README.md))*
 - [`01 · apparatus & sequence`](docs/guide/01_apparatus_and_sequence.md) · [`02 · cooling scheme`](docs/guide/02_cooling_scheme.md) · [`03 · laser & delivery`](docs/guide/03_laser_and_delivery.md) · [`04 · operating point`](docs/guide/04_operating_point.md)
 - [`05 · axial floor`](docs/guide/05_axial_cooling_floor.md) · [`06 · cloud floor & dead-wall`](docs/guide/06_cloud_floor_and_deadwall.md) · [`07 · thermometry & analysis`](docs/guide/07_thermometry_and_analysis.md) · [`08 · running & optimising`](docs/guide/08_running_and_optimizing.md)
 
@@ -224,4 +223,4 @@ Support tools (diagnostics, paper-T computations, sensitivity checks) live in `s
 changes. The protective value is the §2 "do not mistake" list and the §3 conventions — keep those
 current. The findings docs are grouped under `docs/reference/<topic>/`; the authorities
 (master, `operating_point.md`, `thermometry.md`) stay at `docs/`; the pedagogical narrative is
-`GUIDE.md` + `docs/guide/`. When a doc moves, fix its links and re-run the link/orphan checker.*
+the README chapter guide + `docs/guide/`. When a doc moves, fix its links and re-run the link/orphan checker.*

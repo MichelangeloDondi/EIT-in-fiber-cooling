@@ -1,7 +1,7 @@
 # 01 · Apparatus & the experimental sequence
 
 *Where the atoms live, the trap that holds them, and the full shot from MOT to readout.*
-[← Guide cover](../../GUIDE.md) · [Next: the cooling scheme →](02_cooling_scheme.md)
+[← Guide cover (README)](../../README.md) · [Next: the cooling scheme →](02_cooling_scheme.md)
 
 ---
 

@@ -6,7 +6,7 @@ the field-insensitive clock pair `|1,-1>` (probe σ⁺) / `|2,+1>` (control σ�
 
 The curated `.png`s are committed (the repo-wide `fig_*.png` ignore is for regenerated outputs at the
 working root; the figures here were force-added). They are embedded across the
-[Guide](../GUIDE.md) chapters, the [master brief](../docs/clock_EIT_consolidated.md), and
+[guide chapters](../docs/guide/), the [master brief](../docs/clock_EIT_consolidated.md), and
 [`thermometry.md`](../docs/thermometry.md).
 
 ## Guide / master figures
