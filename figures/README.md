@@ -44,8 +44,8 @@ working root; the figures here were force-added). They are embedded across the
   the current numbers and link [INDEX §1b](../INDEX.md); only the pixels lag. **The cloud-floor figure is
   resolved** — `fig_cloud_floor_multilevel` (post-retraction, baked from §1b) is the primary; the 3-level
   `fig_cloud_floor` is kept as the earlier dynamic-MC view.
-- **`fig_radial_mc.png` is an orphan** — it has no regen script. Prefer `fig_cloud_floor.png` (which
-  does). Authoring a `fig_radial_mc.py` to de-orphan it is an optional cleanup.
+- **Every committed `.png` has a regen script** (the orphan `fig_radial_mc.png` — no script, superseded by
+  the cloud-floor figures — was retired). If you add a figure, add its `fig_*.py`.
 - **`fig_rsc_vs_eit`** marks the clock-pair RSC floor as a **lower bound** (Nf=10; higher Fock cutoff
   does not converge within budget). The defensible claim is comparative — EIT beats RSC on the
   field-insensitive pair.
