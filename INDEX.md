@@ -145,6 +145,7 @@ under** (Nf, T_r, operating point, convention).
 - **In-fiber radial temperature** — 556 µK (loaded/uncooled) vs ~100 µK (cooled upstream). Gates the cloud floor **and** P1 §IV.B.
 - **Flat-top** — flatness spec ≤3% over ±6 µm (frozen, provisional; S3 relaxes it); ~1.3–1.7× mover *conditional on low-dwell repump*. Fiber feasibility (mode content @1064, walk-off over 2 m, contrast) → XLIM. Briefs: `flat_top_feasibility.md`, `flatness_spec_result.md`.
 - **6.835 GHz two-photon linewidth** — the bench-gated binding measurement (sub-100 Hz?). P1 hinges on it.
+- **[O] two figure regens (compute-bound) — flagged by the 2026-06 figure red-team.** `fig_retro_flatness` plots ~0.0049 (the config-A on-axis floor) for the single-ended tagged 2f_A=400 floor, whose canonical value is **0.0072** (`operating_point.md` §3) — magnitude stale; removed from the master, disclosed in Ch 03. `fig_delta2_landscape` shows δ₂=+0.25 (tagged_solver state-energy sign); canonical is **−0.19 field** (§3). Both need a `tagged_solver` re-run (numpy<2 / cluster, ~min/solve) to refresh the *pixels* — the captions already carry the canonical numbers. *(The cloud-floor figure gap is **closed**: `fig_cloud_floor_multilevel.py`, baked from §1b, now in the master + Ch 06.)*
 
 ---
 

@@ -18,7 +18,8 @@ working root; the figures here were force-added). They are embedded across the
 | `fig_retro_flatness.py` | `fig_retro_flatness.png` | single-ended floor vs retro reflectivity: a large tag (2f_A=400) is flat | `tagged_solver` | Ch 03, master §4 |
 | `fig_delta2_landscape.py` | `fig_delta2_landscape.png` | floor vs two-photon detuning δ₂ (shallow optimum) | `tagged_solver` | Ch 04 |
 | `fig_stark_5P32.py` | `fig_stark_5P32.png` | 5P₃/₂ tensor-Stark manifold (m′=0 = EIT target, pure scalar) | self-contained | Ch 05, master §7 |
-| `fig_cloud_floor.py` | `fig_cloud_floor.png` | cloud floor vs radial temperature (MC below the quasi-static column) | `radial_floor_mc` (needs `../data/rategrid.npz`) | Ch 06, master §8 |
+| `fig_cloud_floor_multilevel.py` | `fig_cloud_floor_multilevel.png` | **cloud floor (post-retraction multilevel union)**: Gaussian rises with T_r; flat-top box cooled 0.0072 [V] / uncooled ≥0.021 [O] | baked (INDEX §1b) | **Ch 06, master §8** |
+| `fig_cloud_floor.py` | `fig_cloud_floor.png` | *(earlier 3-level view)* cloud floor vs radial T (MC below quasi-static column) | `radial_floor_mc` (needs `../data/rategrid.npz`) | superseded by the multilevel figure; kept for reference |
 | `fig_thermometry.py` | `fig_thermometry.png` | sideband-asymmetry thermometry at the floor + calibration | `thermometry` | Ch 07, `thermometry.md` |
 | `fig_apparatus.py` | `fig_apparatus.png` | apparatus/trap schematic + the ~80× anisotropy | hand-drawn | Ch 01 |
 | `fig_knobspace.py` | `fig_knobspace.png` | floor lever (OmR) + speed lever (Δ) | baked (operating_point §2, master §6) | Ch 04 |
@@ -34,11 +35,15 @@ working root; the figures here were force-added). They are embedded across the
 
 ## Notes & caveats
 
-- **Stale on-figure annotations (regen queued).** A few `.png`s carry pre-v17 annotations:
-  `fig_delta2_landscape` shows an older δ₂ set-point (the canonical v17 servo point is **−0.10 dual /
-  −0.19 single** in the field convention — INDEX §3); `fig_cloud_floor` shows an older 3-level metric.
-  The captions in the guide quote the current numbers and link [INDEX §1b](../INDEX.md); the figures
-  will be regenerated so the pixels match.
+- **Stale on-figure pixels (compute-bound regen queued — INDEX §4).** Two `.png`s carry numbers that
+  disagree with the SSOT and need a `tagged_solver` re-run (numpy<2 / cluster) to refresh the pixels:
+  `fig_delta2_landscape` shows δ₂=+0.25 (tagged_solver's state-energy sign; canonical is **−0.19 field**
+  — INDEX §3), and `fig_retro_flatness` plots ~0.0049 for the single-ended 2f_A=400 floor whose canonical
+  value is **0.0072** (`operating_point.md` §3 — it understates the floor, and the ≤0.006 band is not the
+  canonical floor; flagged by the 2026-06 figure red-team, removed from the master). Both captions quote
+  the current numbers and link [INDEX §1b](../INDEX.md); only the pixels lag. **The cloud-floor figure is
+  resolved** — `fig_cloud_floor_multilevel` (post-retraction, baked from §1b) is the primary; the 3-level
+  `fig_cloud_floor` is kept as the earlier dynamic-MC view.
 - **`fig_radial_mc.png` is an orphan** — it has no regen script. Prefer `fig_cloud_floor.png` (which
   does). Authoring a `fig_radial_mc.py` to de-orphan it is an optional cleanup.
 - **`fig_rsc_vs_eit`** marks the clock-pair RSC floor as a **lower bound** (Nf=10; higher Fock cutoff
