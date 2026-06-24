@@ -64,8 +64,10 @@ These are pinned in the `src/engines/eit_cooling_tool.py` module docstring and a
 ## Git workflow
 
 The v17 consolidation merged via PR #8; the pedagogical layer (guide + figures + reference/src
-restructure + the 0.0118 retraction) is PR #9 on `claude/v17-guide-and-src-restructure`. Start a new
-`claude/*` branch for further work. Commit with clear messages and push with `git push -u origin
+restructure + the 0.0118 retraction) plus the 2026-06 cross-chat figure red-team (multilevel cloud
+figure added; `fig_knobspace`/`radial_survival` fixes; `fig_retro_flatness`/`fig_delta2_landscape`
+flagged for a compute-bound regen — INDEX §4) merged via **PR #10**. Start a new `claude/*` branch
+for further work. Commit with clear messages and push with `git push -u origin
 <branch>`. Do not push to other branches or open PRs unless explicitly asked.
 
 Project version: **0.3.0**, single source `CITATION.cff` (the redundant empty `0.3.0` marker file
